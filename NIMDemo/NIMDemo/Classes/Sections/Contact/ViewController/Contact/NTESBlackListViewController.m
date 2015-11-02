@@ -30,12 +30,14 @@
     [self setUpNavItem];
     self.data = self.myBlackListUser;
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    self.header = [[NTESListHeader alloc] init];
+    self.header = [[NTESListHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 0)];
+    self.header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.header.delegate = self;
     [self.header refreshWithType:ListHeaderTypeCommonText value:@"你不会接收到列表中联系人的任何消息"];
     [self.view addSubview:self.header];
@@ -56,9 +58,7 @@
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    self.header.top    = self.navigationController.navigationBar.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    self.tableView.top = self.header.height;
-    self.tableView.height = self.view.height - self.tableView.top;
+    [self refreshSubviews];
 }
 
 
@@ -146,6 +146,12 @@
 
 
 #pragma mark - Private
+- (void)refreshSubviews{
+    self.tableView.top = self.header.height;
+    self.tableView.height = self.view.height - self.tableView.top;
+    self.header.bottom    = self.tableView.top + self.tableView.contentInset.top;
+}
+
 - (NSMutableArray *)myBlackListUser{
     NSMutableArray *list = [[NSMutableArray alloc] init];
     for (NIMUser *user in [NIMSDK sharedSDK].userManager.myBlackList) {

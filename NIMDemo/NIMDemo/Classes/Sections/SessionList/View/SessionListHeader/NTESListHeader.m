@@ -42,7 +42,7 @@
         [subView sizeToFit];
         height += subView.height;
     }
-    return CGSizeMake(UIScreenWidth,height);
+    return CGSizeMake(self.width,height);
 }
 
 
@@ -109,7 +109,7 @@
     {
         if (!rowView) {
             Class clazz = NSClassFromString(viewClassName);
-            rowView = [[clazz alloc] initWithFrame:CGRectZero];
+            rowView = [[clazz alloc] initWithFrame:CGRectMake(0, 0, self.width, 0)];
             rowView.backgroundColor = [self fillBackgroundColor:type];
             __block NSInteger insert = self.subviews.count;
             [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

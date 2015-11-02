@@ -47,6 +47,7 @@
     }];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
@@ -75,6 +76,7 @@
 }
 
 - (void)onDone:(id)sender{
+    [self.view endEditing:YES];
     if (self.email.length > self.inputLimit) {
         [self.view makeToast:@"邮箱过长" duration:2.0 position:CSToastPositionCenter];
         return;
@@ -84,10 +86,14 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagEmail) : self.email} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view.window makeToast:@"邮箱设置成功" duration:2.0 position:CSToastPositionCenter];
-            [wself.navigationController popViewControllerAnimated:YES];
+            UINavigationController *nav = wself.navigationController;
+            [nav popViewControllerAnimated:YES];
+            UIViewController *vc = nav.topViewController;
+            [vc.view makeToast:@"邮箱设置成功" duration:2.0 position:CSToastPositionCenter];
         }else{
-            [wself.view.window makeToast:@"邮箱设置失败，请重试"];
+            [wself.view makeToast:@"邮箱设置失败，请重试"
+                         duration:2
+                         position:CSToastPositionCenter];
         }
     }];
 }
@@ -128,6 +134,11 @@
     self.email = textField.text;
 }
 
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
+}
 
 
 @end

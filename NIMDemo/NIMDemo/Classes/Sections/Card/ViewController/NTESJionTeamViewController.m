@@ -35,11 +35,6 @@
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (IBAction)onJionTeamBtnClick:(id)sender {
     __weak typeof(self) wself = self;
     if(self.joinTeam.joinMode == NIMTeamJoinModeNoAuth) {

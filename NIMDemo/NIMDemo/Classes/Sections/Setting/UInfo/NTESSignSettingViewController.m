@@ -47,6 +47,7 @@
     }];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
@@ -76,6 +77,7 @@
 }
 
 - (void)onDone:(id)sender{
+    [self.view endEditing:YES];
     if (self.sign.length > self.inputLimit) {
         [self.view makeToast:@"签名过长" duration:2.0 position:CSToastPositionCenter];
         return;
@@ -85,10 +87,14 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagSign) : self.sign} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view makeToast:@"签名设置成功"];
+            [wself.view makeToast:@"签名设置成功"
+                         duration:2
+                         position:CSToastPositionCenter];
             [wself.navigationController popViewControllerAnimated:YES];
         }else{
-            [wself.view makeToast:@"签名设置失败，请重试"];
+            [wself.view makeToast:@"签名设置失败，请重试"
+                         duration:2
+                         position:CSToastPositionCenter];
         }
     }];
 }
@@ -127,6 +133,12 @@
 - (void)onTextFieldChanged:(NSNotification *)notification{
     UITextField *textField = notification.object;
     self.sign = textField.text;
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
 }
 
 

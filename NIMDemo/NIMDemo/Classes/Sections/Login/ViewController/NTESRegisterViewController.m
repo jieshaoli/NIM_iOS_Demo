@@ -78,17 +78,28 @@
     [SVProgressHUD show];
     __weak typeof(self) weakSelf = self;
     [[NTESRegisterManager sharedManager] registerUser:data
-                                           completion:^(NSError *error) {
+                                           completion:^(NSError *error,NSString *errorMsg) {
                                                [SVProgressHUD dismiss];
                                                if (error == nil) {
-                                                   [weakSelf.view.window makeToast:@"注册成功"
+                                                   [weakSelf.navigationController.view makeToast:@"注册成功"
                                                                    duration:2
                                                                    position:CSToastPositionCenter];
+                                                   if ([weakSelf.delegate respondsToSelector:@selector(registDidComplete:password:)]) {
+                                                       [weakSelf.delegate registDidComplete:data.account password:[_passwordTextfield text]];
+                                                   }
                                                    [weakSelf.navigationController popViewControllerAnimated:YES];
                                                 }
                                                else
                                                {
-                                                   [weakSelf.view makeToast:@"注册失败"
+                                                   if ([weakSelf.delegate respondsToSelector:@selector(registDidComplete:password:)]) {
+                                                       [weakSelf.delegate registDidComplete:nil password:nil];
+                                                   }
+                                                   
+                                                   NSString *toast = [NSString stringWithFormat:@"注册失败"];
+                                                   if ([errorMsg isKindOfClass:[NSString class]] &&errorMsg.length) {
+                                                       toast = [toast stringByAppendingFormat:@": %@",errorMsg];
+                                                   }
+                                                   [weakSelf.view makeToast:toast
                                                                    duration:2
                                                                    position:CSToastPositionCenter];
 
@@ -198,6 +209,11 @@
 - (BOOL)checkNickname{
     NSString *nickname= [_nicknameTextfield text];
     return nickname.length > 0 && nickname.length <= 10;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

@@ -44,6 +44,7 @@
     }];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;

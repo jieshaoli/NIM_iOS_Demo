@@ -44,7 +44,7 @@
 }
 
 - (NSString *)sessionTitle{
-    return @"历史消息";
+    return @"云消息记录";
 }
 
 - (id<NIMSessionConfig>)sessionConfig{

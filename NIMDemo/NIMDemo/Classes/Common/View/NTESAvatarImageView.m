@@ -23,7 +23,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.layer.geometryFlipped = YES;
         self.clipPath = YES;
-        self.defaultImage = [UIImage imageNamed:@"DefaultAvatar"];
+        self.defaultImage = [UIImage imageNamed:@"avatar_user"];
     }
     return self;
 }
@@ -140,13 +140,13 @@ CGRect CGRectWithCenterAndSize(CGPoint center, CGSize size){
 
 + (instancetype)demoInstance40x40{
     NTESAvatarImageView *avatarImageView = [[NTESAvatarImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    avatarImageView.image = [UIImage imageNamed:@"DefaultAvatar.png"];
+    avatarImageView.image = [UIImage imageNamed:@"avatar_user.png"];
     return avatarImageView;
 }
 
 + (instancetype)demoInstance30x30{
     NTESAvatarImageView *avatarImageView = [[NTESAvatarImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    avatarImageView.image = [UIImage imageNamed:@"DefaultAvatar.png"];
+    avatarImageView.image = [UIImage imageNamed:@"avatar_user.png"];
     return avatarImageView;
 }
 

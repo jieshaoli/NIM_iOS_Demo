@@ -144,12 +144,16 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
         case NIMSystemNotificationTypeTeamApply:{
             [[NIMSDK sharedSDK].teamManager passApplyToTeam:notification.targetID userId:notification.sourceID completion:^(NSError *error, NIMTeamApplyStatus applyStatus) {
                 if (!error) {
-                    [wself.view.window makeToast:@"同意成功"];
+                    [wself.navigationController.view makeToast:@"同意成功"
+                                                      duration:2
+                                                      position:CSToastPositionCenter];
                     notification.handleStatus = NotificationHandleTypeOk;
                     [wself.tableView reloadData];
                 }else {
                     if(error.code == NIMRemoteErrorCodeTimeoutError) {
-                        [wself.view.window makeToast:@"网络问题，请重试"];
+                        [wself.navigationController.view makeToast:@"网络问题，请重试"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     } else {
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
@@ -162,15 +166,21 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
         case NIMSystemNotificationTypeTeamInvite:{
             [[NIMSDK sharedSDK].teamManager acceptInviteWithTeam:notification.targetID invitorId:notification.sourceID completion:^(NSError *error) {
                 if (!error) {
-                    [wself.view.window makeToast:@"接受成功"];
+                    [wself.navigationController.view makeToast:@"接受成功"
+                                                      duration:2
+                                                      position:CSToastPositionCenter];
                     notification.handleStatus = NotificationHandleTypeOk;
                     [wself.tableView reloadData];
                 }else {
                     if(error.code == NIMRemoteErrorCodeTimeoutError) {
-                        [wself.view.window makeToast:@"网络问题，请重试"];
+                        [wself.navigationController.view makeToast:@"网络问题，请重试"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     }
                     else if (error.code == NIMRemoteErrorCodeTeamNotExists) {
-                        [wself.view.window makeToast:@"群不存在"];
+                        [wself.navigationController.view makeToast:@"群不存在"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     }
                     else {
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
@@ -190,12 +200,16 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
             [[[NIMSDK sharedSDK] userManager] requestFriend:request
                                                  completion:^(NSError *error) {
                                                      if (!error) {
-                                                         [wself.view.window makeToast:@"验证成功"];
+                                                         [wself.navigationController.view makeToast:@"验证成功"
+                                                                                           duration:2
+                                                                                           position:CSToastPositionCenter];
                                                          notification.handleStatus = NotificationHandleTypeOk;
                                                      }
                                                      else
                                                      {
-                                                         [wself.view.window makeToast:@"验证失败,请重试"];
+                                                         [wself.navigationController.view makeToast:@"验证失败,请重试"
+                                                                                           duration:2
+                                                                                           position:CSToastPositionCenter];
                                                      }
                                                      [wself.tableView reloadData];
                                                      DDLogDebug(error.localizedDescription);
@@ -214,12 +228,16 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
         case NIMSystemNotificationTypeTeamApply:{
             [[NIMSDK sharedSDK].teamManager rejectApplyToTeam:notification.targetID userId:notification.sourceID rejectReason:@"" completion:^(NSError *error) {
                 if (!error) {
-                    [wself.view.window makeToast:@"拒绝成功"];
+                    [wself.navigationController.view makeToast:@"拒绝成功"
+                                                      duration:2
+                                                      position:CSToastPositionCenter];
                     notification.handleStatus = NotificationHandleTypeNo;
                     [wself.tableView reloadData];
                 }else {
                     if(error.code == NIMRemoteErrorCodeTimeoutError) {
-                        [wself.view.window makeToast:@"网络问题，请重试"];
+                        [wself.navigationController.view makeToast:@"网络问题，请重试"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     } else {
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
@@ -233,15 +251,21 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
         case NIMSystemNotificationTypeTeamInvite:{
             [[NIMSDK sharedSDK].teamManager rejectInviteWithTeam:notification.targetID invitorId:notification.sourceID rejectReason:@"" completion:^(NSError *error) {
                 if (!error) {
-                    [wself.view.window makeToast:@"拒绝成功"];
+                    [wself.navigationController.view makeToast:@"拒绝成功"
+                                                      duration:2
+                                                      position:CSToastPositionCenter];
                     notification.handleStatus = NotificationHandleTypeNo;
                     [wself.tableView reloadData];
                 }else {
                     if(error.code == NIMRemoteErrorCodeTimeoutError) {
-                        [wself.view.window makeToast:@"网络问题，请重试"];
+                        [wself.navigationController.view makeToast:@"网络问题，请重试"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     }
                     else if (error.code == NIMRemoteErrorCodeTeamNotExists) {
-                        [wself.view.window makeToast:@"群不存在"];
+                        [wself.navigationController.view makeToast:@"群不存在"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                     }
                     else {
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
@@ -262,12 +286,16 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
             [[[NIMSDK sharedSDK] userManager] requestFriend:request
                                                  completion:^(NSError *error) {
                                                      if (!error) {
-                                                         [wself.view.window makeToast:@"拒绝成功"];
+                                                         [wself.navigationController.view makeToast:@"拒绝成功"
+                                                                                           duration:2
+                                                                                           position:CSToastPositionCenter];
                                                          notification.handleStatus = NotificationHandleTypeNo;
                                                      }
                                                      else
                                                      {
-                                                         [wself.view.window makeToast:@"拒绝失败,请重试"];
+                                                         [wself.navigationController.view makeToast:@"拒绝失败,请重试"
+                                                                                           duration:2
+                                                                                           position:CSToastPositionCenter];
                                                      }
                                                      [wself.tableView reloadData];
                                                      DDLogDebug(error.localizedDescription);

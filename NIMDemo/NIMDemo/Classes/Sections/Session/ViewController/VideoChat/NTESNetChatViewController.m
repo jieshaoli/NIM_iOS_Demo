@@ -84,7 +84,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self setUpStatusBar];
+    [self setUpStatusBar:UIStatusBarStyleLightContent];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -134,7 +134,9 @@
                 });
             }else{
                 if (error) {
-                    [wself.view.window makeToast:@"连接失败"];
+                    [wself.navigationController.view makeToast:@"连接失败"
+                                                      duration:2
+                                                      position:CSToastPositionCenter];
                 }else{
                     //说明在start的过程中把页面关了。。
                     [[NIMSDK sharedSDK].netCallManager hangup:callID];
@@ -172,13 +174,17 @@
                 NSTimeInterval delay = 10.f; //10秒后判断下聊天室
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if (wself.chatRoom.count == 1) {
-                        [wself.view.window makeToast:@"通话失败"];
+                        [wself.navigationController.view makeToast:@"通话失败"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                         [wself hangup];
                     }
                 });
         }else{
             wself.chatRoom = nil;
-            [wself.view.window makeToast:@"连接失败"];
+            [wself.navigationController.view makeToast:@"连接失败"
+                                              duration:2
+                                              position:CSToastPositionCenter];
             [wself dismiss:nil];
         }
     }];
@@ -191,7 +197,21 @@
 }
 
 - (void)dismiss:(void (^)(void))completion{
-    [self dismissViewControllerAnimated:NO completion:completion];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.25;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromBottom;
+    transition.delegate = self;
+    [self.navigationController.view.layer addAnimation:transition forKey:nil];
+    self.navigationController.navigationBarHidden = NO;
+    [self.navigationController popViewControllerAnimated:NO];
+    [self setUpStatusBar:UIStatusBarStyleDefault];
+    if (completion) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(transition.duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            completion();
+        });
+    }
 }
 
 - (void)onCalling{
@@ -221,7 +241,9 @@
                         [[NIMSDK sharedSDK].netCallManager hangup:callId];
                         wself.chatRoom = nil;
                         [wself playTimeoutRing];
-                        [wself.view.window makeToast:@"无人接听"];
+                        [wself.navigationController.view makeToast:@"无人接听"
+                                                          duration:2
+                                                          position:CSToastPositionCenter];
                         [wself dismiss:nil];
                     }
                 });
@@ -240,7 +262,9 @@
     if (self.callInfo.callID == callID) {
         if (!accepted) {
             self.chatRoom = nil;
-            [self.view.window makeToast:@"对方拒绝接听"];
+            [self.navigationController.view makeToast:@"对方拒绝接听"
+                                             duration:2
+                                             position:CSToastPositionCenter];
             [self playHangUpRing];
             [self dismiss:nil];
         }else{
@@ -276,7 +300,9 @@
 
 - (void)onResponsedByOther:(UInt64)callID
                   accepted:(BOOL)accepted{
-    [self.view makeToast:@"已在其他端处理"];
+    [self.view makeToast:@"已在其他端处理"
+                duration:2
+                position:CSToastPositionCenter];
     [self dismiss:nil];
 }
 
@@ -330,8 +356,7 @@
     }
 }
 
-- (void)setUpStatusBar{
-    UIStatusBarStyle style = UIStatusBarStyleLightContent;
+- (void)setUpStatusBar:(UIStatusBarStyle)style{
     [[UIApplication sharedApplication] setStatusBarStyle:style
                                                 animated:NO];
 }

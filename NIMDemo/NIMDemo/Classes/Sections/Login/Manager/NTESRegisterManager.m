@@ -41,6 +41,7 @@
     [request setHTTPMethod:@"Post"];
     
     [request addValue:@"application/x-www-form-urlencoded;charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"nim_demo_ios" forHTTPHeaderField:@"User-Agent"];
     [request addValue:[[NIMSDK sharedSDK] appKey] forHTTPHeaderField:@"appkey"];
     
     NSString *postData = [NSString stringWithFormat:@"username=%@&password=%@&nickname=%@",[data account],[data token],[data nickname]];
@@ -52,6 +53,7 @@
         NSError *error = [NSError errorWithDomain:@"ntes domain"
                                              code:statusCode
                                          userInfo:nil];
+        NSString *errorMsg;
         if (statusCode == 200 && [responseObject isKindOfClass:[NSData class]]) {
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject
                                                                  options:0
@@ -68,14 +70,15 @@
                                             userInfo:nil];
                 }
                 DDLogDebug(@"register response %@",dict);
+                errorMsg = dict[@"errmsg"];
             }
         }
         if (completion) {
-            completion(error);
+            completion(error,errorMsg);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (completion) {
-            completion(error);
+            completion(error,nil);
         }
     }];
     [op start];

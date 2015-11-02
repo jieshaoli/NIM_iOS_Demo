@@ -128,10 +128,15 @@
 //切换接听中界面(视频)
 - (void)videoCallingInterface{
     NTESVideoChatViewController *vc = [[NTESVideoChatViewController alloc] initWithCallInfo:self.callInfo];
-    [self dismiss:^{
-        UINavigationController *nav = (UINavigationController*)[NTESMainTabController instance].selectedViewController;
-        [nav presentViewController:vc animated:NO completion:nil];
-    }];
+    [UIView  beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.75];
+    [self.navigationController pushViewController:vc animated:NO];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:NO];
+    [UIView commitAnimations];
+    NSMutableArray * vcs = [self.navigationController.viewControllers mutableCopy];
+    [vcs removeObject:self];
+    self.navigationController.viewControllers = vcs;
 }
 
 #pragma mark - IBAction
@@ -157,7 +162,9 @@
 }
 
 - (IBAction)switchToVideoMode:(id)sender {
-    [self.view makeToast:@"已发送转换请求，请等待对方应答..."];
+    [self.view makeToast:@"已发送转换请求，请等待对方应答..."
+                duration:2
+                position:CSToastPositionCenter];
     [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeToVideo];
 }
 
@@ -181,7 +188,9 @@
             [self videoCallingInterface];
             break;
         case NIMNetCallControlTypeRejectToVideo:
-            [self.view makeToast:@"对方拒绝切换到视频模式"];
+            [self.view makeToast:@"对方拒绝切换到视频模式"
+                        duration:2
+                        position:CSToastPositionCenter];
             break;
         default:
             break;
@@ -232,7 +241,9 @@
         switch (idx) {
             case 0:
                 [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeRejectToVideo];
-                [self.view makeToast:@"已拒绝"];
+                [self.view makeToast:@"已拒绝"
+                            duration:2
+                            position:CSToastPositionCenter];
                 break;
             case 1:
                 [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeAgreeToVideo];

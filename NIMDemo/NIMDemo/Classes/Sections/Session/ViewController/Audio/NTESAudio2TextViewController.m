@@ -47,19 +47,24 @@
                                                  result:^(NSError *error, NSString *text) {
                                                      [SVProgressHUD dismiss];
                                                      weakSelf.cancelBtn.hidden = YES;
+                                                     [weakSelf show:error
+                                                               text:text];
                                                      if (!error) {
-                                                         [weakSelf show:error
-                                                                     text:text];
                                                          weakSelf.message.isPlayed = YES;
                                                      }else{
                                                          DDLogError(@"audio 2 text error, %@",error);
                                                          [weakSelf.textView removeFromSuperview];
                                                          [weakSelf.view addSubview:weakSelf.errorTipView];
-                                                         weakSelf.errorTipView.top = UIScreenHeight * .33f;
-                                                         weakSelf.errorTipView.centerX = weakSelf.view.width * .5f;
                                                      }
                                                  }];
     [_textView setEditable:NO];
+}
+
+
+- (void)viewDidLayoutSubviews{
+    CGRect rect = CGRectApplyAffineTransform(self.view.frame, self.view.transform);
+    self.errorTipView.top = rect.size.height * .33f;
+    self.errorTipView.centerX = rect.size.width * .5f;
 }
 
 
@@ -105,6 +110,10 @@
     [SVProgressHUD dismiss];
     [self dismissViewControllerAnimated:NO
                              completion:nil];
+}
+
+- (BOOL)shouldAutorotate{
+    return NO;
 }
 
 @end

@@ -24,6 +24,7 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _icon  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_muti_clients"]];
         [self addSubview:_icon];
         
@@ -44,7 +45,7 @@ CGFloat TextPadding = 17.f;
 - (CGSize)sizeThatFits:(CGSize)size{
     [self.label sizeToFit];
     CGSize contentSize = self.label.frame.size;
-    return CGSizeMake(UIScreenWidth, contentSize.height + TextPadding * 2);
+    return CGSizeMake(self.width, contentSize.height + TextPadding * 2);
 }
 
 

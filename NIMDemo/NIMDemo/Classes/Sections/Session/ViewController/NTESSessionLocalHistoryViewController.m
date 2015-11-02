@@ -228,6 +228,7 @@
     UIButton *btn   = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, UIScreenWidth, ContentCellHeight)];
     [btn addTarget:self action:@selector(loadMore:) forControlEvents:UIControlEventTouchUpInside];
     UILabel *lable = [[UILabel alloc] initWithFrame:CGRectZero];
+    lable.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
     lable.text = @"点击加载更多";
     [lable sizeToFit];
     [btn addSubview:lable];
@@ -253,6 +254,25 @@
         [output addObject:info.infoId];
     }
     return output;
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+                                duration:(NSTimeInterval)duration
+{
+    if (self.searchDisplayVC.isActive) {
+        [self.searchDisplayVC setActive:NO animated:YES];
+    }
+}
+
+#pragma mark - 旋转处理 (iOS8 or above)
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    if (self.searchDisplayVC.isActive) {
+        [self.searchDisplayVC setActive:NO animated:YES];
+    }
 }
 
 

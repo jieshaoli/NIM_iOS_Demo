@@ -46,19 +46,27 @@
             if (!error) {
                 [wself startPlay];
             }else{
-                [wself.view makeToast:@"下载失败，请检查网络"];
+                [wself.view makeToast:@"下载失败，请检查网络"
+                             duration:2
+                             position:CSToastPositionCenter];
             }
         }];
     }
 }
 
-- (void)viewWillDisappear: (BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear: animated];
     if (![[self.navigationController viewControllers] containsObject: self])
     {
         [self topStatusUIHidden:NO];
     }
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [self.moviePlayer stop];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -130,7 +138,9 @@
         {
             NSError *mediaPlayerError = [notificationUserInfo objectForKey:@"error"];
             NSString *errorTip = [NSString stringWithFormat:@"播放失败: %@", [mediaPlayerError localizedDescription]];
-            [self.view makeToast:errorTip];
+            [self.view makeToast:errorTip
+                        duration:2
+                        position:CSToastPositionCenter];
         }
     }
     

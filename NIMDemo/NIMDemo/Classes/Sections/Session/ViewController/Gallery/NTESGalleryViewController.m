@@ -45,7 +45,7 @@
     if ([_currentItem.name length])
     {
         self.navigationItem.title = _currentItem.name;
-    }    
+    }
 }
 
 
@@ -69,12 +69,13 @@
 
 @implementation  NTESGalleryViewController(SingleView)
 
-+ (void)alertSingleSnapViewWithMessage:(NIMMessage *)message baseView:(UIView *)view{
++ (UIView *)alertSingleSnapViewWithMessage:(NIMMessage *)message baseView:(UIView *)view{
     NIMCustomObject *messageObject = (NIMCustomObject *)message.messageObject;
     if (![messageObject isKindOfClass:[NIMCustomObject class]] || ![messageObject.attachment isKindOfClass:[NTESSnapchatAttachment class]]) {
-        return;
+        return nil;
     }
     SingleSnapView *galleryImageView = [[SingleSnapView alloc] initWithFrame:[UIScreen mainScreen].bounds messageObject:messageObject];
+    galleryImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     galleryImageView.backgroundColor = [UIColor blackColor];
     galleryImageView.contentMode  = UIViewContentModeScaleAspectFit;
     
@@ -88,6 +89,7 @@
             [NTESGalleryViewController downloadImage:attachment.url imageView:galleryImageView];
         }
     }];
+    return galleryImageView;
 }
 
 + (void)downloadImage:(NSString *)url imageView:(SingleSnapView *)imageView{
@@ -98,7 +100,9 @@
         });
     } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (error) {
-            [wImageView makeToast:@"下载图片失败"];
+            [wImageView makeToast:@"下载图片失败"
+                         duration:2
+                         position:CSToastPositionCenter];
         }else{
             wImageView.progress = 1.0;
         }

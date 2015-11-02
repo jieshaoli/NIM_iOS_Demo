@@ -23,6 +23,6 @@
 
 @interface NTESGalleryViewController(SingleView)
 
-+ (void)alertSingleSnapViewWithMessage:(NIMMessage *)message baseView:(UIView *)view;
++ (UIView *)alertSingleSnapViewWithMessage:(NIMMessage *)message baseView:(UIView *)view;
 
 @end

@@ -156,7 +156,7 @@ NIMUserManagerDelegate
 }
 
 - (void)onOpera:(id)sender{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"添加好友",@"创建高级群",@"创建普通群",@"搜索高级群", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"添加好友",@"创建高级群",@"创建普通群",@"搜索高级群", nil];
     __weak typeof(self) wself = self;
     NSString *currentUserId = [[NIMSDK sharedSDK].loginManager currentAccount];
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
@@ -171,7 +171,7 @@ NIMUserManagerDelegate
                     NIMCreateTeamOption *option = [[NIMCreateTeamOption alloc] init];
                     option.name       = @"高级群";
                     option.type       = NIMTeamTypeAdvanced;
-                    option.joinMode   = NIMTeamJoinModeNeedAuth;
+                    option.joinMode   = NIMTeamJoinModeNoAuth;
                     option.postscript = @"邀请你加入群组";
                     [SVProgressHUD show];
                     [[NIMSDK sharedSDK].teamManager createTeam:option users:members completion:^(NSError *error, NSString *teamId) {
@@ -351,8 +351,10 @@ NIMUserManagerDelegate
 - (void)onLogin:(NIMLoginStep)step
 {
     if (step == NIMLoginStepSyncOK) {
-        [self prepareData];
-        [self.tableView reloadData];
+        if (self.isViewLoaded) {//没有加载view的话viewDidLoad里会走一遍prepareData
+            [self prepareData];
+            [self.tableView reloadData];
+        }
     }
 }
 

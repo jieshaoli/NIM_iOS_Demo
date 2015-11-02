@@ -230,16 +230,28 @@
                         [[NIMWebImageManager sharedManager] saveImageToCache:imageForAvatarUpload forURL:[NSURL URLWithString:urlString]];
                         [wself refresh];
                     }else{
-                        [wself.view makeToast:@"设置头像失败，请重试"];
+                        [wself.view makeToast:@"设置头像失败，请重试"
+                                     duration:2
+                                     position:CSToastPositionCenter];
                     }
                 }];
             }else{
-                [wself.view makeToast:@"图片上传失败，请重试"];
+                [wself.view makeToast:@"图片上传失败，请重试"
+                             duration:2
+                             position:CSToastPositionCenter];
             }
         }];
     }else{
-        [self.view makeToast:@"图片保存失败，请重试"];
+        [self.view makeToast:@"图片保存失败，请重试"
+                    duration:2
+                    position:CSToastPositionCenter];
     }
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
 }
 
 @end

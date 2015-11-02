@@ -31,17 +31,21 @@
         self.groupMemberComparator = ^NSComparisonResult(NSString *key1, NSString *key2) {
             return [key1 compare:key2];
         };
-        
-        NSMutableArray *contacts = [NSMutableArray array];
-        for (NIMUser *user in [NIMSDK sharedSDK].userManager.myFriends) {
-            NIMKitInfo *info           = [[NIMKit sharedKit] infoByUser:user.userId];
-            NTESContactDataMember *contact = [[NTESContactDataMember alloc] init];
-            contact.info               = info;
-            [contacts addObject:contact];
-        }
-        [self setMembers:contacts];
+        [self update];
     }
     return self;
 }
+
+- (void)update{
+    NSMutableArray *contacts = [NSMutableArray array];
+    for (NIMUser *user in [NIMSDK sharedSDK].userManager.myFriends) {
+        NIMKitInfo *info           = [[NIMKit sharedKit] infoByUser:user.userId];
+        NTESContactDataMember *contact = [[NTESContactDataMember alloc] init];
+        contact.info               = info;
+        [contacts addObject:contact];
+    }
+    [self setMembers:contacts];
+}
+
 
 @end

@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol NTESRegisterViewControllerDelegate <NSObject>
+
+@optional
+- (void)registDidComplete:(NSString *)account password:(NSString *)password;
+
+@end
+
 @interface NTESRegisterViewController : UIViewController
 
 @property (nonatomic, weak) IBOutlet UITextField *accountTextfield;
@@ -21,5 +28,7 @@
 @property (nonatomic, weak) IBOutlet UIButton *existedButton;
 
 @property (nonatomic, weak) IBOutlet UIImageView *logo;
+
+@property (nonatomic, weak) id<NTESRegisterViewControllerDelegate> delegate;
 
 @end

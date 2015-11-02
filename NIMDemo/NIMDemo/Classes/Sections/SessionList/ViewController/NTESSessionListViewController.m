@@ -19,7 +19,7 @@
 #import "NTESSessionUtil.h"
 #import "NTESPersonalCardViewController.h"
 
-#define SessionListTitle @"网易云信"
+#define SessionListTitle @"云信 Demo"
 
 @interface NTESSessionListViewController ()<NIMLoginManagerDelegate,NTESListHeaderDelegate>
 
@@ -46,7 +46,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     [[NIMSDK sharedSDK].loginManager addDelegate:self];
-    self.header = [[NTESListHeader alloc] init];
+    self.header = [[NTESListHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 0)];
+    self.header.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.header.delegate = self;
     [self.view addSubview:self.header];
 
@@ -85,16 +86,16 @@
 
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];
-    [self.titleLabel sizeToFit];
-    self.titleLabel.centerX   = self.navigationItem.titleView.width * .5f;
-    self.header.top    = self.navigationController.navigationBar.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    self.tableView.top = self.header.height;
-    self.tableView.height = self.view.height - self.tableView.top;
-    
-    self.emptyTipLabel.centerX = self.view.width * .5f;
-    self.emptyTipLabel.centerY = self.tableView.height * .5f;
+    [self refreshSubview];
 }
 
+
+- (NSString *)nameForRecentSession:(NIMRecentSession *)recent{
+    if ([recent.session.sessionId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
+        return @"我的电脑";
+    }
+    return [super nameForRecentSession:recent];
+}
 
 #pragma mark - SessionListHeaderDelegate
 
@@ -102,7 +103,7 @@
     //多人登录
     switch (type) {
         case ListHeaderTypeLoginClients:{
-            NTESClientsTableViewController *vc = [[NTESClientsTableViewController alloc] init];
+            NTESClientsTableViewController *vc = [[NTESClientsTableViewController alloc] initWithNibName:nil bundle:nil];
             [self.navigationController pushViewController:vc animated:YES];
             break;
         }
@@ -145,6 +146,16 @@
 }
 
 #pragma mark - Private 
+- (void)refreshSubview{
+    [self.titleLabel sizeToFit];
+    self.titleLabel.centerX   = self.navigationItem.titleView.width * .5f;
+    self.tableView.top = self.header.height;
+    self.tableView.height = self.view.height - self.tableView.top;
+    self.header.bottom    = self.tableView.top + self.tableView.contentInset.top;
+    self.emptyTipLabel.centerX = self.view.width * .5f;
+    self.emptyTipLabel.centerY = self.tableView.height * .5f;
+}
+
 - (UIView*)titleView:(NSString*)userID{
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     self.titleLabel.text =  SessionListTitle;

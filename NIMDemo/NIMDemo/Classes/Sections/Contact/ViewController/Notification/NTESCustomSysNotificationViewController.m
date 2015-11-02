@@ -112,13 +112,14 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
 #pragma mark - Action
 - (void)addCustomNotification:(id)sender{
     
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"单聊",@"群组", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"单聊",@"群组", nil];
     __block NIMContactSelectViewController *vc;
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
         switch (index) {
             case 0:{
                 NIMContactFriendSelectConfig *config = [[NIMContactFriendSelectConfig alloc] init];
                 vc = [[NIMContactSelectViewController alloc] initWithConfig:config];
+                self.sendSessionType = NIMSessionTypeP2P;
                 vc.delegate = self;
                 break;
             }

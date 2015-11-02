@@ -43,6 +43,7 @@
 #import "NTESSessionLocalHistoryViewController.h"
 #import "NIMContactSelectViewController.h"
 #import "SVProgressHUD.h"
+#import "NTESSessionCardViewController.h"
 
 typedef enum : NSUInteger {
     NTESImagePickerModeImage,
@@ -64,6 +65,7 @@ NIMContactSelectDelegate>
 @property (nonatomic,assign)    NTESImagePickerMode      mode;
 @property (nonatomic,strong)    NTESTimerHolder         *titleTimer;
 @property (nonatomic,strong)    NSString *playingAudioPath; //正在播放的音频路径
+@property (nonatomic,strong)    UIView *currentSingleSnapView;
 @end
 
 @implementation NTESSessionViewController
@@ -129,6 +131,14 @@ NIMContactSelectDelegate>
     self.title = [self sessionTitle];
 }
 
+
+- (NSString *)sessionTitle{
+    if ([self.session.sessionId isEqualToString:[NIMSDK sharedSDK].loginManager.currentAccount]) {
+        return  @"我的电脑";
+    }
+    return [super sessionTitle];
+}
+
 #pragma mark - NIMInputActionDelegate
 - (void)onTapMediaItem:(NIMMediaItem *)item
 {
@@ -179,7 +189,7 @@ NIMContactSelectDelegate>
         NSAssert(0, @"not supported");
 #elif TARGET_OS_IPHONE
         self.imagePicker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-        [self.navigationController presentViewController:self.imagePicker animated:YES completion:nil];
+        [self presentViewController:self.imagePicker animated:YES completion:nil];
 #endif
     }
 }
@@ -209,8 +219,15 @@ NIMContactSelectDelegate>
 {
     if ([self checkCondition]) {
         NTESAudioChatViewController *vc = [[NTESAudioChatViewController alloc] initWithCallee:self.session.sessionId];
-        [self presentViewController:vc animated:NO completion:nil];
-        
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+        transition.type = kCATransitionPush;
+        transition.subtype = kCATransitionFromTop;
+        transition.delegate = self;
+        [self.navigationController.view.layer addAnimation:transition forKey:nil];
+        self.navigationController.navigationBarHidden = YES;
+        [self.navigationController pushViewController:vc animated:NO];
     }
 }
 
@@ -219,7 +236,15 @@ NIMContactSelectDelegate>
 {
     if ([self checkCondition]) {
         NTESVideoChatViewController *vc = [[NTESVideoChatViewController alloc] initWithCallee:self.session.sessionId];
-        [self presentViewController:vc animated:NO completion:nil];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+        transition.type = kCATransitionPush;
+        transition.subtype = kCATransitionFromTop;
+        transition.delegate = self;
+        [self.navigationController.view.layer addAnimation:transition forKey:nil];
+        self.navigationController.navigationBarHidden = YES;
+        [self.navigationController pushViewController:vc animated:NO];
     }
 }
 
@@ -246,9 +271,9 @@ NIMContactSelectDelegate>
     UIActionSheet *sheet;
     BOOL isCamraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (isCamraAvailable) {
-        sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册中选取",nil];
+        sheet = [[UIActionSheet alloc] initWithTitle:@"请选择" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册中选取",nil];
     }else{
-        sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"从相册中选取",nil];
+        sheet = [[UIActionSheet alloc] initWithTitle:@"请选择" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"从相册中选取",nil];
     }
     __weak typeof(self) wself = self;
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
@@ -354,7 +379,9 @@ NIMContactSelectDelegate>
                              [self sendMessage:[NTESSessionMsgConverter msgWithVideo:outputPath]];
                          }
                          else {
-                             [self.view makeToast:@"发送失败"];
+                             [self.view makeToast:@"发送失败"
+                                         duration:2
+                                         position:CSToastPositionCenter];
                          }
                      });
                  }];
@@ -423,7 +450,9 @@ NIMContactSelectDelegate>
     else if([eventName isEqualToString:NIMKitEventNameTapLabelLink])
     {
         NSString *link = event.data;
-        [self.view makeToast:[NSString stringWithFormat:@"tap link : %@",link]];
+        [self.view makeToast:[NSString stringWithFormat:@"tap link : %@",link]
+                    duration:2
+                    position:CSToastPositionCenter];
         handled = YES;
     }
     else if([eventName isEqualToString:NIMDemoEventNameOpenSnapPicture])
@@ -434,7 +463,7 @@ NIMContactSelectDelegate>
             return;
         }
         UIView *sender = event.data;
-        [NTESGalleryViewController alertSingleSnapViewWithMessage:object.message baseView:sender];
+        self.currentSingleSnapView = [NTESGalleryViewController alertSingleSnapViewWithMessage:object.message baseView:sender];
         handled = YES;
     }
     else if([eventName isEqualToString:NIMDemoEventNameCloseSnapPicture])
@@ -459,8 +488,9 @@ NIMContactSelectDelegate>
         }
         [[NSFileManager defaultManager] removeItemAtPath:attachment.filepath error:nil];
         handled = YES;
+        self.currentSingleSnapView = nil;
     }
-
+    
     if (!handled) {
         NSAssert(0, @"invalid event");
     }
@@ -544,7 +574,7 @@ NIMContactSelectDelegate>
 
 - (void)showCustom:(NIMMessage *)message
 {
-   //普通的自定义消息点击事件可以在这里做哦~
+    //普通的自定义消息点击事件可以在这里做哦~
 }
 
 
@@ -561,30 +591,22 @@ NIMContactSelectDelegate>
 
 #pragma mark - 导航按钮
 - (void)onTouchUpInfoBtn:(id)sender{
-    NSMutableArray *users = [[NSMutableArray alloc] init];
-    NSString *currentUserID = [[[NIMSDK sharedSDK] loginManager] currentAccount];
-    [users addObject:currentUserID];
-    NIMContactFriendSelectConfig *config = [[NIMContactFriendSelectConfig alloc] init];
-    config.filterIds = users;
-    config.needMutiSelected = YES;
-    config.alreadySelectedMemberId = @[self.session.sessionId];
-    NIMContactSelectViewController *vc = [[NIMContactSelectViewController alloc] initWithConfig:config];
-    vc.delegate = self;
-    [vc show];
+    NTESSessionCardViewController *vc = [[NTESSessionCardViewController alloc] initWithSession:self.session];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)enterHistory:(id)sender{
     [self.view endEditing:YES];
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"搜索本地消息",@"查看云端消息",@"清空聊天记录", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"云消息记录",@"搜索本地消息记录",@"清空本地聊天记录", nil];
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
         switch (index) {
-            case 0:{ //搜索本地消息
-                    NTESSessionLocalHistoryViewController *vc = [[NTESSessionLocalHistoryViewController alloc] initWithSession:self.session];
-                    [self.navigationController pushViewController:vc animated:YES];
+            case 0:{ //查看云端消息
+                NTESSessionRemoteHistoryViewController *vc = [[NTESSessionRemoteHistoryViewController alloc] initWithSession:self.session];
+                [self.navigationController pushViewController:vc animated:YES];
                 break;
             }
-            case 1:{ //查看云端消息
-                NTESSessionRemoteHistoryViewController *vc = [[NTESSessionRemoteHistoryViewController alloc] initWithSession:self.session];
+            case 1:{ //搜索本地消息
+                NTESSessionLocalHistoryViewController *vc = [[NTESSessionLocalHistoryViewController alloc] initWithSession:self.session];
                 [self.navigationController pushViewController:vc animated:YES];
                 break;
             }
@@ -645,36 +667,6 @@ NIMContactSelectDelegate>
                        animated:YES
                      completion:nil];
 }
-
-#pragma mark - ContactSelectDelegate
-
-- (void)didFinishedSelect:(NSArray *)selectedContacts{
-    if (!selectedContacts.count) {
-        return;
-    }
-    NSString *uid = [[NIMSDK sharedSDK].loginManager currentAccount];
-    NSArray *users = [@[uid] arrayByAddingObjectsFromArray:selectedContacts];
-    NIMCreateTeamOption *option = [[NIMCreateTeamOption alloc] init];
-    option.name = @"普通群";
-    option.type = NIMTeamTypeNormal;
-    __weak typeof(self) wself = self;
-    [SVProgressHUD show];
-    [[NIMSDK sharedSDK].teamManager createTeam:option
-                                         users:users
-                                    completion:^(NSError *error, NSString *teamId) {
-                                        [SVProgressHUD dismiss];
-                                        if (!error) {
-                                            NIMSession *session = [NIMSession session:teamId type:NIMSessionTypeTeam];
-                                            UINavigationController *nav = wself.navigationController;
-                                            [nav popToRootViewControllerAnimated:NO];
-                                            NTESSessionViewController *vc = [[NTESSessionViewController alloc] initWithSession:session];
-                                            [nav pushViewController:vc animated:YES];
-                                        }else{
-                                            [wself.view makeToast:@"创建群组失败" duration:2.0 position:CSToastPositionCenter];
-                                        }
-                                    }];
-}
-
 
 #pragma mark - 辅助方法
 - (BOOL)checkCondition
@@ -757,9 +749,17 @@ NIMContactSelectDelegate>
     if (self.session.sessionType == NIMSessionTypeTeam) {
         self.navigationItem.rightBarButtonItems  = @[enterTeamCardItem,historyButtonItem];
     }else if(self.session.sessionType == NIMSessionTypeP2P){
-        self.navigationItem.rightBarButtonItems = @[enterUInfoItem,historyButtonItem];
+        if ([self.session.sessionId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
+            self.navigationItem.rightBarButtonItems = @[historyButtonItem];
+        }else{
+            self.navigationItem.rightBarButtonItems = @[enterUInfoItem,historyButtonItem];
+        }
     }
 }
 
+
+- (BOOL)shouldAutorotate{
+    return !self.currentSingleSnapView;
+}
 
 @end

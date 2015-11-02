@@ -109,15 +109,18 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
     }
     NTESMainTabController *tabVC = [NTESMainTabController instance];
     [tabVC.view endEditing:YES];
-    if (tabVC.presentedViewController) {
-        __weak NTESMainTabController *wtabVC = (NTESMainTabController *)tabVC;
-        [tabVC.presentedViewController dismissViewControllerAnimated:NO completion:^{
-            [wtabVC presentViewController:vc animated:NO completion:nil];
-        }];
-    }else{
-        [tabVC presentViewController:vc animated:NO completion:nil];
-    }
-
+    UINavigationController *nav = tabVC.selectedViewController;
+   
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.25;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromTop;
+    transition.delegate = self;
+    [nav.view.layer addAnimation:transition forKey:nil];
+    nav.navigationBarHidden = YES;
+    [nav pushViewController:vc animated:NO];
+    
 }
 
 - (void)onRTSRequest:(NSString *)sessionID

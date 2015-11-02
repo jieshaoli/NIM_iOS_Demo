@@ -16,7 +16,7 @@
 @property (nonatomic,copy)      NSString    *nickname;
 @end
 
-typedef void(^NTESRegisterHandler)(NSError *error);
+typedef void(^NTESRegisterHandler)(NSError *error,NSString *errorMsg);
 
 @interface NTESRegisterManager : NSObject
 + (instancetype)sharedManager;

@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NTESClientsTableViewController : UITableViewController
+@interface NTESClientsTableViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+
+@property (nonatomic,strong) UITableView *tableView;
 
 @end
 

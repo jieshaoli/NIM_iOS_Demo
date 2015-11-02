@@ -35,6 +35,7 @@
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
@@ -111,15 +112,27 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagGender) : @(self.selectedGender)} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view.window makeToast:@"性别设置成功"];
-            [wself.navigationController popViewControllerAnimated:YES];
+            UINavigationController *nav = wself.navigationController;
+            [nav.view makeToast:@"性别设置成功"
+                       duration:2
+                       position:CSToastPositionCenter];
+            [nav popViewControllerAnimated:YES];
+
         }else{
             NSString *userId = [[NIMSDK sharedSDK].loginManager currentAccount];
             wself.selectedGender = [[NIMSDK sharedSDK].userManager userInfo:userId].userInfo.gender;
-            [wself.view.window makeToast:@"性别设置失败，请重试"];
+            [wself.view makeToast:@"性别设置失败，请重试"
+                         duration:2
+                         position:CSToastPositionCenter];
             [wself refresh];
         }
     }];
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
 }
 
 @end

@@ -43,7 +43,9 @@
             vc.joinTeam = team;
             [self.navigationController pushViewController:vc animated:YES];
         } else {
-            [self.view makeToast:error.localizedDescription];
+            [self.view makeToast:error.localizedDescription
+                        duration:2
+                        position:CSToastPositionCenter];
             DDLogDebug(@"Fetch team info failed: %@", error.localizedDescription);
         }
     }];

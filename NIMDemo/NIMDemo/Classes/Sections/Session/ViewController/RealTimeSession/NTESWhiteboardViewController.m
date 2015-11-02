@@ -603,4 +603,8 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [_peerDrawView clear];
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 @end

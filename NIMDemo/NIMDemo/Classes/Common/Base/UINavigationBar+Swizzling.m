@@ -39,6 +39,12 @@
     }
     [label sizeToFit];
     [self layoutLabel];
+    
+    if (!IOS8) {
+        UINavigationController *nav = (UINavigationController *)self.viewController;
+        //在竖屏转横屏后，iOS7下导航条会变成32，但是并没有通知到对应vc...这里手动加一个... 否则排版会出问题
+        [nav.topViewController.view setNeedsLayout];
+    }
 }
 
 

@@ -136,6 +136,24 @@ static NSString *DefaultTableCell = @"UITableViewCell";
     return tableSection.footerTitle;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    NTESCommonTableSection *tableSection = self.data[section];
+    if (tableSection.headerTitle.length) {
+        return nil;
+    }
+    UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+    return view;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section{
+    NTESCommonTableSection *tableSection = self.data[section];
+    if (tableSection.footerTitle.length) {
+        return nil;
+    }
+    UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+    return view;
+}
+
 #pragma mark - Private
 - (void)refreshData:(NTESCommonTableRow *)rowData cell:(UITableViewCell *)cell{
     cell.textLabel.text = rowData.title;

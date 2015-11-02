@@ -23,8 +23,9 @@
 #import "UIActionSheet+NTESBlock.h"
 #import "NTESLogManager.h"
 #import "NTESRegisterViewController.h"
+#import "NTESRegisterManager.h"
 
-@interface NTESLoginViewController ()
+@interface NTESLoginViewController ()<NTESRegisterViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *registerButton;
 @property (strong, nonatomic) IBOutlet UITextField *usernameTextField;
 @property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
@@ -148,7 +149,8 @@
                                       }
                                       else
                                       {
-                                          [self.view makeToast:@"登录失败" duration:2.0 position:CSToastPositionCenter];
+                                          NSString *toast = [NSString stringWithFormat:@"登录失败 code: %zd",error.code];
+                                          [self.view makeToast:toast duration:2.0 position:CSToastPositionCenter];
                                       }
                                   }];
 
@@ -236,8 +238,16 @@
     }
 }
 
-#pragma mark - Private
+#pragma mark - NTESRegisterViewControllerDelegate
+- (void)registDidComplete:(NSString *)account password:(NSString *)password{
+    if (account.length) {
+        self.usernameTextField.text = account;
+        self.passwordTextField.text = password;
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
+}
 
+#pragma mark - Private
 - (void)showSDKLog{
     UIViewController *vc = [[NTESLogManager sharedManager] sdkLogViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
@@ -257,6 +267,7 @@
 - (IBAction)onTouchRegister:(id)sender
 {
     NTESRegisterViewController *vc = [NTESRegisterViewController new];
+    vc.delegate = self;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -266,6 +277,13 @@
     [super touchesBegan:touches withEvent:event];
     [_usernameTextField resignFirstResponder];
     [_passwordTextField resignFirstResponder];
+}
+
+
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

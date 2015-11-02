@@ -38,6 +38,7 @@
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
@@ -94,12 +95,22 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagBirth) : birth} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view.window makeToast:@"生日设置成功"];
+            [wself.navigationController.view makeToast:@"生日设置成功"
+                                              duration:2
+                                              position:CSToastPositionCenter];
             [wself.navigationController popViewControllerAnimated:YES];
         }else{
-            [wself.view.window makeToast:@"生日设置失败，请重试"];
+            [wself.view makeToast:@"生日设置失败，请重试"
+                         duration:2
+                         position:CSToastPositionCenter];
         }
     }];
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
 }
 
 @end

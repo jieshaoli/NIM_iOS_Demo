@@ -168,10 +168,15 @@
 //切换接听中界面(语音)
 - (void)audioCallingInterface{
     NTESAudioChatViewController *vc = [[NTESAudioChatViewController alloc] initWithCallInfo:self.callInfo];
-    [self dismiss:^{
-        UINavigationController *nav = (UINavigationController*)[NTESMainTabController instance].selectedViewController;
-        [nav presentViewController:vc animated:NO completion:nil];
-    }];
+    [UIView  beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0.75];
+    [self.navigationController pushViewController:vc animated:NO];
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.navigationController.view cache:NO];
+    [UIView commitAnimations];
+    NSMutableArray * vcs = [self.navigationController.viewControllers mutableCopy];
+    [vcs removeObject:self];
+    self.navigationController.viewControllers = vcs;
 }
 
 #pragma mark - IBAction
@@ -270,11 +275,15 @@
         case NIMNetCallControlTypeCloseVideo:
             [self resetRemoteImage];
             self.oppositeCloseVideo = YES;
-            [self.view makeToast:@"对方关闭了摄像头"];
+            [self.view makeToast:@"对方关闭了摄像头"
+                        duration:2
+                        position:CSToastPositionCenter];
             break;
         case NIMNetCallControlTypeOpenVideo:
             self.oppositeCloseVideo = NO;
-            [self.view makeToast:@"对方开启了摄像头"];
+            [self.view makeToast:@"对方开启了摄像头"
+                        duration:2
+                        position:CSToastPositionCenter];
             break;
         default:
             break;

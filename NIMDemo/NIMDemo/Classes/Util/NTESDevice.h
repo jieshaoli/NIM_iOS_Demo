@@ -38,4 +38,7 @@ typedef NS_ENUM(NSUInteger,NTESNetworkType) {
 - (BOOL)isIphone;
 - (NSString *)machineName;
 
+
+- (CGFloat)statusBarHeight;
+
 @end

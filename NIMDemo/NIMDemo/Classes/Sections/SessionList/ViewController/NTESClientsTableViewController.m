@@ -36,14 +36,22 @@ NSString *Identifier = @"client_cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"多端登录管理";
-    self.clients = [[[NIMSDK sharedSDK] loginManager] currentLoginClients];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.backgroundColor = UIColorFromRGB(0xecf1f5);
-
-    NTESClientsTableHeader *header = [[NTESClientsTableHeader alloc] initWithFrame:CGRectZero];
-    [header sizeToFit];
-    self.tableView.tableHeaderView = header;
-    self.tableView.tableFooterView = [[UIView alloc] init];
     [self.tableView registerNib:[UINib nibWithNibName:@"NTESMutiClientsCell" bundle:nil] forCellReuseIdentifier:Identifier];
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    [self.view addSubview:self.tableView];
+    self.clients = [[[NIMSDK sharedSDK] loginManager] currentLoginClients];
+}
+
+- (void)viewDidLayoutSubviews{
+    NTESClientsTableHeader *header = [[NTESClientsTableHeader alloc] initWithFrame:CGRectZero];
+    CGSize size = [header sizeThatFits:self.view.size];
+    header.size = size;
+    self.tableView.tableHeaderView = header;
 }
 
 - (void)reload
@@ -102,7 +110,9 @@ NSString *Identifier = @"client_cell";
     __weak typeof(self) wself = self;
     [[NIMSDK sharedSDK].loginManager kickOtherClient:client completion:^(NSError *error) {
         if (error) {
-            [wself.view.window makeToast:@"踢出失败"];
+            [wself.view makeToast:@"踢出失败"
+                         duration:2
+                         position:CSToastPositionCenter];
         }
         [wself reload];
     }];
@@ -115,11 +125,35 @@ NSString *Identifier = @"client_cell";
     if (self.clients.count) {
         [self reload];
     }else{
-        [self.view.window makeToast:@"已没有其他设备连接"];
+        [self.navigationController.view makeToast:@"已没有其他设备连接"
+                                         duration:2
+                                         position:CSToastPositionCenter];
         [self.navigationController popViewControllerAnimated:YES];
-    }
 
+    }
 }
+
+#pragma mark - 旋转处理 (iOS7)
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    UIView *header = self.tableView.tableHeaderView;
+    CGSize size = [header sizeThatFits:self.view.size];
+    header.size = size;
+    self.tableView.tableHeaderView = header;
+}
+
+#pragma mark - 旋转处理 (iOS8 or above)
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    UIView *header = self.tableView.tableHeaderView;
+    CGSize headerSize = [header sizeThatFits:size];
+    header.size = headerSize;
+    self.tableView.tableHeaderView = header;
+}
+
 
 @end
 
@@ -139,8 +173,8 @@ NSString *Identifier = @"client_cell";
 CGFloat TableHeaderBottom = 75.f;
 CGFloat NavBarHeight      = 44.f;
 - (CGSize)sizeThatFits:(CGSize)size{
-    CGFloat height = UIScreenHeight - NavBarHeight - [UIApplication sharedApplication].statusBarFrame.size.height - TableHeaderBottom;
-    return CGSizeMake(UIScreenWidth, height);
+    CGFloat height = size.height - NavBarHeight - [UIApplication sharedApplication].statusBarFrame.size.height - TableHeaderBottom;
+    return CGSizeMake(size.width, height);
 }
 
 

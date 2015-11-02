@@ -47,6 +47,7 @@
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
@@ -77,6 +78,7 @@
 }
 
 - (void)onDone:(id)sender{
+    [self.view endEditing:YES];
     if (!self.nick.length) {
         [self.view makeToast:@"昵称不能为空" duration:2.0 position:CSToastPositionCenter];
         return;
@@ -90,10 +92,14 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagNick) : self.nick} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view makeToast:@"昵称设置成功"];
+            [wself.view makeToast:@"昵称设置成功"
+                         duration:2
+                         position:CSToastPositionCenter];
             [wself.navigationController popViewControllerAnimated:YES];
         }else{
-            [wself.view makeToast:@"昵称设置失败，请重试"];
+            [wself.view makeToast:@"昵称设置失败，请重试"
+                         duration:2
+                         position:CSToastPositionCenter];
         }
     }];
 }
@@ -136,6 +142,13 @@
     UITextField *textField = notification.object;
     self.nick = textField.text;
 }
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
+}
+
 
 
 

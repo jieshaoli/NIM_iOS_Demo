@@ -54,24 +54,13 @@
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     self.tableView.backgroundColor = UIColorFromRGB(0xe3e6ea);
     self.tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate   = self.delegator;
     self.tableView.dataSource = self.delegator;
     [self refresh];
-    //实时去扒一扒
-    [SVProgressHUD show];
-    [[NIMSDK sharedSDK].userManager fetchUserInfos:@[self.userId] completion:^(NSArray *users, NSError *error) {
-        [SVProgressHUD dismiss];
-        if (!error) {
-            wself.user = users.firstObject;
-            [wself refresh];
-        }else{
-            DDLogError(@"fetch user info error : %zd",error.code);
-            [wself.view makeToast:@"用户信息更新失败!"];
-        }
-    }];
 }
 
 - (void)setUpNav{
@@ -217,6 +206,7 @@
                 [wself.view makeToast:@"拉黑成功"duration:2.0f position:CSToastPositionCenter];
             }else{
                 [wself.view makeToast:@"拉黑失败"duration:2.0f position:CSToastPositionCenter];
+                [wself refresh];
             }
         }];
     }else{
@@ -226,6 +216,7 @@
                 [wself.view makeToast:@"移除黑名单成功"duration:2.0f position:CSToastPositionCenter];
             }else{
                 [wself.view makeToast:@"移除黑名单失败"duration:2.0f position:CSToastPositionCenter];
+                [wself refresh];
             }
         }];
     }
@@ -238,6 +229,7 @@
     [[NIMSDK sharedSDK].userManager updateNotifyState:switcher.on forUser:self.userId completion:^(NSError *error) {            [SVProgressHUD dismiss];
         if (error) {
             [wself.view makeToast:@"操作失败"duration:2.0f position:CSToastPositionCenter];
+            [wself refresh];
         }
     }];
 }
@@ -305,6 +297,12 @@
     if ([user.userId isEqualToString:self.userId]) {
         [self refresh];
     }
+}
+
+#pragma mark - 旋转处理 (iOS7)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.tableView reloadData];
 }
 
 @end
