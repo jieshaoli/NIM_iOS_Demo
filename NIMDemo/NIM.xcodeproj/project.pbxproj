@@ -1354,6 +1354,7 @@
 				AE5882E21A6F47E10070536A /* Frameworks */,
 				AE5882E31A6F47E10070536A /* Resources */,
 				B3B34DE9D3E5DD0A80DF90FE /* Copy Pods Resources */,
+				14E2983E6BCF4F6F5C52A7B1 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1450,6 +1451,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		14E2983E6BCF4F6F5C52A7B1 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-NIM/Pods-NIM-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		21178737748CC5995E04AEB1 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
