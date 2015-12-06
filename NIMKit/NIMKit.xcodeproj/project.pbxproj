@@ -102,6 +102,7 @@
 		61D99FF51BAFFA760059D369 /* UIView+NIMKitToast.m in Sources */ = {isa = PBXBuildFile; fileRef = 61D99FF01BAFFA760059D369 /* UIView+NIMKitToast.m */; };
 		61D99FFB1BB008490059D369 /* NIMContactDataItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 61D99FFA1BB008490059D369 /* NIMContactDataItem.m */; };
 		61E906021BCF4EBE006DBDA6 /* NIMMemberGroupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E906011BCF4EBE006DBDA6 /* NIMMemberGroupView.m */; };
+		D6C15180A876B1B41E9D936A /* libPods-NIMKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A772E8A0A061D25F6BAE57AB /* libPods-NIMKit.a */; };
 		E465D3B01B84704C004F3A07 /* NIMUIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E465D3AF1B84704C004F3A07 /* NIMUIConfig.m */; };
 		E4EA43471BA7E5E5003FC1BA /* NIMBaseSessionContentConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E4EA43461BA7E5E5003FC1BA /* NIMBaseSessionContentConfig.m */; };
 		E4EA434A1BA7EA20003FC1BA /* NIMUnsupportContentConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E4EA43491BA7EA20003FC1BA /* NIMUnsupportContentConfig.m */; };
@@ -127,6 +128,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3BAED1A7641C733EEC6784BF /* Pods-NIMKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.release.xcconfig"; sourceTree = "<group>"; };
+		5046B1B78EC0DAB8443E8CD5 /* Pods-NIMKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.debug.xcconfig"; sourceTree = "<group>"; };
 		6114BBC61B78F7C100D5AD02 /* NIMCustomLeftBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMCustomLeftBarView.h; sourceTree = "<group>"; };
 		6114BBC71B78F7C100D5AD02 /* NIMCustomLeftBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMCustomLeftBarView.m; sourceTree = "<group>"; };
 		6114BBCA1B78FBA300D5AD02 /* NIMMessageMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMMessageMaker.h; sourceTree = "<group>"; };
@@ -280,6 +283,7 @@
 		61FAB97A1B7836B400355B95 /* NIMSessionUnknowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMSessionUnknowContentView.m; sourceTree = "<group>"; };
 		61FAB97B1B7836B400355B95 /* NIMSessionVideoContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMSessionVideoContentView.h; sourceTree = "<group>"; };
 		61FAB97C1B7836B400355B95 /* NIMSessionVideoContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMSessionVideoContentView.m; sourceTree = "<group>"; };
+		A772E8A0A061D25F6BAE57AB /* libPods-NIMKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NIMKit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E465D3AE1B84704C004F3A07 /* NIMUIConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMUIConfig.h; sourceTree = "<group>"; };
 		E465D3AF1B84704C004F3A07 /* NIMUIConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMUIConfig.m; sourceTree = "<group>"; };
 		E4EA43451BA7E5E5003FC1BA /* NIMBaseSessionContentConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMBaseSessionContentConfig.h; sourceTree = "<group>"; };
@@ -359,12 +363,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6C15180A876B1B41E9D936A /* libPods-NIMKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		139693B6555CA78EDDB2BEC9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5046B1B78EC0DAB8443E8CD5 /* Pods-NIMKit.debug.xcconfig */,
+				3BAED1A7641C733EEC6784BF /* Pods-NIMKit.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		6132C70E1BA7C47B00897DDB /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -380,6 +394,8 @@
 			children = (
 				61344C131B720CB2005A96AE /* NIMKit */,
 				61344C121B720CB2005A96AE /* Products */,
+				DB99B4BE69F17F12D7CED830 /* Frameworks */,
+				139693B6555CA78EDDB2BEC9 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -775,6 +791,14 @@
 			path = SessionContentView;
 			sourceTree = "<group>";
 		};
+		DB99B4BE69F17F12D7CED830 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A772E8A0A061D25F6BAE57AB /* libPods-NIMKit.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E4EF06DE1B7DAFCA006669AC /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
@@ -867,9 +891,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6187F9301B818ED800EFFB3A /* Build configuration list for PBXNativeTarget "NIMKit" */;
 			buildPhases = (
+				9AAD8BAEAC16C0C4BE57D49A /* Check Pods Manifest.lock */,
 				6187F91B1B818ED800EFFB3A /* Sources */,
 				6187F91C1B818ED800EFFB3A /* Frameworks */,
 				6187F91D1B818ED800EFFB3A /* CopyFiles */,
+				1ADB842F9914CC4AAE8A5A19 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -910,6 +936,39 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1ADB842F9914CC4AAE8A5A19 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9AAD8BAEAC16C0C4BE57D49A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6187F91B1B818ED800EFFB3A /* Sources */ = {
@@ -1117,6 +1176,7 @@
 		};
 		6187F9311B818ED800EFFB3A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5046B1B78EC0DAB8443E8CD5 /* Pods-NIMKit.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
@@ -1138,7 +1198,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1146,6 +1209,7 @@
 		};
 		6187F9321B818ED800EFFB3A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3BAED1A7641C733EEC6784BF /* Pods-NIMKit.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
@@ -1161,7 +1225,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
 				);
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};

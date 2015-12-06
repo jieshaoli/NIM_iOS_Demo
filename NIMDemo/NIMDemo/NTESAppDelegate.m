@@ -7,7 +7,6 @@
 //
 
 #import "NTESAppDelegate.h"
-#import <PgySDK/PgyManager.h>
 #import "NTESLoginViewController.h"
 #import "NIMSDK.h"
 #import "UIView+Toast.h"
@@ -62,12 +61,6 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     [self setupMainViewController];
-    
-    //第三方崩溃日志上传服务（此服务不是云信服务，仅供Demo使用）
-    if ([NIMSDK sharedSDK].isUsingDemoAppKey) {
-        [[PgyManager sharedPgyManager] startManagerWithAppId:@"d3d2d5892c6b938aed34e9a1111bc2e2"];
-        [PgyManager sharedPgyManager].enableFeedback = NO;
-    }
     
     return YES;
 }
