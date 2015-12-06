@@ -7,6 +7,7 @@
 //
 
 #import "NTESAppDelegate.h"
+#import <PgySDK/PgyManager.h>
 #import "NTESLoginViewController.h"
 #import "NIMSDK.h"
 #import "UIView+Toast.h"
@@ -36,8 +37,7 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
     //配置 SDK 配置，需要在 SDK 启动之前进行配置 (如文件存储根目录等)
     //NSString *sdkPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     //[[NIMSDKConfig sharedConfig] setupSDKDir:sdkPath];
-    
-    
+        
     //appkey是应用的标识，不同应用之间的数据（用户、消息、群组等）是完全隔离的。
     //如需打网易云信Demo包，请勿修改appkey，开发自己的应用时，请替换为自己的appkey.
     //并请对应更换Demo代码中的获取好友列表、个人信息等网易云信SDK未提供的接口。
@@ -62,6 +62,12 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     [self setupMainViewController];
+    
+    //第三方崩溃日志上传服务（此服务不是云信服务，仅供Demo使用）
+    if ([NIMSDK sharedSDK].isUsingDemoAppKey) {
+        [[PgyManager sharedPgyManager] startManagerWithAppId:@"d3d2d5892c6b938aed34e9a1111bc2e2"];
+        [PgyManager sharedPgyManager].enableFeedback = NO;
+    }
     
     return YES;
 }
@@ -102,12 +108,12 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
-    DDLogDebug(@"receive remote notification:  %@", userInfo);
+    DDLogInfo(@"receive remote notification:  %@", userInfo);
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    DDLogDebug(@"fail to get apns token :%@",error);
+    DDLogError(@"fail to get apns token :%@",error);
 }
 
 
@@ -116,7 +122,7 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 {
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)])
     {
-        UIUserNotificationType types = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert;
+        UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types
                                                                                  categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];

@@ -44,6 +44,7 @@
 #import "NIMContactSelectViewController.h"
 #import "SVProgressHUD.h"
 #import "NTESSessionCardViewController.h"
+#import "NTESFPSLabel.h"
 
 typedef enum : NSUInteger {
     NTESImagePickerModeImage,
@@ -66,24 +67,39 @@ NIMContactSelectDelegate>
 @property (nonatomic,strong)    NTESTimerHolder         *titleTimer;
 @property (nonatomic,strong)    NSString *playingAudioPath; //正在播放的音频路径
 @property (nonatomic,strong)    UIView *currentSingleSnapView;
+@property (nonatomic,strong)    NTESFPSLabel *fpsLabel;
 @end
 
 @implementation NTESSessionViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _notificaionSender = [[NTESCustomSysNotificationSender alloc] init];
+    _notificaionSender  = [[NTESCustomSysNotificationSender alloc] init];
     [self setUpNav];
     self.disableCommandTyping = (self.session.sessionType == NIMSessionTypeP2P &&[[NIMSDK sharedSDK].userManager isUserInBlackList:self.session.sessionId]);
     if (!self.disableCommandTyping) {
         _titleTimer = [[NTESTimerHolder alloc] init];
         [[[NIMSDK sharedSDK] systemNotificationManager] addDelegate:self];
     }
+    
+    if ([[NTESBundleSetting sharedConfig] showFps])
+    {
+        self.fpsLabel = [[NTESFPSLabel alloc] initWithFrame:CGRectZero];
+        [self.view addSubview:self.fpsLabel];
+        self.fpsLabel.right = self.view.width;
+        self.fpsLabel.top   = self.tableView.top + self.tableView.contentInset.top;
+    }
 }
 
 - (void)dealloc
 {
     [[[NIMSDK sharedSDK] systemNotificationManager] removeDelegate:self];
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    self.fpsLabel.right = self.view.width;
+    self.fpsLabel.top   = self.tableView.top + self.tableView.contentInset.top;
 }
 
 
@@ -490,7 +506,7 @@ NIMContactSelectDelegate>
         handled = YES;
         self.currentSingleSnapView = nil;
     }
-    
+
     if (!handled) {
         NSAssert(0, @"invalid event");
     }
@@ -574,7 +590,7 @@ NIMContactSelectDelegate>
 
 - (void)showCustom:(NIMMessage *)message
 {
-    //普通的自定义消息点击事件可以在这里做哦~
+   //普通的自定义消息点击事件可以在这里做哦~
 }
 
 

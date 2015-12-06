@@ -67,6 +67,9 @@
 
 - (void)layoutSubviews{
     [super layoutSubviews];
+    CGFloat scale = self.width / 320;
+    CGFloat maxTextLabelWidth = 210 * scale;
+    self.textLabel.width = MIN(self.textLabel.width, maxTextLabelWidth);
     
     static const NSInteger NTESContactAccessoryLeft             = 10;//选择框到左边的距离
     static const NSInteger NTESContactAvatarAndTitleSpacing     = 20;//头像和文字之间的间距

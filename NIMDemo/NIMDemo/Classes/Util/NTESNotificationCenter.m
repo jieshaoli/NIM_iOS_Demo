@@ -77,7 +77,9 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
                 if (!notification.sendToOnlineUsersOnly) {
                     [[NTESCustomNotificationDB sharedInstance] saveNotification:object];
                 }
-                [[NSNotificationCenter defaultCenter] postNotificationName:NTESCustomNotificationCountChanged object:nil];
+                if (notification.setting.shouldBeCounted) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NTESCustomNotificationCountChanged object:nil];
+                }
                 NSString *content  = [dict jsonString:NTESCustomContent];
                 [[NTESMainTabController instance].selectedViewController.view makeToast:content duration:2.0 position:CSToastPositionCenter];
             }

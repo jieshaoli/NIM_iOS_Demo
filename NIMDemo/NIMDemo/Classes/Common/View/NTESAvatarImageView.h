@@ -26,7 +26,7 @@
 
 + (instancetype)demoInstanceContactDataList;    //Demo通讯录头像
 
-+ (instancetype)demoInstanceTeamCardHeader;    //Demo普通群名片头像
++ (instancetype)demoInstanceTeamCardHeader;    //Demo讨论组名片头像
 
 + (instancetype)demoInstanceTeamMember;        //Demo高级群名片头像
 

@@ -24,7 +24,7 @@
 {
     UIView *view = [self swizzling_hitTest:point withEvent:event];
     if (view) {
-        DDLogDebug(@"--hit test--，%@ hit view : %@",self,view);
+        DDLogDebug(@"--hit test--，%@ hit view : %@",[self class],[view class]);
     }
     return view;
 }

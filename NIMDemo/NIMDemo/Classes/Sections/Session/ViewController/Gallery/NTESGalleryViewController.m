@@ -45,7 +45,7 @@
     if ([_currentItem.name length])
     {
         self.navigationItem.title = _currentItem.name;
-    }
+    }    
 }
 
 

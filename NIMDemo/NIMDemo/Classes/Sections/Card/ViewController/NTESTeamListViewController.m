@@ -139,7 +139,7 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    self.navigationItem.title = @"普通群组";
+    self.navigationItem.title = @"讨论组";
 }
 
 - (NSMutableArray *)fetchTeams{

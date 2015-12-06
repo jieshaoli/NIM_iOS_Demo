@@ -14,6 +14,7 @@
 #import "NTESChartletAttachment.h"
 #import "NTESWhiteboardAttachment.h"
 
+
 @implementation NTESSessionMsgConverter
 
 
@@ -35,7 +36,7 @@
     option.compressQuality = 0.8;
     NIMMessage *message          = [[NIMMessage alloc] init];
     message.messageObject        = imageObject;
-    message.text = @"发来了一张图片";
+    message.apnsContent = @"发来了一张图片";
     return message;
 }
 
@@ -44,7 +45,7 @@
     NIMAudioObject *audioObject = [[NIMAudioObject alloc] initWithSourcePath:filePath];
     NIMMessage *message = [[NIMMessage alloc] init];
     message.messageObject = audioObject;
-    message.text = @"发来了一段语音";
+    message.apnsContent = @"发来了一段语音";
     return message;
 }
 
@@ -57,7 +58,7 @@
     videoObject.displayName = [NSString stringWithFormat:@"视频发送于%@",dateString];
     NIMMessage *message = [[NIMMessage alloc] init];
     message.messageObject = videoObject;
-    message.text = @"发来了一段视频";
+    message.apnsContent = @"发来了一段视频";
     return message;
 }
 
@@ -67,7 +68,7 @@
                                                                               title:locationPoint.title];
     NIMMessage *message               = [[NIMMessage alloc] init];
     message.messageObject             = locationObject;
-    message.text = @"发来了一条位置信息";
+    message.apnsContent = @"发来了一条位置信息";
     return message;
 }
 
@@ -77,7 +78,7 @@
     NIMCustomObject *customObject     = [[NIMCustomObject alloc] init];
     customObject.attachment           = attachment;
     message.messageObject             = customObject;
-    message.text = @"发来了猜拳信息";
+    message.apnsContent = @"发来了猜拳信息";
     return message;
 }
 
@@ -87,7 +88,14 @@
     NIMCustomObject *customObject     = [[NIMCustomObject alloc] init];
     customObject.attachment           = attachment;
     message.messageObject             = customObject;
-    message.text = @"发来了阅后即焚";
+    message.apnsContent = @"发来了阅后即焚";
+    
+    NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
+    setting.historyEnabled = NO;
+    setting.roamingEnabled = NO;
+    setting.syncEnabled    = NO;
+    message.setting = setting;
+    
     return message;
 }
 
@@ -98,7 +106,7 @@
     fileObject.displayName    = displayName;
     NIMMessage *message       = [[NIMMessage alloc] init];
     message.messageObject     = fileObject;
-    message.text = @"发来了一个文件";
+    message.apnsContent = @"发来了一个文件";
     return message;
 }
 
@@ -113,7 +121,7 @@
     fileObject.displayName    = displayName;
     NIMMessage *message       = [[NIMMessage alloc] init];
     message.messageObject     = fileObject;
-    message.text = @"发来了一个文件";
+    message.apnsContent = @"发来了一个文件";
     return message;
 }
 
@@ -123,7 +131,7 @@
     NIMCustomObject *customObject     = [[NIMCustomObject alloc] init];
     customObject.attachment           = attachment;
     message.messageObject             = customObject;
-    message.text = @"[贴图]";
+    message.apnsContent = @"[贴图]";
     return message;
 }
 
@@ -134,7 +142,7 @@
     customObject.attachment           = attachment;
     message.messageObject             = customObject;
     if (attachment.flag == CustomWhiteboardFlagInvite) {
-        message.text = @"邀请你加入白板会话";
+        message.apnsContent = @"邀请你加入白板会话";
     }
     return message;
 }

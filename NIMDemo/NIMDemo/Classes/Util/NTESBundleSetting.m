@@ -43,15 +43,20 @@
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"add_friend_need_verify"] boolValue];
 }
 
+- (BOOL)showFps{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"show_fps_for_app"] boolValue];
+}
+
 
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n\
-auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\n",
+auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
                                         [self autoRemoveSnapMessage],
-                                        [self needVerifyForFriend]];
+                                        [self needVerifyForFriend],
+                                        [self showFps]];
 }
 @end

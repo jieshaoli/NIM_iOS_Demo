@@ -32,7 +32,24 @@
 }
 
 - (CGSize)contentSize:(NIMMessage *)message cellWidth:(CGFloat)width{
-    if (!self.showCoverImage)
+
+    return self.showCoverImage.size;
+}
+
+- (UIEdgeInsets)contentViewInsets:(NIMMessage *)message
+{
+    CGFloat bubblePaddingForImage    = 3.f;
+    CGFloat bubbleArrowWidthForImage = 5.f;
+    if ([NTESSessionUtil messageIsFromMe:message]) {
+        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage);
+    }else{
+        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage, bubblePaddingForImage,bubblePaddingForImage);
+    }
+}
+
+- (UIImage *)showCoverImage
+{
+    if (_showCoverImage == nil)
     {
         UIImage *image;
         switch (self.value) {
@@ -48,20 +65,9 @@
             default:
                 break;
         }
-        self.showCoverImage = image;
+        _showCoverImage = image;
     }
-    return self.showCoverImage.size;
-}
-
-- (UIEdgeInsets)contentViewInsets:(NIMMessage *)message
-{
-    CGFloat bubblePaddingForImage    = 3.f;
-    CGFloat bubbleArrowWidthForImage = 5.f;
-    if ([NTESSessionUtil messageIsFromMe:message]) {
-        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage);
-    }else{
-        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage, bubblePaddingForImage,bubblePaddingForImage);
-    }
+    return _showCoverImage;
 }
 
 

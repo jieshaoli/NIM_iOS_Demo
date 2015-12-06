@@ -36,10 +36,8 @@
     [super layoutSubviews];
     CGFloat textFieldLeft   = 17.f;
     CGFloat textFieldRight  = 17.f;
-    CGFloat textFieldTop    = 17.f;
-    CGFloat textFieldBottom = 17.f;
     self.textField.width  = self.width - textFieldLeft - textFieldRight;
-    self.textField.height = self.height - textFieldTop - textFieldBottom;
+    self.textField.height = 44.f;
     self.textField.centerX = self.width * .5f;
     self.textField.centerY = self.height * .5f;
 }

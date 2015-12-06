@@ -24,4 +24,6 @@
 - (BOOL)autoRemoveSnapMessage;                      //阅后即焚消息在看完后是否删除
 
 - (BOOL)needVerifyForFriend;                        //添加好友是否需要验证
+
+- (BOOL)showFps;                                    //是否显示Fps
 @end

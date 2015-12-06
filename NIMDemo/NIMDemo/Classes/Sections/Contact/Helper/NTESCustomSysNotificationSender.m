@@ -29,7 +29,11 @@
                                               encoding:NSUTF8StringEncoding];
     
     NIMCustomSystemNotification *notification = [[NIMCustomSystemNotification alloc] initWithContent:json];
+    notification.apnsContent = content;
     notification.sendToOnlineUsersOnly = NO;
+    NIMCustomSystemNotificationSetting *setting = [[NIMCustomSystemNotificationSetting alloc] init];
+    setting.apnsEnabled = YES;
+    notification.setting = setting;
     [[[NIMSDK sharedSDK] systemNotificationManager] sendCustomNotification:notification
                                                                  toSession:session
                                                                 completion:nil];

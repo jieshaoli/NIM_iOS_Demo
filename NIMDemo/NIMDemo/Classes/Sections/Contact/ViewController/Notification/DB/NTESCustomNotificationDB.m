@@ -83,6 +83,7 @@ typedef NS_ENUM(NSInteger, CustomNotificationStatus){
     io_sync_safe(^{
         if (notification)
         {
+            CustomNotificationStatus status = notification.needBadge? CustomNotificationStatusNone : CustomNotificationStatusRead;
             NSString *sql = @"insert into notifications(timetag,sender,receiver,content,status)  \
             values(?,?,?,?,?)";
             if (![self.db executeUpdate:sql,
@@ -90,14 +91,16 @@ typedef NS_ENUM(NSInteger, CustomNotificationStatus){
                   notification.sender,
                   notification.receiver,
                   notification.content,
-                  @(CustomNotificationStatusNone)])
+                  @(status)])
             {
                 DDLogError(@"update failed %@ error %@",notification,self.db.lastError);
             }
             else
             {
                 notification.serial = (NSInteger)[self.db lastInsertRowId];
-                self.unreadCount++;
+                if (notification.needBadge) {
+                    self.unreadCount++;
+                }
                 result = YES;
             }
         }

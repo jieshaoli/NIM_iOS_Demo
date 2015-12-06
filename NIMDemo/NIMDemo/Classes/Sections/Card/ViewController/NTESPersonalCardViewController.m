@@ -18,6 +18,7 @@
 #import "UIAlertView+NTESBlock.h"
 #import "NTESUserUtil.h"
 #import "NTESUserInfoSettingViewController.h"
+#import "NTESAliasSettingViewController.h"
 
 @interface NTESPersonalCardViewController ()<NIMUserManagerDelegate>
 
@@ -98,6 +99,13 @@
                         @{
                             HeaderTitle:@"",
                             RowContent :@[
+                                           @{
+                                                Title        : @"备注名",
+                                                DetailTitle  : self.user.alias.length ? self.user.alias : @"",
+                                                CellAction   : @"onActionEditAlias:",
+                                                ShowAccessory: @(YES),
+                                                Disable      : @(!isMyFriend),
+                                            },
                                             @{
                                                 Title        : @"生日",
                                                 DetailTitle  : self.user.userInfo.birth.length ? self.user.userInfo.birth : @"",
@@ -190,6 +198,11 @@
 }
 
 #pragma mark - Action
+- (void)onActionEditAlias:(id)sender{
+    NTESAliasSettingViewController *vc = [[NTESAliasSettingViewController alloc] initWithUserId:self.userId];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)onActionEditMyInfo:(id)sender{
     NTESUserInfoSettingViewController *vc = [[NTESUserInfoSettingViewController alloc] initWithNibName:nil bundle:nil];
     [self.navigationController pushViewController:vc animated:YES];
@@ -294,6 +307,12 @@
 
 #pragma mark - NIMUserManagerDelegate
 - (void)onUserInfoChanged:(NIMUser *)user{
+    if ([user.userId isEqualToString:self.userId]) {
+        [self refresh];
+    }
+}
+
+- (void)onFriendChanged:(NIMUser *)user{
     if ([user.userId isEqualToString:self.userId]) {
         [self refresh];
     }

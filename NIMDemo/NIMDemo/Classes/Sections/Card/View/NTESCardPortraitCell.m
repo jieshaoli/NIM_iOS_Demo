@@ -19,6 +19,8 @@
 
 @property (nonatomic,strong) UILabel *nameLabel;
 
+@property (nonatomic,strong) UILabel *nickNameLabel;
+
 @property (nonatomic,strong) UILabel *accountLabel;
 
 @property (nonatomic,strong) UIImageView *genderIcon;
@@ -36,8 +38,12 @@
         _nameLabel      = [[UILabel alloc] initWithFrame:CGRectZero];
         _nameLabel.font = [UIFont systemFontOfSize:18.f];
         [self addSubview:_nameLabel];
+        _nickNameLabel  = [[UILabel alloc] initWithFrame:CGRectZero];
+        _nickNameLabel.font = [UIFont systemFontOfSize:13.f];
+        _nickNameLabel.textColor = [UIColor grayColor];
+        [self addSubview:_nickNameLabel];
         _accountLabel   = [[UILabel alloc] initWithFrame:CGRectZero];
-        _accountLabel.font = [UIFont systemFontOfSize:14.f];
+        _accountLabel.font = [UIFont systemFontOfSize:13.f];
         _accountLabel.textColor = [UIColor grayColor];
         [self addSubview:_accountLabel];
         _genderIcon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 14, 14)];
@@ -54,7 +60,6 @@
         NIMUser *user = [[NIMSDK sharedSDK].userManager userInfo:uid];
         NIMKitInfo *info = [[NIMKit sharedKit] infoByUser:uid];
         self.nameLabel.text   = info.showName ;
-        [self.nameLabel sizeToFit];
         self.accountLabel.text = [NSString stringWithFormat:@"帐号：%@",uid];
         [self.accountLabel sizeToFit];
         [self.avatar nim_setImageWithURL:[NSURL URLWithString:info.avatarUrlString] placeholderImage:info.avatarImage];
@@ -69,6 +74,10 @@
         else {
             _genderIcon.hidden = YES;
         }
+        NSString *nickName  = user.userInfo.nickName ? user.userInfo.nickName : @"";
+        _nickNameLabel.hidden = !user.alias.length;
+        _nickNameLabel.text = [NSString stringWithFormat:@"昵称：%@",nickName];
+        [_nickNameLabel sizeToFit];
     }
 }
 
@@ -83,10 +92,24 @@
     [super layoutSubviews];
     self.avatar.left    = AvatarLeft;
     self.avatar.centerY = self.height * .5f;
+    
+    CGFloat scale = self.width / 320;
+    CGFloat maxTextLabelWidth = 180 * scale;
+    [self.nameLabel sizeToFit];
+    self.nameLabel.width = MIN(self.nameLabel.width, maxTextLabelWidth);
     self.nameLabel.left = self.avatar.right + TitleAndAvatarSpacing;
     self.nameLabel.top  = TitleTop;
-    self.accountLabel.left    = self.nameLabel.left;
-    self.accountLabel.bottom  = self.height - AccountBottom;
+    
+    if (self.nickNameLabel.hidden) {
+        self.accountLabel.left    = self.nameLabel.left;
+        self.accountLabel.bottom  = self.height - AccountBottom;
+    }else{
+        self.nickNameLabel.left    = self.nameLabel.left;
+        self.nickNameLabel.bottom  = self.height - AccountBottom;
+        self.accountLabel.left     = self.nameLabel.left;
+        self.accountLabel.centerY  = (self.nickNameLabel.top + self.nameLabel.bottom) * .5f;
+    }
+
     self.genderIcon.left    = self.nameLabel.right + GenderIconAndTitleSpacing;
     self.genderIcon.centerY = self.nameLabel.centerY;
 }

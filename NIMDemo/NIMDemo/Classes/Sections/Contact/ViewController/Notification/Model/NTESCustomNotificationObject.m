@@ -17,6 +17,7 @@
         _receiver  = notification.receiver;
         _timestamp = notification.timestamp;
         _content   = notification.content;
+        _needBadge = notification.setting.shouldBeCounted;
     }
     return self;
 }

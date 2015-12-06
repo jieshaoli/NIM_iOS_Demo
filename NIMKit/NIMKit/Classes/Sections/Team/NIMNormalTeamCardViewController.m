@@ -31,7 +31,6 @@
 @interface NIMNormalTeamCardViewController ()<NIMTeamManagerDelegate, NIMTeamMemberCardActionDelegate,UITableViewDataSource,UITableViewDelegate,NIMTeamSwitchProtocol,NIMContactSelectDelegate,NIMMemberGroupViewDelegate>{
     UIAlertView *_updateTeamNameAlertView;
     UIAlertView *_quitTeamAlertView;
-    UIAlertView *_dismissTeamAlertView;
 }
 
 @property (nonatomic,strong) NIMTeamMember *myTeamInfo;
@@ -85,11 +84,11 @@
     __weak typeof(self) wself = self;
     [self requestData:^(NSError *error, NSArray *data) {
         if (!error) {
-            [wself refreshWithMembers:data];
+           [wself refreshWithMembers:data];
         }else{
-            [wself.view nimkit_makeToast:@"群成员获取失败"];
+            [wself.view nimkit_makeToast:@"讨论组成员获取失败"];
         }
-        
+
     }];
 }
 
@@ -121,7 +120,7 @@
             }
             wself.teamMembers = members;
         }else if(error.code == NIMRemoteErrorCodeTeamNotMember){
-            [wself.view nimkit_makeToast:@"你已经不在群里"];
+            [wself.view nimkit_makeToast:@"你已经不在讨论组里"];
         }else{
             [wself.view nimkit_makeToast:@"拉好友失败"];
         }
@@ -132,7 +131,7 @@
 - (NSArray*)buildBodyData{
     
     NIMTeamCardRowItem *itemName = [[NIMTeamCardRowItem alloc] init];
-    itemName.title            = @"群名称";
+    itemName.title            = @"讨论组名称";
     itemName.subTitle         = self.team.teamName;
     itemName.action           = @selector(updateTeamInfoName);
     itemName.rowHeight        = 50.f;
@@ -143,9 +142,9 @@
     teamNotify.switchOn         = [self.team notifyForNewMsg];
     teamNotify.rowHeight        = 50.f;
     teamNotify.type             = TeamCardRowItemTypeSwitch;
-    
+
     NIMTeamCardRowItem *itemQuit = [[NIMTeamCardRowItem alloc] init];
-    itemQuit.title            = @"退出群聊";
+    itemQuit.title            = @"退出讨论组";
     itemQuit.action           = @selector(quitTeam);
     itemQuit.rowHeight        = 60.f;
     itemQuit.type             = TeamCardRowItemTypeRedButton;
@@ -165,19 +164,14 @@
 
 #pragma mark - UITableViewAction
 - (void)updateTeamInfoName{
-    _updateTeamNameAlertView = [[UIAlertView alloc] initWithTitle:@"" message:@"修改群名称" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    _updateTeamNameAlertView = [[UIAlertView alloc] initWithTitle:@"" message:@"修改讨论组名称" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
     _updateTeamNameAlertView.alertViewStyle = UIAlertViewStylePlainTextInput;
     [_updateTeamNameAlertView show];
 }
 
 - (void)quitTeam{
-    _quitTeamAlertView = [[UIAlertView alloc] initWithTitle:@"" message:@"确认退出群聊?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    _quitTeamAlertView = [[UIAlertView alloc] initWithTitle:@"" message:@"确认退出讨论组?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
     [_quitTeamAlertView show];
-}
-
-- (void)dismissTeam{
-    _dismissTeamAlertView = [[UIAlertView alloc] initWithTitle:@"" message:@"确认解散群聊?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
-    [_dismissTeamAlertView show];
 }
 
 #pragma mark - ContactSelectDelegate
@@ -190,22 +184,22 @@
                 [NIMProgressHUD show];
                 [[NIMSDK sharedSDK].teamManager addUsers:selectedContacts
                                                   toTeam:self.team.teamId
-                                              postscript:@"邀请你加入群组"
+                                              postscript:@"邀请你加入讨论组"
                                               completion:^(NSError *error,NSArray *members) {
-                                                  [NIMProgressHUD dismiss];
-                                                  if (!error) {
-                                                      if (self.team.type == NIMTeamTypeNormal) {
-                                                          [wself addHeaderDatas:members];
-                                                      }else{
-                                                          [wself.view nimkit_makeToast:@"邀请成功，等待验证" duration:2.0 position:NIMKitToastPositionCenter];
-                                                      }
-                                                      [wself refreshTableHeader:self.view.nim_width];
-                                                  }else{
-                                                      [wself.view nimkit_makeToast:@"邀请失败"];
-                                                  }
-                                                  wself.currentOpera = CardHeaderOpeatorNone;
-                                                  
-                                              }];
+                    [NIMProgressHUD dismiss];
+                    if (!error) {
+                        if (self.team.type == NIMTeamTypeNormal) {
+                            [wself addHeaderDatas:members];
+                        }else{
+                            [wself.view nimkit_makeToast:@"邀请成功，等待验证" duration:2.0 position:NIMKitToastPositionCenter];
+                        }
+                        [wself refreshTableHeader:self.view.nim_width];
+                    }else{
+                        [wself.view nimkit_makeToast:@"邀请失败"];
+                    }
+                    wself.currentOpera = CardHeaderOpeatorNone;
+                    
+                }];
             }
                 break;
             default:
@@ -440,25 +434,6 @@
                         [self.navigationController popToRootViewControllerAnimated:YES];
                     }else{
                         [self.view nimkit_makeToast:@"退出失败"];
-                    }
-                }];
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    
-    if (alertView == _dismissTeamAlertView) {
-        switch (buttonIndex) {
-            case 0://取消
-                break;
-            case 1:{
-                [[NIMSDK sharedSDK].teamManager dismissTeam:self.team.teamId completion:^(NSError *error) {
-                    if (!error) {
-                        [self.navigationController popToRootViewControllerAnimated:YES];
-                    }else{
-                        [self.view nimkit_makeToast:@"解散失败"];
                     }
                 }];
                 break;

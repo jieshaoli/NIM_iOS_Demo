@@ -42,8 +42,8 @@
     [registerBtn setBackgroundImage:[UIImage imageNamed:@"login_btn_done_normal"] forState:UIControlStateNormal];
     [registerBtn setBackgroundImage:[UIImage imageNamed:@"login_btn_done_pressed"] forState:UIControlStateHighlighted];
     [registerBtn addTarget:self
-                 action:@selector(onRegister:)
-       forControlEvents:UIControlEventTouchUpInside];
+                    action:@selector(onRegister:)
+          forControlEvents:UIControlEventTouchUpInside];
     
     [registerBtn sizeToFit];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:registerBtn];
@@ -82,13 +82,13 @@
                                                [SVProgressHUD dismiss];
                                                if (error == nil) {
                                                    [weakSelf.navigationController.view makeToast:@"注册成功"
-                                                                   duration:2
-                                                                   position:CSToastPositionCenter];
+                                                                                        duration:2
+                                                                                        position:CSToastPositionCenter];
                                                    if ([weakSelf.delegate respondsToSelector:@selector(registDidComplete:password:)]) {
                                                        [weakSelf.delegate registDidComplete:data.account password:[_passwordTextfield text]];
                                                    }
                                                    [weakSelf.navigationController popViewControllerAnimated:YES];
-                                                }
+                                               }
                                                else
                                                {
                                                    if ([weakSelf.delegate respondsToSelector:@selector(registDidComplete:password:)]) {
@@ -102,7 +102,7 @@
                                                    [weakSelf.view makeToast:toast
                                                                    duration:2
                                                                    position:CSToastPositionCenter];
-
+                                                   
                                                }
                                            }];
 }
@@ -141,7 +141,7 @@
         self.navigationItem.title = @"注册";
     }
     [UIView commitAnimations];
-
+    
 }
 
 #pragma mark - UITextFieldDelegate
@@ -174,9 +174,9 @@
 - (BOOL)check{
     if (!self.checkAccount) {
         [self.view makeToast:@"账号长度有误"
-                        duration:2
-                        position:CSToastPositionCenter];
-
+                    duration:2
+                    position:CSToastPositionCenter];
+        
         return NO;
     }
     if (!self.checkPassword) {

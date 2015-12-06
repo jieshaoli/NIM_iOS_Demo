@@ -110,7 +110,7 @@ NIMUserManagerDelegate
                },
               @{
                   contactCellUtilIcon:@"icon_team_normal_normal",
-                  contactCellUtilTitle:@"普通群",
+                  contactCellUtilTitle:@"讨论组",
                   contactCellUtilVC:@"NTESNormalTeamListViewController"
                 },
               @{
@@ -156,7 +156,7 @@ NIMUserManagerDelegate
 }
 
 - (void)onOpera:(id)sender{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"添加好友",@"创建高级群",@"创建普通群",@"搜索高级群", nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择操作" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"添加好友",@"创建高级群",@"创建讨论组",@"搜索高级群", nil];
     __weak typeof(self) wself = self;
     NSString *currentUserId = [[NIMSDK sharedSDK].loginManager currentAccount];
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
@@ -187,14 +187,14 @@ NIMUserManagerDelegate
                 }];
                 break;
             }
-            case 2:{ //创建普通群
+            case 2:{ //创建讨论组
                 [wself presentMemberSelector:^(NSArray *uids) {
                     if (!uids.count) {
-                        return; //普通群必须除自己外必须要有一个群成员
+                        return; //讨论组必须除自己外必须要有一个群成员
                     }
                     NSArray *members = [@[currentUserId] arrayByAddingObjectsFromArray:uids];
                     NIMCreateTeamOption *option = [[NIMCreateTeamOption alloc] init];
-                    option.name       = @"普通群";
+                    option.name       = @"讨论组";
                     option.type       = NIMTeamTypeNormal;
                     [SVProgressHUD show];
                     [[NIMSDK sharedSDK].teamManager createTeam:option users:members completion:^(NSError *error, NSString *teamId) {

@@ -89,7 +89,7 @@
     self.headerView = [[NIMMemberGroupView alloc] initWithFrame:CGRectZero];
     self.headerView.delegate = self;
     [self.headerView refreshUids:@[self.session.sessionId] operators:CardHeaderOpeatorAdd];
-    [self.headerView setTitle:@"创建群聊" forOperator:CardHeaderOpeatorAdd];
+    [self.headerView setTitle:@"创建讨论组" forOperator:CardHeaderOpeatorAdd];
     CGSize size = [self.headerView sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)];
     self.headerView.size = size;
     self.tableView.tableHeaderView = self.headerView;
@@ -136,7 +136,7 @@
     NSString *uid = [[NIMSDK sharedSDK].loginManager currentAccount];
     NSArray *users = [@[uid] arrayByAddingObjectsFromArray:selectedContacts];
     NIMCreateTeamOption *option = [[NIMCreateTeamOption alloc] init];
-    option.name = @"普通群";
+    option.name = @"讨论组";
     option.type = NIMTeamTypeNormal;
     __weak typeof(self) wself = self;
     [SVProgressHUD show];
@@ -151,7 +151,7 @@
                                             NTESSessionViewController *vc = [[NTESSessionViewController alloc] initWithSession:session];
                                             [nav pushViewController:vc animated:YES];
                                         }else{
-                                            [wself.view makeToast:@"创建群组失败" duration:2.0 position:CSToastPositionCenter];
+                                            [wself.view makeToast:@"创建讨论组失败" duration:2.0 position:CSToastPositionCenter];
                                         }
                                     }];
 }

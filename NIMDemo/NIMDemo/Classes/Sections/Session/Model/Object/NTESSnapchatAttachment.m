@@ -50,9 +50,6 @@
 
 - (CGSize)contentSize:(NIMMessage *)message cellWidth:(CGFloat)width{
     self.isFromMe = [NTESSessionUtil messageIsFromMe:message];
-    if (!self.showCoverImage) {
-        [self updateCover];
-    }
     CGSize size = self.showCoverImage.size;
     CGFloat customSnapMessageImageRightToText = 5;
     return CGSizeMake(size.width + customSnapMessageImageRightToText, size.height);
@@ -115,22 +112,6 @@
     self.url = urlString;
 }
 
-#pragma mark - 服务器存储配置
-- (BOOL)messageHistoryEnabled
-{
-    return NO;
-}
-
-- (BOOL)messageRoamingEnabled
-{
-    return NO;
-}
-
-- (BOOL)messageSyncEnabled
-{
-    return NO;
-}
-
 
 #pragma mark - Private
 - (void)updateCover{
@@ -149,6 +130,15 @@
         }
     }
     self.showCoverImage = image;
+}
+
+- (UIImage *)showCoverImage
+{
+    if (_showCoverImage == nil)
+    {
+        [self updateCover];
+    }
+    return _showCoverImage;
 }
 
 @end
