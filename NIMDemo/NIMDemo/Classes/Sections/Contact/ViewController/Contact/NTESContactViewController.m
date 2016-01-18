@@ -24,6 +24,7 @@
 #import "NTESContactUtilCell.h"
 #import "NIMContactDataCell.h"
 #import "NIMContactSelectViewController.h"
+#import "NTESUserUtil.h"
 
 @interface NTESContactViewController ()
 <
@@ -46,7 +47,6 @@ NIMUserManagerDelegate
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInfoUpdate:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
     }
     return self;
 }
@@ -60,6 +60,13 @@ NIMUserManagerDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+        //托管了用户信息，那就直接加 userManager 的监听
+        [[NIMSDK sharedSDK].userManager addDelegate:self];
+    }else{
+        //没有托管用户信息，就直接加 NIMKit 的监听
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+    }
     self.tableView.delegate       = self;
     self.tableView.dataSource     = self;
     UIEdgeInsets separatorInset   = self.tableView.separatorInset;
@@ -320,12 +327,6 @@ NIMUserManagerDelegate
     }
 }
 
-#pragma mark - Notification
-- (void)onInfoUpdate:(NSNotification *)notfication{
-    [self prepareData];
-    [self.tableView reloadData];
-}
-
 #pragma mark - NIMContactDataCellDelegate
 - (void)onPressAvatar:(NSString *)memberId{
     [self enterPersonalCard:memberId];
@@ -370,6 +371,12 @@ NIMUserManagerDelegate
 }
 
 - (void)onUserInfoChanged:(NIMUser *)user{
+    [self prepareData];
+    [self.tableView reloadData];
+}
+
+#pragma mark - Notification
+- (void)onUserInfoHasUpdatedNotification:(NSNotification *)notfication{
     [self prepareData];
     [self.tableView reloadData];
 }

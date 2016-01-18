@@ -12,9 +12,7 @@
 
 @property (nonatomic,assign) NSInteger maxMergeCount; //最大合并数
 
-- (void)addRequstUserId:(NSString *)userId;
-
-- (void)checkRequest;
+- (void)requestUserIds:(NSArray *)userIds;
 
 @end
 
@@ -59,8 +57,7 @@
         return info;
     }else{
         //如果本地没有数据则去服务器请求数据
-        [self.requestArray addRequstUserId:userId];
-        [self.requestArray checkRequest];
+        [self.requestArray requestUserIds:@[userId]];
         
         //先返回一个默认数据,以供网络请求没回来的时候界面可以有东西展示
         NIMKitInfo *info = [[NIMKitInfo alloc] init];
@@ -97,43 +94,48 @@
     return self;
 }
 
-- (void)addRequstUserId:(NSString *)userId{
-    if (![_requstUserIdArray containsObject:userId]) {
-        [_requstUserIdArray addObject:userId];
+
+- (void)requestUserIds:(NSArray *)userIds
+{
+    for (NSString *userId in userIds)
+    {
+        if (![_requstUserIdArray containsObject:userId])
+        {
+            [_requstUserIdArray addObject:userId];
+            DDLogInfo(@"should request info for userid %@",userId);
+        }
     }
+    [self request];
 }
 
-- (void)checkRequest{
-    if (_isRequesting || !_requstUserIdArray.count) {
+
+- (void)request
+{
+    static NSUInteger MaxBatchReuqestCount = 10;
+    if (_isRequesting || [_requstUserIdArray count] == 0) {
         return;
     }
-    __weak typeof(self) wself = self;
-    NSArray *requestArray = [self filterUser];
     _isRequesting = YES;
+    NSArray *userIds = [_requstUserIdArray count] > MaxBatchReuqestCount ?
+    [_requstUserIdArray subarrayWithRange:NSMakeRange(0, MaxBatchReuqestCount)] : [_requstUserIdArray copy];
     
-    [[NIMSDK sharedSDK].userManager fetchUserInfos:requestArray completion:^(NSArray *users, NSError *error) {
-        _isRequesting = NO;
-        if (!error) {
-            [[NIMKit sharedKit] notfiyUserInfoChanged:requestArray];
-        }
-        [_requstUserIdArray removeObjectsInArray:requestArray];
-        [wself checkRequest];
-    }];
+    DDLogInfo(@"request user ids %@",userIds);
+    __weak typeof(self) weakSelf = self;
+    [[NIMSDK sharedSDK].userManager fetchUserInfos:userIds
+                                        completion:^(NSArray *users, NSError *error) {
+                                            [weakSelf afterReuquest:userIds];
+                                            if (!error) {
+                                                [[NIMKit sharedKit] notfiyUserInfoChanged:userIds];
+                                            }
+                                        }];
 }
 
-
-- (NSArray *)filterUser{
-    NSInteger maxMergeCount = self.maxMergeCount > _requstUserIdArray.count? _requstUserIdArray.count : self.maxMergeCount;
-    NSRange subRange = NSMakeRange(0, maxMergeCount);
-    NSArray *userIds = [_requstUserIdArray subarrayWithRange:subRange];
-    NSMutableArray *filterUsers = [[NSMutableArray alloc] initWithArray:userIds];
-    for (NSString *userId in [NSArray arrayWithArray:filterUsers]) {
-        NIMUser *user = [[NIMSDK sharedSDK].userManager userInfo:userId];
-        if (user.userInfo) {
-            [filterUsers removeObject:userId];
-        }
-    }
-    return filterUsers;
+- (void)afterReuquest:(NSArray *)userIds
+{
+    _isRequesting = NO;
+    [_requstUserIdArray removeObjectsInArray:userIds];
+    [self request];
+    
 }
 
 @end

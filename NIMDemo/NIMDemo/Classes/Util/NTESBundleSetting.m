@@ -47,16 +47,31 @@
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"show_fps_for_app"] boolValue];
 }
 
+- (BOOL)disableProximityMonitor{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"disable_proxmity_monitor"] boolValue];
+}
+
+- (NIMNetCallVideoQuality)preferredVideoQuality
+{
+    NSInteger videoQualitySetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_quality"] integerValue];
+    if ((videoQualitySetting >= NIMNetCallVideoQualityDefault) &&
+        (videoQualitySetting <= NIMNetCallVideoQualityHigh)) {
+        return (NIMNetCallVideoQuality)videoQualitySetting;
+    }
+    return NIMNetCallVideoQualityDefault;
+}
 
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n\
-auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n",
+auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n disable_proxmity_monitor %d\nvideochat_preferred_video_quality %zd\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
                                         [self autoRemoveSnapMessage],
                                         [self needVerifyForFriend],
-                                        [self showFps]];
+                                        [self showFps],
+                                        [self disableProximityMonitor],
+                                        [self preferredVideoQuality]];
 }
 @end

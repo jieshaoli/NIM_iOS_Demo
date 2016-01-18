@@ -33,4 +33,16 @@
 
 @property (nonatomic,strong) IBOutlet NTESVideoChatNetStatusView *netStatusView;
 
+@property (weak, nonatomic) IBOutlet UIButton *localRecordBtn;
+
+
+@property (weak, nonatomic) IBOutlet UIView *localRecordingView;
+
+@property (weak, nonatomic) IBOutlet UIView *localRecordingRedPoint;
+
+@property (weak, nonatomic) IBOutlet UIView *lowMemoryView;
+
+@property (weak, nonatomic) IBOutlet UIView *lowMemoryRedPoint;
+
+
 @end

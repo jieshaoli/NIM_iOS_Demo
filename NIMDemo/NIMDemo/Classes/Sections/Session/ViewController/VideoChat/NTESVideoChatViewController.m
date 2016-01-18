@@ -66,11 +66,23 @@
     if (self.localVideoLayer) {
         [self.localView.layer addSublayer:self.localVideoLayer];
     }
-    [self initRemoteGLView];
+    [self initUI];
 }
 
-- (void)initRemoteGLView
+- (void)initUI
 {
+    self.localRecordingView.layer.cornerRadius = 10.0;
+    self.localRecordingRedPoint.layer.cornerRadius = 4.0;
+    self.lowMemoryView.layer.cornerRadius = 10.0;
+    self.lowMemoryRedPoint.layer.cornerRadius = 4.0;
+    self.refuseBtn.exclusiveTouch = YES;
+    self.acceptBtn.exclusiveTouch = YES;
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+        [self initRemoteGLView];
+    }
+}
+
+- (void)initRemoteGLView {
 #if defined (NTESUseGLView)
     _remoteGLView = [[NTESGLView alloc] initWithFrame:_remoteView.bounds];
     [_remoteGLView setContentMode:UIViewContentModeScaleAspectFit];
@@ -113,6 +125,9 @@
     self.switchCameraBtn.hidden = YES;
     self.muteBtn.hidden = YES;
     self.disableCameraBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -127,6 +142,9 @@
     self.muteBtn.hidden = YES;
     self.switchCameraBtn.hidden = YES;
     self.disableCameraBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     self.switchModelBtn.hidden = YES;
 }
 
@@ -141,6 +159,9 @@
     self.switchCameraBtn.hidden = YES;
     self.muteBtn.hidden = YES;
     self.disableCameraBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -156,9 +177,13 @@
     self.muteBtn.hidden = NO;
     self.switchCameraBtn.hidden = NO;
     self.disableCameraBtn.hidden = NO;
+    self.localRecordBtn.hidden = NO;
     self.switchModelBtn.hidden = NO;
     self.muteBtn.selected = self.callInfo.isMute;
     self.disableCameraBtn.selected = self.callInfo.disableCammera;
+    self.localRecordBtn.selected = self.callInfo.localRecording;
+    self.localRecordingView.hidden = !self.callInfo.localRecording;
+    self.lowMemoryView.hidden = YES;
     [self.switchModelBtn setTitle:@"语音模式" forState:UIControlStateNormal];
     [self.hungUpBtn removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.hungUpBtn addTarget:self action:@selector(hangup) forControlEvents:UIControlEventTouchUpInside];
@@ -179,10 +204,17 @@
     self.navigationController.viewControllers = vcs;
 }
 
+- (void)udpateLowSpaceWarning:(BOOL)show {
+    self.lowMemoryView.hidden = !show;
+    self.localRecordingView.hidden = show;
+}
+
+
 #pragma mark - IBAction
 
 - (IBAction)acceptToCall:(id)sender{
     BOOL accept = (sender == self.acceptBtn);
+    //防止用户在点了接收后又点拒绝的情况
     [self response:accept];
 }
 
@@ -200,6 +232,7 @@
         self.cameraType = NIMNetCallCameraFront;
     }
     [[NIMSDK sharedSDK].netCallManager switchCamera:self.cameraType];
+    self.switchCameraBtn.selected = (self.cameraType == NIMNetCallCameraBack);
 }
 
 
@@ -215,6 +248,30 @@
         [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeOpenVideo];
     }
 }
+
+- (IBAction)localRecord:(id)sender {
+    
+    if (self.callInfo.localRecording) {
+        if (![self stopLocalRecording]) {
+            [self.view makeToast:@"无法结束录制"
+                        duration:3
+                        position:CSToastPositionCenter];
+        }
+    }
+    else {
+        NSString *toastText;
+        if ([self startLocalRecording]) {
+            toastText = @"仅录制你的声音和图像";
+        }
+        else {
+            toastText = @"无法开始录制";
+        }
+        [self.view makeToast:toastText
+                    duration:3
+                    position:CSToastPositionCenter];
+    }
+}
+
 
 - (IBAction)switchCallingModel:(id)sender{
     [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeToAudio];
@@ -244,6 +301,9 @@
 {
     if (([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) && !self.oppositeCloseVideo) {
         
+        if (!_remoteGLView) {
+            [self initRemoteGLView];
+        }
         [_remoteGLView render:yuvData width:width height:height];
     }
 }
@@ -256,13 +316,6 @@
     self.remoteView.image = [UIImage imageWithCGImage:image];
 }
 #endif
-
-- (void)onHangup:(UInt64)callID
-              by:(NSString *)user{
-    if (self.callInfo.callID == callID) {
-        [self dismiss:nil];
-    }
-}
 
 - (void)onControl:(UInt64)callID
              from:(NSString *)user
@@ -311,6 +364,41 @@
     [self.netStatusView refreshWithNetState:status];
 }
 
+
+
+- (void)onLocalRecordStarted:(UInt64)callID fileURL:(NSURL *)fileURL
+{
+    [super onLocalRecordStarted:callID fileURL:fileURL];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = YES;
+        self.localRecordingView.hidden = NO;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
+
+- (void)onLocalRecordError:(NSError *)error
+                    callID:(UInt64)callID
+{
+    [super onLocalRecordError:error callID:callID];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = NO;
+        self.localRecordingView.hidden = YES;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
+- (void) onLocalRecordStopped:(UInt64)callID
+                      fileURL:(NSURL *)fileURL
+{
+    [super onLocalRecordStopped:callID fileURL:fileURL];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = NO;
+        self.localRecordingView.hidden = YES;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
 #pragma mark - M80TimerHolderDelegate
 
 - (void)onNTESTimerFired:(NTESTimerHolder *)holder{
@@ -340,6 +428,5 @@
 
     self.remoteView.image = [UIImage imageNamed:@"netcall_bkg.jpg"];
 }
-
 
 @end

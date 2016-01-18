@@ -24,6 +24,7 @@
 #import "NTESAboutViewController.h"
 #import "NTESUserInfoSettingViewController.h"
 #import "NTESBlackListViewController.h"
+#import "NTESUserUtil.h"
 
 @interface NTESSettingViewController ()<NIMUserManagerDelegate>
 
@@ -59,10 +60,14 @@
     
     extern NSString *NTESCustomNotificationCountChanged;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCustomNotifyChanged:) name:NTESCustomNotificationCountChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInfoUpdate:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
-    [[NIMSDK sharedSDK].userManager addDelegate:self];
     
-
+    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+        //说明托管了用户信息，那就直接加 userManager 的监听
+        [[NIMSDK sharedSDK].userManager addDelegate:self];
+    }else{
+        //没有托管用户信息，就直接加 NIMKit 的监听
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+    }
 }
 
 - (void)dealloc{
@@ -241,13 +246,6 @@
     }];
 }
 
-#pragma mark - NIMUserManagerDelegate
-- (void)onUserInfoChanged:(NIMUser *)user{
-    if ([user.userId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
-        [self.tableView reloadData];
-    }
-}
-
 #pragma mark - Notification
 - (void)onCustomNotifyChanged:(NSNotification *)notification
 {
@@ -256,10 +254,21 @@
 }
 
 
-- (void)onInfoUpdate:(NSNotification *)notification
+- (void)onUserInfoHasUpdatedNotification:(NSNotification *)notification
 {
-    [self buildData];
-    [self.tableView reloadData];
+    NSDictionary *userInfo = notification.userInfo;
+    NSArray *userInfos = userInfo[NIMKitInfoKey];
+    if ([userInfos containsObject:[NIMSDK sharedSDK].loginManager.currentAccount]) {
+        [self buildData];
+        [self.tableView reloadData];
+    }
+}
+
+#pragma mark - NIMUserManagerDelegate
+- (void)onUserInfoChanged:(NIMUser *)user{
+    if ([user.userId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - Private

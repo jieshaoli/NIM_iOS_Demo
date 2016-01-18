@@ -11,18 +11,30 @@
 #import "UIView+Toast.h"
 #import "NTESTimerHolder.h"
 #import "NetCallChatInfo.h"
+#import "NTESBundleSetting.h"
 #import <AVFoundation/AVFoundation.h>
+#import <AssetsLibrary/ALAssetsLibrary.h>
 
 //十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入聊天室
 #define DelaySelfStartControlTime 10
 //激活铃声后无人接听的超时时间
 #define NoBodyResponseTimeOut 40
 
+//周期性检查剩余磁盘空间
+#define DiskCheckTimeInterval 10
+//剩余磁盘空间不足的警告阈值
+#define MB (1024ll * 1024ll)
+#define FreeDiskSpaceWarningThreshold (10 * MB)
+
 @interface NTESNetChatViewController ()
 
 @property (nonatomic,strong) NTESTimerHolder *timer;
 
 @property (nonatomic,strong) NSMutableArray *chatRoom;
+
+@property (nonatomic, assign) BOOL recordWillStopForLackSpace;
+
+@property (nonatomic,strong) NTESTimerHolder *diskCheckTimer;
 
 @end
 
@@ -56,6 +68,10 @@
             _callInfo = [[NetCallChatInfo alloc] init];
         }
         _timer = [[NTESTimerHolder alloc] init];
+        _diskCheckTimer = [[NTESTimerHolder alloc] init];
+        //防止应用在后台状态，此时呼入，会走init但是不会走viewDidLoad,此时呼叫方挂断，导致被叫监听不到，界面无法消去的问题。
+        id<NIMNetCallManager> manager = [NIMSDK sharedSDK].netCallManager;
+        [manager addDelegate:self];
     }
     return self;
 }
@@ -75,7 +91,7 @@
             //用户禁用服务，干掉界面
             if (wself.callInfo.callID) {
                 //说明是被叫方
-                [[NIMSDK sharedSDK].netCallManager response:wself.callInfo.callID accept:NO completion:nil];
+                [[NIMSDK sharedSDK].netCallManager response:wself.callInfo.callID accept:NO option:nil completion:nil];
             }
             [wself dismiss:nil];
         }
@@ -99,8 +115,6 @@
 }
 
 - (void)afterCheckService{
-    id<NIMNetCallManager> manager = [NIMSDK sharedSDK].netCallManager;
-    [manager addDelegate:self];
     if (self.callInfo.isStart) {
         [self.timer startTimer:0.5 delegate:self repeats:YES];
         [self onCalling];
@@ -111,6 +125,11 @@
     else {
         [self startByCaller];
     }
+    
+    [self checkFreeDiskSpace];
+    [self.diskCheckTimer startTimer:DiskCheckTimeInterval
+                           delegate:self
+                            repeats:YES];
 }
 
 #pragma mark - Subclass Impl
@@ -123,7 +142,14 @@
             return;
         }
         wself.callInfo.isStart = YES;
-        [[NIMSDK sharedSDK].netCallManager start:wself.callInfo.callee type:wself.callInfo.callType completion:^(NSError *error, UInt64 callID) {
+        NSArray *callees = [NSArray arrayWithObjects:wself.callInfo.callee, nil];
+        
+        NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
+        option.message = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
+        option.extendMessage = @"音视频请求扩展信息";
+        option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+
+        [[NIMSDK sharedSDK].netCallManager start:callees type:wself.callInfo.callType option:option completion:^(NSError *error, UInt64 callID) {
             if (!error && wself) {
                 wself.callInfo.callID = callID;
                 wself.chatRoom = [[NSMutableArray alloc]init];
@@ -160,13 +186,27 @@
 
 - (void)hangup{
     [[NIMSDK sharedSDK].netCallManager hangup:self.callInfo.callID];
-    self.chatRoom = nil;
-    [self dismiss:nil];
+    
+    if (self.callInfo.localRecording) {
+        __weak typeof(self) wself = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            wself.chatRoom = nil;
+            [wself dismiss:nil];
+        });
+    }
+    else {
+        self.chatRoom = nil;
+        [self dismiss:nil];
+    }
 }
 
 - (void)response:(BOOL)accept{
     __weak typeof(self) wself = self;
-    [[NIMSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept completion:^(NSError *error, UInt64 callID) {
+    
+    NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
+    option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+
+    [[NIMSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept option:option completion:^(NSError *error, UInt64 callID) {
         if (!error) {
                 [wself onCalling];
                 [wself.player stop];
@@ -221,6 +261,30 @@
 - (void)waitForConnectiong{
     //子类重写
 }
+
+
+- (BOOL)startLocalRecording
+{
+    NSString *fileName = [NSString stringWithFormat:@"videochat_record_%llu.mp4", self.callInfo.callID];
+    NSURL *filePath = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject] URLByAppendingPathComponent:fileName];
+    
+    BOOL startAccepted;
+    startAccepted = [[NIMSDK sharedSDK].netCallManager startLocalRecording:filePath
+                                                              videoBitrate:0];
+    return startAccepted;
+}
+
+
+- (BOOL)stopLocalRecording
+{
+    return [[NIMSDK sharedSDK].netCallManager stopLocalRecording];
+}
+
+- (void)udpateLowSpaceWarning:(BOOL)show
+{
+    //子类重写
+}
+
 #pragma mark - NIMNetCallManagerDelegate
 - (void)onControl:(UInt64)callID
              from:(NSString *)user
@@ -252,6 +316,16 @@
         }
         case NIMNetCallControlTypeBusyLine:
             [self playOnCallRing];
+            break;
+        case NIMNetCallControlTypeStartLocalRecord:
+            [self.view makeToast:@"对方开始了本地录制"
+                        duration:1
+                        position:CSToastPositionCenter];
+            break;
+        case NIMNetCallControlTypeStopLocalRecord:
+            [self.view makeToast:@"对方结束了本地录制"
+                        duration:1
+                        position:CSToastPositionCenter];
             break;
         default:
             break;
@@ -306,10 +380,68 @@
     [self dismiss:nil];
 }
 
+- (void)onHangup:(UInt64)callID
+              by:(NSString *)user{
+    if (self.callInfo.callID == callID) {
+        if (self.callInfo.localRecording) {
+            __weak typeof(self) wself = self;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [wself dismiss:nil];
+            });
+        }
+        else {
+            [self dismiss:nil];
+        }
+    }
+}
+
+- (void)onLocalRecordStarted:(UInt64)callID fileURL:(NSURL *)fileURL
+{
+    if (self.callInfo.callID == callID) {
+        self.callInfo.localRecording = YES;
+        [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID
+                                              type:NIMNetCallControlTypeStartLocalRecord];
+    }
+}
+
+
+- (void)onLocalRecordError:(NSError *)error
+                    callID:(UInt64)callID
+{
+    DDLogError(@"Local record error %@ (%zd)", error.localizedDescription, error.code);
+    
+    if (self.callInfo.callID == callID) {
+        
+        [self.view makeToast:[NSString stringWithFormat:@"录制发生错误: %zd", error.code]
+                    duration:2
+                    position:CSToastPositionCenter];
+
+        self.callInfo.localRecording = NO;
+    }
+    
+    if (error.code == NIMLocalErrorCodeRecordWillStopForLackSpace) {
+        _recordWillStopForLackSpace = YES;
+    }
+}
+
+- (void) onLocalRecordStopped:(UInt64)callID
+                      fileURL:(NSURL *)fileURL
+{
+    if (self.callInfo.callID == callID) {
+        self.callInfo.localRecording = NO;
+        [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID
+                                              type:NIMNetCallControlTypeStopLocalRecord];
+        //辅助验证: 写到系统相册
+        [self saveToPhotosAlbum:fileURL];
+    }
+}
+
 
 #pragma mark - M80TimerHolderDelegate
 - (void)onNTESTimerFired:(NTESTimerHolder *)holder{
-  //子类重写
+    if (holder == self.diskCheckTimer) {
+        [self checkFreeDiskSpace];
+    }
 }
 
 
@@ -359,6 +491,48 @@
 - (void)setUpStatusBar:(UIStatusBarStyle)style{
     [[UIApplication sharedApplication] setStatusBarStyle:style
                                                 animated:NO];
+}
+
+- (void)saveToPhotosAlbum:(NSURL *)fileURL
+{
+    if (fileURL) {
+        __weak typeof(self) wself = self;
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library writeVideoAtPathToSavedPhotosAlbum:fileURL
+                                    completionBlock:^(NSURL *assetURL, NSError *error) {
+            
+            NSString *toast = _recordWillStopForLackSpace ? @"你的手机内存不足，录制已结束\n" : @"录制已结束\n";
+                                        
+            if (error) {
+                toast = [NSString stringWithFormat:@"%@保存至系统相册失败:%zd", toast, error.code];
+            }
+            else {
+                toast = [toast stringByAppendingString:@"录制文件已保存至系统相册"];
+            }
+            
+            [wself.navigationController.view makeToast:toast
+                                              duration:3
+                                              position:CSToastPositionCenter];
+        }];
+
+    }
+}
+
+- (void)checkFreeDiskSpace{
+    
+    if (self.callInfo.localRecording) {
+        uint64_t freeSpace = 1000 * MB;
+        NSError *error;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSDictionary *attrbites = [[NSFileManager defaultManager] attributesOfFileSystemForPath:[paths lastObject] error: &error];
+        
+        if (attrbites) {
+            NSNumber *freeFileSystemSizeInBytes = [attrbites objectForKey:NSFileSystemFreeSize];
+            freeSpace = [freeFileSystemSizeInBytes unsignedLongLongValue];
+        
+            [self udpateLowSpaceWarning:(freeSpace < FreeDiskSpaceWarningThreshold)];
+        }
+    }
 }
 
 #pragma mark - Ring

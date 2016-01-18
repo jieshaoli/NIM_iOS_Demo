@@ -40,6 +40,14 @@
 //退出界面
 - (void)dismiss:(void (^)(void))completion;
 
+//开始本地录制
+- (BOOL)startLocalRecording;
+//结束本地录制
+- (BOOL)stopLocalRecording;
+//低空间警告
+- (void)udpateLowSpaceWarning:(BOOL)show;
+
+
 #pragma mark - Ring
 //铃声 - 正在呼叫请稍后
 - (void)playConnnetRing;

@@ -72,6 +72,28 @@
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>禁用贴耳自动切换听筒模式</string>
+			<key>Key</key>
+			<string>disable_proxmity_monitor</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>视频聊天期望清晰度</string>
+			<key>Key</key>
+			<string>videochat_preferred_video_quality</string>
+			<key>DefaultValue</key>
+			<string>0</string>
+			<key>KeyboardType</key>
+			<string>NumberPad</string>
+		</dict>
 	</array>
 </dict>
 </plist>

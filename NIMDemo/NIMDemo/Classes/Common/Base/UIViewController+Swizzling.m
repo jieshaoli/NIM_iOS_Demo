@@ -52,14 +52,14 @@ static char UIFirstResponderViewAddress;
 
 - (void)swizzling_viewWillAppear:(BOOL)animated{
     [self swizzling_viewWillAppear:animated];
-    DDLogDebug(@"%@ will appear",self);
 }
 
 #pragma mark - ViewWillDisappear
 
 - (void)swizzling_viewWillDisappear:(BOOL)animated{
     [self swizzling_viewWillDisappear:animated];
-    DDLogDebug(@"%@ will disappear",self);
+
+    
     UIView *view = (UIView *)[UIResponder currentFirstResponder];
     if ([view isKindOfClass:[UIView class]] && view.viewController == self) {
         objc_setAssociatedObject(self, &UIFirstResponderViewAddress, view, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

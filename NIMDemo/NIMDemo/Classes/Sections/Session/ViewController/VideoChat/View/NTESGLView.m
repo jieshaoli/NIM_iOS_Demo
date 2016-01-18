@@ -277,6 +277,8 @@ enum {
     
     NSUInteger      _frameWidth;
     NSUInteger      _frameHeight;
+    BOOL            _didRelayoutSubViews;
+
 }
 
 + (Class) layerClass
@@ -388,19 +390,23 @@ enum {
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    _didRelayoutSubViews = YES;
+}
+
+- (void)relayout
+{
     glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
     [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
-	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
-	
+    
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        
         NSLog(@"make framebuffer failed %x", status);
         
-	}
+    }
     [self updateVertices];
-    [self render: nil width:0 height:0];
 }
 
 - (void)setContentMode:(UIViewContentMode)contentMode
@@ -486,6 +492,12 @@ exit:
           width:(NSUInteger)width
          height:(NSUInteger)height;
 {
+    
+    if (_didRelayoutSubViews) {
+        [self relayout];
+        _didRelayoutSubViews = NO;
+    }
+
     if ((_frameWidth != width) ||
         (_frameHeight != height)) {
         _frameWidth = width;

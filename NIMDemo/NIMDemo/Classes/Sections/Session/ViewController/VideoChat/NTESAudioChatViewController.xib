@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NTESAudioChatViewController">
@@ -10,6 +11,11 @@
                 <outlet property="connectingLabel" destination="yES-av-BJj" id="wXf-17-x9T"/>
                 <outlet property="durationLabel" destination="LTN-LG-J7s" id="keI-VJ-cv4"/>
                 <outlet property="hangUpBtn" destination="9Ri-mZ-5dg" id="cft-Av-SqB"/>
+                <outlet property="localRecordBtn" destination="WyL-PU-WEf" id="T64-n5-0xe"/>
+                <outlet property="localRecordingRedPoint" destination="2PC-II-WQG" id="I29-Pv-q5G"/>
+                <outlet property="localRecordingView" destination="2DQ-Ca-G7x" id="2CB-no-1Pk"/>
+                <outlet property="lowMemoryRedPoint" destination="okn-Zh-wiE" id="Dtp-WN-y0V"/>
+                <outlet property="lowMemoryView" destination="ayc-sR-9er" id="ETa-2R-aU3"/>
                 <outlet property="muteBtn" destination="3vA-4M-uHk" id="gZ7-kv-fmc"/>
                 <outlet property="netStatusView" destination="fY5-hZ-LWd" id="aT4-KT-jr4"/>
                 <outlet property="refuseBtn" destination="nnL-Ka-x7t" id="90L-v4-zpo"/>
@@ -41,12 +47,13 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="3vA-4M-uHk">
-                    <rect key="frame" x="58" y="349" width="75" height="75"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="btn_mute_disable.png">
+                    <rect key="frame" x="47" y="380" width="50" height="50"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <state key="normal" image="btn_mute_normal.png">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="btn_mute_normal.png"/>
+                    <state key="disabled" image="btn_mute_disable.png"/>
+                    <state key="selected" image="btn_mute_pressed.png"/>
                     <state key="highlighted" image="btn_mute_highlight.png"/>
                     <connections>
                         <action selector="mute:" destination="-1" eventType="touchUpInside" id="Rkt-UW-TH2"/>
@@ -70,12 +77,13 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="bEv-vx-FBM">
-                    <rect key="frame" x="179" y="349" width="75" height="75"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="btn_speaker_disable.png">
+                    <rect key="frame" x="135" y="380" width="50" height="50"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <state key="normal" image="btn_speaker_normal.png">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="btn_speaker_normal.png"/>
+                    <state key="disabled" image="btn_speaker_disable.png"/>
+                    <state key="selected" image="btn_speaker_pressed.png"/>
                     <state key="highlighted" image="btn_speaker_highlight.png"/>
                     <connections>
                         <action selector="userSpeaker:" destination="-1" eventType="touchUpInside" id="7Ap-T7-ZLm"/>
@@ -89,7 +97,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="lVJ-ri-rtd">
-                    <rect key="frame" x="181" y="464" width="117" height="50"/>
+                    <rect key="frame" x="177" y="464" width="117" height="50"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="0.040248972680000002" green="0.73228377529999999" blue="0.084891297729999995" alpha="1" colorSpace="calibratedRGB"/>
                     <state key="normal" title="接听">
@@ -117,27 +125,86 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="WyL-PU-WEf" userLabel="Local Record Btn">
+                    <rect key="frame" x="225" y="380" width="50" height="50"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <state key="normal" image="btn_record_normal.png">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="disabled" image="btn_record_disable.png"/>
+                    <state key="selected" image="btn_record_pressed.png"/>
+                    <state key="highlighted" image="btn_record_highlight.png"/>
+                    <connections>
+                        <action selector="localRecord:" destination="-1" eventType="touchUpInside" id="emP-pM-bDm"/>
+                    </connections>
+                </button>
+                <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="2DQ-Ca-G7x" userLabel="Local Recording View">
+                    <rect key="frame" x="108" y="322" width="104" height="40"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <subviews>
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" id="2PC-II-WQG" userLabel="Recording Red Point">
+                            <rect key="frame" x="81" y="14" width="8" height="8"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="录制中" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5l2-2v-EIl" userLabel="Recording Label">
+                            <rect key="frame" x="16" y="6" width="72.5" height="27"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.80000000000000004" colorSpace="calibratedWhite"/>
+                </view>
+                <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="ayc-sR-9er" userLabel="Low Memory View">
+                    <rect key="frame" x="73" y="297" width="175" height="65"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <subviews>
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" id="okn-Zh-wiE" userLabel="Recording Red Point">
+                            <rect key="frame" x="117" y="15" width="8" height="8"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="你的手机内存已不足10M" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zez-ut-tf1" userLabel="Low Free Space Label">
+                            <rect key="frame" x="4" y="35" width="165.5" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="录制中" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cW8-QD-Su9" userLabel="Recording Label">
+                            <rect key="frame" x="51" y="8" width="72.5" height="27"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.80000000000000004" colorSpace="calibratedRGB"/>
+                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-            <point key="canvasLocation" x="241" y="258"/>
+            <point key="canvasLocation" x="313" y="304"/>
         </view>
     </objects>
     <resources>
         <image name="btn_mute_disable.png" width="75" height="75"/>
         <image name="btn_mute_highlight.png" width="75" height="75"/>
         <image name="btn_mute_normal.png" width="75" height="75"/>
+        <image name="btn_mute_pressed.png" width="320" height="568"/>
+        <image name="btn_record_disable.png" width="320" height="568"/>
+        <image name="btn_record_highlight.png" width="320" height="568"/>
+        <image name="btn_record_normal.png" width="320" height="568"/>
+        <image name="btn_record_pressed.png" width="320" height="568"/>
         <image name="btn_speaker_disable.png" width="75" height="75"/>
         <image name="btn_speaker_highlight.png" width="75" height="75"/>
         <image name="btn_speaker_normal.png" width="75" height="75"/>
+        <image name="btn_speaker_pressed.png" width="320" height="568"/>
         <image name="btn_switch_av.png" width="92" height="34"/>
         <image name="ic_switch_video.png" width="17" height="17"/>
         <image name="icon_cell_red_normal.png" width="304" height="45"/>
         <image name="netcall_bkg.jpg" width="320" height="568"/>
     </resources>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

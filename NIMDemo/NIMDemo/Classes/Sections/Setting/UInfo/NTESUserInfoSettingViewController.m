@@ -43,11 +43,18 @@
     }];
     self.tableView.delegate   = self.delegator;
     self.tableView.dataSource = self.delegator;
-    [[NIMSDK sharedSDK].userManager addDelegate:self];
+    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+        //说明托管了用户信息，那就直接加 userManager 的监听
+        [[NIMSDK sharedSDK].userManager addDelegate:self];
+    }else{
+        //没有托管用户信息，就直接加 NIMKit 的监听
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+    }
 }
 
 - (void)dealloc{
     [[NIMSDK sharedSDK].userManager removeDelegate:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)buildData{
@@ -210,6 +217,16 @@
         [self refresh];
     }
 }
+
+#pragma mark - onUserInfoHasUpdatedNotification
+- (void)onUserInfoHasUpdatedNotification:(NSNotification *)notification{
+    NSDictionary *userInfo = notification.userInfo;
+    NSArray *userInfos = userInfo[NIMKitInfoKey];
+    if ([userInfos containsObject:[NIMSDK sharedSDK].loginManager.currentAccount]) {
+        [self refresh];
+    }
+}
+
 
 
 #pragma mark - Private

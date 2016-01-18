@@ -88,7 +88,7 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
 }
 
 #pragma mark - NIMNetCallManagerDelegate
-- (void)onReceive:(UInt64)callID from:(NSString *)caller type:(NIMNetCallType)type{
+- (void)onReceive:(UInt64)callID from:(NSString *)caller type:(NIMNetCallType)type message:(NSString *)extendMessage{
     if ([NIMSDK sharedSDK].netCallManager.currentCallID > 0) {
         [[NIMSDK sharedSDK].netCallManager control:callID type:NIMNetCallControlTypeBusyLine];
         return;

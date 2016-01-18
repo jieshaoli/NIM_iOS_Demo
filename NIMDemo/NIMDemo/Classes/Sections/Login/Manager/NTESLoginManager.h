@@ -14,8 +14,7 @@
 @end
 
 @interface NTESLoginManager : NSObject
-+ (instancetype)sdkManager;
-+ (instancetype)appManager;
++ (instancetype)sharedManager;
 
 @property (nonatomic,strong)    LoginData   *currentLoginData;
 @end

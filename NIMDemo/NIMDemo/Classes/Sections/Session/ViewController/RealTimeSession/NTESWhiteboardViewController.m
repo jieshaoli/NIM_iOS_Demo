@@ -420,7 +420,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (void)onPointCollected:(CGPoint)p type:(WhiteBoardCmdType)type
 {
     //send to peer
-    NSString *cmd = [NSString stringWithFormat:@"%u:%.3f,%.3f;", (unsigned)type, p.x/_drawViewWidth, p.y/_drawViewWidth];
+    NSString *cmd = [NSString stringWithFormat:@"%zd:%.3f,%.3f;", type, p.x/_drawViewWidth, p.y/_drawViewWidth];
     [self addCmd:cmd];
     
     //local render
@@ -445,7 +445,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [_cmdsLock lock];
     if ([_cmds length] > 0) {
 //        DDLogDebug(@"++++++send cmd id %llu", _refPacketID);
-        NSString *cmd = [NSString stringWithFormat:@"%u:%llu,0;", (unsigned)WhiteBoardCmdTypePacketID, _refPacketID ++];
+        NSString *cmd = [NSString stringWithFormat:@"%zd:%llu,0;", WhiteBoardCmdTypePacketID, _refPacketID ++];
         [_cmds appendString:cmd];
         
         [self sendRTSData:_cmds];
@@ -593,7 +593,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 //发送纯命令, 不带参数
 - (void)sendWhiteboardCmd:(WhiteBoardCmdType)cmd
 {
-    NSString *cmdString = [NSString stringWithFormat:@"%u:0,0;", (unsigned)cmd];
+    NSString *cmdString = [NSString stringWithFormat:@"%zd:0,0;", cmd];
     [self addCmd:cmdString];
 }
 

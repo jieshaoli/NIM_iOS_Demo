@@ -45,7 +45,7 @@
 
 @implementation NTESLoginManager
 
-+ (instancetype)sdkManager
++ (instancetype)sharedManager
 {
     static NTESLoginManager *instance = nil;
     static dispatch_once_t onceToken;
@@ -56,16 +56,6 @@
     return instance;
 }
 
-+ (instancetype)appManager
-{
-    static NTESLoginManager *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *filepath = [[NTESFileLocationHelper getAppDocumentPath] stringByAppendingPathComponent:@"nim_app_login_data"];
-        instance = [[NTESLoginManager alloc] initWithPath:filepath];
-    });
-    return instance;
-}
 
 - (instancetype)initWithPath:(NSString *)filepath
 {

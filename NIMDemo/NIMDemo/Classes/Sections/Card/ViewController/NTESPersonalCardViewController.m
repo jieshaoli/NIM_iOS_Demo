@@ -30,6 +30,8 @@
 
 @property (nonatomic,strong) NIMUser                 *user;
 
+@property (nonatomic,strong) UILongPressGestureRecognizer *longPressGesture;
+
 @end
 
 @implementation NTESPersonalCardViewController
@@ -44,13 +46,21 @@
 
 - (void)dealloc{
     [[NIMSDK sharedSDK].userManager removeDelegate:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpNav];
     __weak typeof(self) wself = self;
-    [[NIMSDK sharedSDK].userManager addDelegate:self];
+    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+        //说明托管了用户信息，那就直接加 userManager 的监听
+        [[NIMSDK sharedSDK].userManager addDelegate:self];
+    }else{
+        //没有托管用户信息，就直接加 NIMKit 的监听
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+    }
+
     self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
@@ -62,6 +72,17 @@
     self.tableView.delegate   = self.delegator;
     self.tableView.dataSource = self.delegator;
     [self refresh];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPressNavbar:)];
+    [self.navigationController.navigationBar addGestureRecognizer:self.longPressGesture];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.navigationController.navigationBar removeGestureRecognizer:self.longPressGesture];
 }
 
 - (void)setUpNav{
@@ -315,6 +336,23 @@
 - (void)onFriendChanged:(NIMUser *)user{
     if ([user.userId isEqualToString:self.userId]) {
         [self refresh];
+    }
+}
+
+- (void)onUserInfoHasUpdatedNotification:(NSNotification *)notification{
+    NSDictionary *userInfo = notification.userInfo;
+    NSArray *userInfos = userInfo[NIMKitInfoKey];
+    if ([userInfos containsObject:self.userId]) {
+        [self refresh];
+    }
+}
+
+#pragma mark - Private 
+- (void)onLongPressNavbar:(UIGestureRecognizer *)gesture{
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        NSString *title = self.user.description;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"个人信息" message:title delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
     }
 }
 

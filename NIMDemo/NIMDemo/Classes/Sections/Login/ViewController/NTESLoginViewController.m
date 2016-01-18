@@ -19,7 +19,6 @@
 #import "UIImage+NTESColor.h"
 #import "NTESLoginManager.h"
 #import "NTESNotificationCenter.h"
-#import "NTESAppTokenManager.h"
 #import "UIActionSheet+NTESBlock.h"
 #import "NTESLogManager.h"
 #import "NTESRegisterViewController.h"
@@ -134,14 +133,7 @@
                                           LoginData *sdkData = [[LoginData alloc] init];
                                           sdkData.account   = loginAccount;
                                           sdkData.token     = loginToken;
-                                          [[NTESLoginManager sdkManager] setCurrentLoginData:sdkData];
-                                          
-                                          
-                                          LoginData *appData = [[LoginData alloc] init];
-                                          appData.account    = username;
-                                          appData.token      = password;
-                                          [[NTESLoginManager appManager] setCurrentLoginData:appData];
-                                          
+                                          [[NTESLoginManager sharedManager] setCurrentLoginData:sdkData];
                                           
                                           [[NTESServiceManager sharedManager] start];
                                           NTESMainTabController * mainTab = [[NTESMainTabController alloc] initWithNibName:nil bundle:nil];

@@ -28,4 +28,6 @@
 
 @property(nonatomic,assign) BOOL disableCammera;
 
+@property(nonatomic,assign) BOOL localRecording;
+
 @end

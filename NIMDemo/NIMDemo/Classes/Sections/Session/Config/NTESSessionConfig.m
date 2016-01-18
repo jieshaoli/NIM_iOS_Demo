@@ -9,6 +9,7 @@
 #import "NTESSessionConfig.h"
 #import "NTESSessionCustomLayoutConfig.h"
 #import "NIMMediaItem.h"
+#import "NTESBundleSetting.h"
 
 @interface NTESSessionConfig()
 
@@ -94,6 +95,10 @@
             break;
     }
     return config;
+}
+
+- (BOOL)disableProximityMonitor{
+    return [NTESBundleSetting sharedConfig].disableProximityMonitor;
 }
 
 

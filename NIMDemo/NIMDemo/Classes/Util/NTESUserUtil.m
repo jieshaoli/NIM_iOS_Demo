@@ -7,6 +7,7 @@
 //
 
 #import "NTESUserUtil.h"
+#import "NIMKitUtil.h"
 
 @implementation NTESUserUtil
 

@@ -36,9 +36,19 @@
 
 @property (nonatomic,strong) IBOutlet UIButton *disableCameraBtn; //禁用摄像头按钮
 
+@property (weak, nonatomic) IBOutlet UIButton *localRecordBtn; //录制
+
 @property (nonatomic,strong) IBOutlet UILabel  *connectingLabel;  //等待对方接听
 
 @property (nonatomic,strong) IBOutlet NTESVideoChatNetStatusView *netStatusView;//网络状况
+
+@property (weak, nonatomic) IBOutlet UIView *localRecordingView;
+
+@property (weak, nonatomic) IBOutlet UIView *localRecordingRedPoint;
+
+@property (weak, nonatomic) IBOutlet UIView *lowMemoryView;
+
+@property (weak, nonatomic) IBOutlet UIView *lowMemoryRedPoint;
 
 
 @end

@@ -43,8 +43,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initUI];
 }
 
+- (void)initUI {
+    self.localRecordingView.layer.cornerRadius = 10.0;
+    self.localRecordingRedPoint.layer.cornerRadius = 4.0;
+    self.lowMemoryView.layer.cornerRadius = 10.0;
+    self.lowMemoryRedPoint.layer.cornerRadius = 4.0;
+    self.refuseBtn.exclusiveTouch = YES;
+    self.acceptBtn.exclusiveTouch = YES;
+}
 
 #pragma mark - Call Life
 - (void)startByCaller{
@@ -73,6 +82,9 @@
     self.hangUpBtn.hidden  = NO;
     self.muteBtn.hidden    = YES;
     self.speakerBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     self.durationLabel.hidden   = YES;
     self.switchVideoBtn.hidden  = YES;
     self.connectingLabel.hidden = NO;
@@ -86,6 +98,9 @@
     self.hangUpBtn.hidden  = YES;
     self.muteBtn.hidden    = YES;
     self.speakerBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     self.durationLabel.hidden   = YES;
     self.switchVideoBtn.hidden  = YES;
     self.connectingLabel.hidden = NO;
@@ -100,6 +115,9 @@
     self.hangUpBtn.hidden  = NO;
     self.muteBtn.hidden    = YES;
     self.speakerBtn.hidden = YES;
+    self.localRecordBtn.hidden = YES;
+    self.localRecordingView.hidden = YES;
+    self.lowMemoryView.hidden = YES;
     self.durationLabel.hidden   = YES;
     self.switchVideoBtn.hidden  = YES;
     self.connectingLabel.hidden = NO;
@@ -114,6 +132,7 @@
     [self.netStatusView refreshWithNetState:status];
     self.hangUpBtn.hidden  = NO;
     self.muteBtn.hidden    = NO;
+    self.localRecordBtn.hidden = NO;
     self.speakerBtn.hidden = NO;
     self.durationLabel.hidden   = NO;
     self.switchVideoBtn.hidden  = NO;
@@ -122,7 +141,9 @@
     self.acceptBtn.hidden = YES;
     self.muteBtn.selected    = self.callInfo.isMute;
     self.speakerBtn.selected = self.callInfo.useSpeaker;
-
+    self.localRecordBtn.selected = self.callInfo.localRecording;
+    self.localRecordingView.hidden = !self.callInfo.localRecording;
+    self.lowMemoryView.hidden = YES;
 }
 
 //切换接听中界面(视频)
@@ -138,6 +159,12 @@
     [vcs removeObject:self];
     self.navigationController.viewControllers = vcs;
 }
+
+- (void)udpateLowSpaceWarning:(BOOL)show {
+    self.lowMemoryView.hidden = !show;
+    self.localRecordingView.hidden = show;
+}
+
 
 #pragma mark - IBAction
 - (IBAction)hangup:(id)sender{
@@ -168,13 +195,32 @@
     [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeToVideo];
 }
 
-#pragma mark - NIMNetCallManagerDelegate
-- (void)onHangup:(UInt64)callID
-              by:(NSString *)user{
-    if (self.callInfo.callID == callID) {
-        [self dismiss:nil];
+- (IBAction)localRecord:(id)sender {
+    
+    if (self.callInfo.localRecording) {
+        if (![self stopLocalRecording]) {
+            [self.view makeToast:@"无法结束录制"
+                        duration:3
+                        position:CSToastPositionCenter];
+        }
     }
+    else {
+        NSString *toastText;
+        if ([self startLocalRecording]) {
+            toastText = @"仅录制你说话的内容";
+        }
+        else {
+            toastText = @"无法开始录制";
+        }
+        [self.view makeToast:toastText
+                    duration:3
+                    position:CSToastPositionCenter];
+    }
+
 }
+
+
+#pragma mark - NIMNetCallManagerDelegate
 
 - (void)onControl:(UInt64)callID
              from:(NSString *)user
@@ -217,6 +263,41 @@
      netStatus:(NIMNetCallNetStatus)status{
     [self.netStatusView refreshWithNetState:status];
 }
+
+
+- (void)onLocalRecordStarted:(UInt64)callID fileURL:(NSURL *)fileURL
+{
+    [super onLocalRecordStarted:callID fileURL:fileURL];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = YES;
+        self.localRecordingView.hidden = NO;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
+
+- (void)onLocalRecordError:(NSError *)error
+                    callID:(UInt64)callID
+{
+    [super onLocalRecordError:error callID:callID];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = NO;
+        self.localRecordingView.hidden = YES;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
+- (void) onLocalRecordStopped:(UInt64)callID
+                      fileURL:(NSURL *)fileURL
+{
+    [super onLocalRecordStopped:callID fileURL:fileURL];
+    if (self.callInfo.callID == callID) {
+        self.localRecordBtn.selected = NO;
+        self.localRecordingView.hidden = YES;
+        self.lowMemoryView.hidden = YES;
+    }
+}
+
 
 #pragma mark - M80TimerHolderDelegate
 - (void)onNTESTimerFired:(NTESTimerHolder *)holder{
