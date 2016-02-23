@@ -130,7 +130,7 @@ enum RefreshType
 
     NIMContactSelectAvatarView *avatar = [[NIMContactSelectAvatarView alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
     NSURL *url = info.avatarUrlString ? [NSURL URLWithString:info.avatarUrlString] : nil;
-    [avatar nim_setImageWithURL:url placeholderImage:info.avatarImage];
+    [avatar nim_setImageWithURL:url placeholderImage:info.avatarImage options:NIMWebImageRetryFailed];
     avatar.userId = info.infoId;
     [self addAvatarView:avatar];
 }

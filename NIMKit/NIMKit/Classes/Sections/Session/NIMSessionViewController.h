@@ -12,14 +12,20 @@
 #import "NIMInputProtocol.h"
 #import "NIMMessageCellProtocol.h"
 #import "NIMSessionMsgDatasource.h"
+#import "NIMSessionViewLayoutManager.h"
 
-@interface NIMSessionViewController : UIViewController<NIMInputActionDelegate,NIMMessageCellDelegate,NIMSessionMsgDatasourceDelegate>
+@interface NIMSessionViewController : UIViewController<NIMInputActionDelegate,NIMMessageCellDelegate,NIMSessionMsgDatasourceDelegate,NIMChatManagerDelegate>
 
 @property (nonatomic, strong, readonly) UITableView *tableView;
 
 @property (nonatomic, strong, readonly) UIRefreshControl *refreshControl;
 
 @property (nonatomic, strong, readonly) NIMSession *session;
+
+@property (nonatomic, strong, readonly) NIMSessionViewLayoutManager *layoutManager;
+
+@property (nonatomic, strong, readonly) NIMInputView *sessionInputView;
+
 
 /**
  *  当前当初的菜单所关联的消息
@@ -95,6 +101,15 @@
 - (void)showRecordFileNotSendReason;
 
 #pragma mark - 操作接口
+/**
+ *  插入一条消息
+ *
+ *  @param message 消息
+ *
+ *  @discussion 不会触发DB操作，请手动调用SDK里 saveMessage:forSession:completion: 接口
+ */
+
+- (void)uiAddMessages:(NSArray *)messages;
 
 /**
  *  删除一条消息
@@ -106,7 +121,7 @@
 - (void)uiDeleteMessage:(NIMMessage *)message;
 
 /**
- *  更新一条小心
+ *  更新一条消息
  *
  *  @param message 消息
  *

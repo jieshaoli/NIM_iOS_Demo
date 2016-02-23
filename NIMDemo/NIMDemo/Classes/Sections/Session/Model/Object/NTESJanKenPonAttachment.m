@@ -16,7 +16,7 @@
     NSDictionary *dict = @{CMType : @(CustomMessageTypeJanKenPon),
                            CMData : @{CMValue:@(self.value)}};
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict
-                                                   options:NSJSONWritingPrettyPrinted
+                                                   options:0
                                                      error:nil];
     NSString *content = nil;
     if (data) {
@@ -38,12 +38,21 @@
 
 - (UIEdgeInsets)contentViewInsets:(NIMMessage *)message
 {
-    CGFloat bubblePaddingForImage    = 3.f;
-    CGFloat bubbleArrowWidthForImage = 5.f;
-    if ([NTESSessionUtil messageIsFromMe:message]) {
-        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage);
-    }else{
-        return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage, bubblePaddingForImage,bubblePaddingForImage);
+    if (message.session.sessionType == NIMSessionTypeChatroom)
+    {
+        CGFloat bubbleMarginTopForImage  = 15.f;
+        CGFloat bubbleMarginLeftForImage = 12.f;
+        return  UIEdgeInsetsMake(bubbleMarginTopForImage,bubbleMarginLeftForImage,0,0);
+    }
+    else
+    {
+        CGFloat bubbleMarginForImage    = 3.f;
+        CGFloat bubbleArrowWidthForImage = 5.f;
+        if ([NTESSessionUtil messageIsFromMe:message]) {
+            return  UIEdgeInsetsMake(bubbleMarginForImage,bubbleMarginForImage,bubbleMarginForImage,bubbleMarginForImage + bubbleArrowWidthForImage);
+        }else{
+            return  UIEdgeInsetsMake(bubbleMarginForImage,bubbleMarginForImage + bubbleArrowWidthForImage, bubbleMarginForImage,bubbleMarginForImage);
+        }
     }
 }
 

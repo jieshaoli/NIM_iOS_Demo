@@ -19,6 +19,8 @@ typedef void (^NIMKitDataProvideHandler)(NSError *error, NSArray *messages);
 
 @protocol NIMKitMessageProvider <NSObject>
 
+@optional
+
 /**
  *  下拉加载数据
  *  @param hanlder 返回消息结果集的回调
@@ -26,6 +28,14 @@ typedef void (^NIMKitDataProvideHandler)(NSError *error, NSArray *messages);
  *  @discussion 当开始没有数据时，也会触发此回调，firstMessage为nil。
  */
 - (void)pullDown:(NIMMessage *)firstMessage handler:(NIMKitDataProvideHandler)handler;
+
+
+/**
+ *  是否需要时间戳显示
+ *
+ *  @return 是否需要时间戳
+ */
+- (BOOL)needTimetag;
 
 
 @end

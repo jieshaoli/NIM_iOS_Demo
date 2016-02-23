@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, NTESMediaButton)
     NTESMediaButtonFileTrans,      //文件传输
     NTESMediaButtonSnapchat,       //阅后即焚
     NTESMediaButtonWhiteBoard,     //白板沟通
+    NTESMediaButtonTip,            //提醒消息
 };
 
 @interface NTESSessionConfig : NSObject<NIMSessionConfig>

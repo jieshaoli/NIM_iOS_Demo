@@ -35,6 +35,7 @@
         [DDLog addLogger:[DDASLLogger sharedInstance]];
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor greenColor] backgroundColor:nil forFlag:DDLogFlagDebug];
         _fileLogger = [[DDFileLogger alloc] init];
         _fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
         _fileLogger.logFileManager.maximumNumberOfLogFiles = 7;

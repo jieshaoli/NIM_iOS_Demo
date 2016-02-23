@@ -9,6 +9,11 @@
 #import "NIMMessageModel.h"
 #import "NIMDefaultValueMaker.h"
 
+
+@interface NIMMessageModel()
+
+@end
+
 @implementation NIMMessageModel
 
 @synthesize contentSize        = _contentSize;
@@ -16,6 +21,9 @@
 @synthesize bubbleViewInsets   = _bubbleViewInsets;
 @synthesize shouldShowAvatar   = _shouldShowAvatar;
 @synthesize shouldShowNickName = _shouldShowNickName;
+@synthesize shouldShowLeft     = _shouldShowLeft;
+@synthesize avatarMargin       = _avatarMargin;
+@synthesize nickNameMargin     = _nickNameMargin;
 
 - (instancetype)initWithMessage:(NIMMessage*)message
 {
@@ -106,6 +114,34 @@
     else
     {
         _shouldShowNickName = [[NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig shouldShowNickName:self];
+    }
+    
+    if ([layoutConfig respondsToSelector:@selector(shouldShowLeft:)])
+    {
+        _shouldShowLeft = [layoutConfig shouldShowLeft:self];
+    }
+    else
+    {
+        _shouldShowLeft = [[NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig shouldShowLeft:self];
+    }
+    
+    
+    if ([layoutConfig respondsToSelector:@selector(avatarMargin:)])
+    {
+        _avatarMargin = [layoutConfig avatarMargin:self];
+    }
+    else
+    {
+        _avatarMargin = [[NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig avatarMargin:self];
+    }
+    
+    if ([layoutConfig respondsToSelector:@selector(nickNameMargin:)])
+    {
+        _nickNameMargin = [layoutConfig nickNameMargin:self];
+    }
+    else
+    {
+        _nickNameMargin = [[NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig nickNameMargin:self];
     }
 }
 

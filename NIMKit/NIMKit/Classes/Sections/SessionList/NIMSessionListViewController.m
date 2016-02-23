@@ -53,9 +53,9 @@
     [[NIMSDK sharedSDK].conversationManager addDelegate:self];
     [[NIMSDK sharedSDK].loginManager addDelegate:self];
     [[NIMSDK sharedSDK].teamManager addDelegate:self];
-    extern NSString *NIMKitTeamInfoHasUpdatedNotification;
+    extern NSString *const NIMKitTeamInfoHasUpdatedNotification;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onTeamInfoHasUpdatedNotification:) name:NIMKitTeamInfoHasUpdatedNotification object:nil];
-    extern NSString *NIMKitUserInfoHasUpdatedNotification;
+    extern NSString *const NIMKitUserInfoHasUpdatedNotification;
     if ([NIMSDKConfig sharedConfig].hostUserInfos) {
         [[NIMSDK sharedSDK].userManager addDelegate:self];
     }else{

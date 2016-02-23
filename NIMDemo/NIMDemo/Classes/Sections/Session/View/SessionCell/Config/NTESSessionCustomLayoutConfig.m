@@ -9,17 +9,22 @@
 #import "NTESSessionCustomLayoutConfig.h"
 #import "NTESCustomAttachmentDefines.h"
 #import "NTESSessionUtil.h"
+#import "NTESSessionCustomContentConfig.h"
+
+@interface NTESSessionCustomLayoutConfig()
+
+@property (nonatomic,strong) NTESSessionCustomContentConfig *contentConfig;
+
+@end
 
 @implementation NTESSessionCustomLayoutConfig
 
-- (CGSize)contentSize:(NIMMessageModel *)model cellWidth:(CGFloat)width{
-    NIMCustomObject *object = (NIMCustomObject *)model.message.messageObject;
-    id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)object.attachment;
-    if ([attachment respondsToSelector:@selector(contentSize:cellWidth:)]) {
-        return [attachment contentSize:model.message cellWidth:width];
-    }else{
-        return CGSizeZero;
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        _contentConfig = [[NTESSessionCustomContentConfig alloc] init];
     }
+    return self;
 }
 
 + (BOOL)supportMessage:(NIMMessage *)message{
@@ -28,26 +33,20 @@
     return [supportType indexOfObject:NSStringFromClass([object.attachment class])] != NSNotFound;
 }
 
+- (CGSize)contentSize:(NIMMessageModel *)model cellWidth:(CGFloat)width{
+    id<NIMSessionContentConfig> config = [self sessionContentConfig:model.message];
+    return [config contentSize:width];
+}
+
 - (NSString *)cellContent:(NIMMessageModel *)model{
-    NIMMessage *message = model.message;
-    NIMCustomObject *customObject = message.messageObject;
-    NSString *contentClassStr     = nil;
-    id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)customObject.attachment;
-    if ([attachment respondsToSelector:@selector(cellContent:)]) {
-        contentClassStr = [attachment cellContent:message];
-    }
-    return contentClassStr;
+    id<NIMSessionContentConfig> config = [self sessionContentConfig:model.message];
+    return [config cellContent];
 }
 
 - (UIEdgeInsets)contentViewInsets:(NIMMessageModel *)model
 {
-    NIMCustomObject *object = (NIMCustomObject *)model.message.messageObject;
-    id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)object.attachment;
-    if ([attachment respondsToSelector:@selector(contentViewInsets:)]) {
-        return [attachment contentViewInsets:model.message];
-    }else{
-        return UIEdgeInsetsZero;
-    }
+    id<NIMSessionContentConfig> config = [self sessionContentConfig:model.message];
+    return [config contentViewInsets];
 }
 
 
@@ -78,6 +77,9 @@
     }
 }
 
-
+- (id<NIMSessionContentConfig>)sessionContentConfig:(NIMMessage *)message{
+    self.contentConfig.message = message;
+    return self.contentConfig;
+}
 
 @end

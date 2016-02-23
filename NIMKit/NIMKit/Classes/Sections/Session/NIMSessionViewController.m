@@ -9,7 +9,6 @@
 #import "NIMSessionViewController.h"
 #import "NIMInputView.h"
 #import "NIMInputTextView.h"
-#import "NIMSessionViewLayoutManager.h"
 #import "UIView+NIM.h"
 #import "NIMMessageCellProtocol.h"
 #import "NIMMessageModel.h"
@@ -22,11 +21,11 @@
 #import "NIMTimestampModel.h"
 #import "NIMMessageCellMaker.h"
 #import "NIMUIConfig.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface NIMSessionViewController ()
 <UITableViewDataSource,
 UITableViewDelegate,
-NIMChatManagerDelegate,
 NIMConversationManagerDelegate,
 NIMTeamManagerDelegate,
 NIMMediaManagerDelgate,
@@ -35,11 +34,11 @@ NIMUserManagerDelegate>
 
 @property (nonatomic,strong,readwrite) UITableView *tableView;
 
-@property (nonatomic,strong) NIMInputView *sessionInputView;
-@property (nonatomic,strong) NIMSessionViewLayoutManager *layoutManager;
 @property (nonatomic,strong) NIMSessionMsgDatasource *sessionDatasource;
+@property (nonatomic,strong) NSMutableArray *insertMessages;
 @property (nonatomic,readwrite)   NIMMessage *messageForMenu;
 @property (nonatomic,strong) NSIndexPath *lastVisibleIndexPathBeforeRotation;
+@property (nonatomic,assign) BOOL isRefreshing;
 
 @end
 
@@ -49,23 +48,24 @@ NIMUserManagerDelegate>
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _session = session;
+        _insertMessages = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.interactivePopGestureRecognizer.delaysTouchesBegan = NO;
     [self makeUI];
     [self makeHandlerAndDataSource];
 }
+
 
 -(void)dealloc
 {
     _tableView.delegate = nil;
     _tableView.dataSource = nil;
     [[NIMSDK sharedSDK].chatManager removeDelegate:self];
-    [[NIMSDK sharedSDK].conversationManager removeDelegate:self];
+    [self.conversationManager removeDelegate:self];
     [[NIMSDK sharedSDK].teamManager removeDelegate:self];
     [[NIMSDK sharedSDK].userManager removeDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -89,7 +89,7 @@ NIMUserManagerDelegate>
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
     
-    _refreshControl = [[UIRefreshControl alloc] init];
+    _refreshControl = [[UIRefreshControl alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     [self.tableView addSubview:_refreshControl];
     [self.refreshControl addTarget:self action:@selector(headerRereshing:) forControlEvents:UIControlEventValueChanged];
     
@@ -99,7 +99,9 @@ NIMUserManagerDelegate>
         disableInputView = [self.sessionConfig disableInputView];
     }
     if (!disableInputView) {
-        self.sessionInputView = [[NIMInputView alloc] initWithFrame:inputViewRect];
+        _sessionInputView = [[NIMInputView alloc] initWithFrame:inputViewRect];
+        _sessionInputView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+        self.sessionInputView.nim_bottom = self.view.nim_height;
         [self.sessionInputView setInputConfig:[self sessionConfig]];
         [self.sessionInputView setInputActionDelegate:self];
         [self.view addSubview:self.sessionInputView];
@@ -123,19 +125,26 @@ NIMUserManagerDelegate>
         showTimestampInterval = [self.sessionConfig showTimestampInterval];
     }
     _sessionDatasource = [[NIMSessionMsgDatasource alloc] initWithSession:_session dataProvider:dataProvider showTimeInterval:showTimestampInterval limit:limit];
+    [self.conversationManager markAllMessagesReadInSession:_session];
+    
     _sessionDatasource.delegate = self;
-    [_sessionDatasource resetMessages:nil];
+    
+    if (![self.sessionConfig respondsToSelector:@selector(autoFetchWhenOpenSession)] || self.sessionConfig.autoFetchWhenOpenSession) {
+        [_sessionDatasource resetMessages:nil];
+    }
+
     
     NSMutableArray *messageArray = [[NSMutableArray alloc] init];
     for (id model in _sessionDatasource.modelArray) {
-        if ([model isKindOfClass:[NIMMessageModel class]]) {
+        if ([model isKindOfClass:[NIMMessageModel class]])
+        {
             [messageArray addObject:[model message]];
         }
     }
     [self checkAttachmentState:messageArray];
 
     [[[NIMSDK sharedSDK] chatManager] addDelegate:self];
-    [[[NIMSDK sharedSDK] conversationManager] addDelegate:self];
+    [self.conversationManager addDelegate:self];
     if (self.session.sessionType == NIMSessionTypeTeam) {
         [[[NIMSDK sharedSDK] teamManager] addDelegate:self];
     }
@@ -151,21 +160,27 @@ NIMUserManagerDelegate>
 }
 
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    //fix bug: 竖屏进入会话界面，然后右上角进入群信息，再横屏，左上角返回，横屏的会话界面显示的就是竖屏时的大小
+    [self.sessionDatasource cleanCache];
+    [self.tableView reloadData];
+}
+
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
+    [_sessionInputView endEditing:YES];
 }
 
 
 - (void)viewDidLayoutSubviews{
-    [self changeLeftBarBadge:[[NIMSDK sharedSDK] conversationManager].allUnreadCount];
+    [self changeLeftBarBadge:self.conversationManager.allUnreadCount];
     BOOL isFirstLayout = CGRectEqualToRect(_layoutManager.viewRect, CGRectZero);
     if (isFirstLayout) {
         [self.tableView nim_scrollToBottom:NO];
     }
     [_layoutManager setViewRect:self.view.frame];
-    self.sessionInputView.nim_bottom = self.view.nim_height;
-    [self.sessionDatasource cleanCache];
-    [self.tableView reloadData];
 }
 
 - (void)checkAttachmentState:(NSArray *)messages{
@@ -185,7 +200,7 @@ NIMUserManagerDelegate>
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.sessionDatasource msgCount];
+    return self.sessionDatasource.modelArray.count;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -236,6 +251,17 @@ NIMUserManagerDelegate>
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [[UIMenuController sharedMenuController] setMenuVisible:NO animated:YES];
+    CGFloat offset = 44.f;
+    if (scrollView.contentOffset.y <= -offset && !self.isRefreshing && self.tableView.isDragging) {
+        self.isRefreshing = YES;
+        [self.refreshControl beginRefreshing];
+        [self.refreshControl sendActionsForControlEvents:UIControlEventValueChanged];
+        [scrollView endEditing:YES];
+    }
+    else if(scrollView.contentOffset.y >= 0)
+    {
+        self.isRefreshing = NO;
+    }
 }
 
 #pragma mark - 消息收发接口
@@ -284,8 +310,14 @@ NIMUserManagerDelegate>
     if (![session isEqual:self.session] || !messages.count){
         return;
     }
-    [self uiAddMessages:messages];
-    [[NIMSDK sharedSDK].conversationManager markAllMessagesReadInSession:self.session];
+    
+    if (session.sessionType == NIMSessionTypeChatroom) {
+        [self uiAddChatroomMessages:messages];
+    }
+    else{
+        [self uiAddMessages:messages];
+        [self.conversationManager markAllMessagesReadInSession:self.session];
+    }
 }
 
 
@@ -384,58 +416,6 @@ NIMUserManagerDelegate>
     [_sessionInputView endEditing:YES];
 }
 
-#pragma mark - Private
-
-- (void)layoutConfig:(NIMMessageModel *)model{
-    model.sessionConfig = self.sessionConfig;
-    if (model.layoutConfig == nil)
-    {
-        id<NIMCellLayoutConfig> layoutConfig = nil;
-        if ([self.sessionConfig respondsToSelector:@selector(layoutConfigWithMessage:)]) {
-            layoutConfig = [self.sessionConfig layoutConfigWithMessage:model.message];
-        }
-        if (!layoutConfig) {
-            layoutConfig = [NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig;
-        }
-        model.layoutConfig = layoutConfig;
-    }
-    [model calculateContent:self.tableView.nim_width];
-}
-
-
-- (NIMMessageModel *)makeModel:(NIMMessage *)message{
-    NIMMessageModel *model = [self findModel:message];
-    if (!model) {
-        model = [[NIMMessageModel alloc] initWithMessage:message];
-    }
-    [self layoutConfig:model];
-    return model;
-}
-
-- (NIMMessageModel *)findModel:(NIMMessage *)message{
-    NIMMessageModel *model;
-    for (NIMMessageModel *item in self.sessionDatasource.modelArray.reverseObjectEnumerator.allObjects) {
-        if ([item isKindOfClass:[NIMMessageModel class]] && [item.message isEqual:message]) {
-           model = item;
-           //防止那种进了会话又退出去再进来这种行为，防止SDK里回调上来的message和会话持有的message不是一个，导致刷界面刷跪了的情况
-           model.message = message;
-        }
-    }
-    return model;
-}
-
-
-- (void)headerRereshing:(id)sender
-{
-    __weak NIMSessionViewLayoutManager *layoutManager = self.layoutManager;
-    __weak UIRefreshControl *refreshControl = self.refreshControl;
-    __weak typeof(self) wself = self;
-    [self.sessionDatasource loadHistoryMessagesWithComplete:^(NSInteger index,NSArray *memssages, NSError *error) {
-        [layoutManager reloadDataToIndex:index withAnimation:NO];
-        [refreshControl endRefreshing];
-        [wself checkAttachmentState:memssages];
-    }];
-}
 #pragma marlk - 通知
 - (void)messageDataIsReady{
     [self.tableView reloadData];
@@ -625,7 +605,7 @@ NIMUserManagerDelegate>
     NIMMessage *message    = [self messageForMenu];
     NIMMessageModel *model = [self makeModel:message];
     [self.layoutManager deleteCellAtIndexs:[self.sessionDatasource deleteMessageModel:model]];
-    [[[NIMSDK sharedSDK] conversationManager] deleteMessage:model.message];
+    [self.conversationManager deleteMessage:model.message];
 }
 
 - (void)menuDidHide:(NSNotification *)notification
@@ -635,19 +615,39 @@ NIMUserManagerDelegate>
 
 
 #pragma mark - 操作接口
-- (void)uiAddMessages:(NSArray *)messages{
-    NSArray *insert = [self.sessionDatasource addMessages:messages];
-    for (NIMMessage *message in messages) {
+- (void)uiAddMessages:(NSArray *)messages
+{
+    NSMutableArray *models = [[NSMutableArray alloc] init];
+    for (NIMMessage *message in messages)
+    {
         NIMMessageModel *model = [[NIMMessageModel alloc] initWithMessage:message];
         [self layoutConfig:model];
+        [models addObject:model];
     }
-    [self.layoutManager insertTableViewCellAtRows:insert];
+    NSArray *insert = [self.sessionDatasource addMessageModels:models];
+    [self.tableView beginUpdates];
+    [self.layoutManager insertTableViewCellAtRows:insert animated:YES];
+    [self.tableView endUpdates];
+}
+
+- (void)uiAddChatroomMessages:(NSArray *)messages
+{
+    dispatch_async(NTESMessageDataPrepareQueue(), ^{
+        //后台线程处理宽度计算，处理完之后同步抛到主线程插入
+        BOOL needCheck  = self.insertMessages.count == 0;
+        [self.insertMessages addObjectsFromArray:messages];
+        if (needCheck) {
+            [self checkInsert];
+        }
+    });
 }
 
 - (void)uiDeleteMessage:(NIMMessage *)message{
     NIMMessageModel *model = [self makeModel:message];
     NSArray *indexs = [self.sessionDatasource deleteMessageModel:model];
+    [self.tableView beginUpdates];
     [self.layoutManager deleteCellAtIndexs:indexs];
+    [self.tableView endUpdates];
 }
 
 - (void)uiUpdateMessage:(NIMMessage *)message{
@@ -695,5 +695,135 @@ NIMUserManagerDelegate>
 }
 
 
+#pragma mark - Private
+
+- (void)layoutConfig:(NIMMessageModel *)model{
+    model.sessionConfig = self.sessionConfig;
+    if (model.layoutConfig == nil)
+    {
+        id<NIMCellLayoutConfig> layoutConfig = nil;
+        if ([self.sessionConfig respondsToSelector:@selector(layoutConfigWithMessage:)]) {
+            layoutConfig = [self.sessionConfig layoutConfigWithMessage:model.message];
+        }
+        if (!layoutConfig) {
+            layoutConfig = [NIMDefaultValueMaker sharedMaker].cellLayoutDefaultConfig;
+        }
+        model.layoutConfig = layoutConfig;
+    }
+    [model calculateContent:self.tableView.nim_width];
+}
+
+
+- (NIMMessageModel *)makeModel:(NIMMessage *)message{
+    NIMMessageModel *model = [self findModel:message];
+    if (!model) {
+        model = [[NIMMessageModel alloc] initWithMessage:message];
+    }
+    [self layoutConfig:model];
+    return model;
+}
+
+- (NIMMessageModel *)findModel:(NIMMessage *)message{
+    NIMMessageModel *model;
+    for (NIMMessageModel *item in self.sessionDatasource.modelArray.reverseObjectEnumerator.allObjects) {
+        if ([item isKindOfClass:[NIMMessageModel class]] && [item.message isEqual:message]) {
+            model = item;
+            //防止那种进了会话又退出去再进来这种行为，防止SDK里回调上来的message和会话持有的message不是一个，导致刷界面刷跪了的情况
+            model.message = message;
+        }
+    }
+    return model;
+}
+
+
+- (void)headerRereshing:(id)sender
+{
+    __weak NIMSessionViewLayoutManager *layoutManager = self.layoutManager;
+    __weak typeof(self) wself = self;
+    __weak UIRefreshControl *refreshControl = self.refreshControl;
+    [self.sessionDatasource loadHistoryMessagesWithComplete:^(NSInteger index,NSArray *memssages, NSError *error) {
+        [refreshControl endRefreshing];
+        [layoutManager reloadDataToIndex:index atScrollPosition:UITableViewScrollPositionBottom withAnimation:NO];
+        [wself checkAttachmentState:memssages];
+    }];
+}
+
+- (id<NIMConversationManager>)conversationManager{
+    switch (self.session.sessionType) {
+        case NIMSessionTypeChatroom:
+            return nil;
+            break;
+        case NIMSessionTypeP2P:
+        case NIMSessionTypeTeam:
+        default:
+            return [NIMSDK sharedSDK].conversationManager;
+    }
+}
+
+
+- (void)checkInsert
+{
+    __weak typeof(self) weakSelf = self;
+    if (!weakSelf) {
+        return;
+    }
+    if (weakSelf.tableView.isDecelerating || weakSelf.tableView.isDragging)
+    {
+        //滑动的时候为保证流畅，暂停插入
+        NSTimeInterval delay = 1;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), NTESMessageDataPrepareQueue(), ^{
+            [weakSelf checkInsert];
+        });
+        return;
+    }
+    static NSInteger NTESMaxInsert = 1;
+    NSArray *insert;
+    NSRange range;
+    if (self.insertMessages.count > NTESMaxInsert)
+    {
+        range = NSMakeRange(0, NTESMaxInsert);
+    }
+    else
+    {
+        range = NSMakeRange(0, self.insertMessages.count);
+    }
+    insert = [self.insertMessages subarrayWithRange:range];
+    [self.insertMessages removeObjectsInRange:range];
+    
+    NSMutableArray *models = [[NSMutableArray alloc] init];
+    for (NIMMessage *message in insert)
+    {
+        NIMMessageModel *model = [[NIMMessageModel alloc] initWithMessage:message];
+        [self layoutConfig:model];
+        [models addObject:model];
+    }
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSArray *insert = [weakSelf.sessionDatasource addMessageModels:models];
+        [weakSelf.tableView beginUpdates];
+        BOOL animated = !self.insertMessages.count;
+        [weakSelf.layoutManager insertTableViewCellAtRows:insert animated:animated];
+        [weakSelf.tableView endUpdates];
+    });
+    
+    if (self.insertMessages.count)
+    {
+        NSTimeInterval delay = 0.1;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), NTESMessageDataPrepareQueue(), ^{
+            [weakSelf checkInsert];
+        });
+    }
+}
+
+static const void * const NTESDispatchMessageDataPrepareSpecificKey = &NTESDispatchMessageDataPrepareSpecificKey;
+dispatch_queue_t NTESMessageDataPrepareQueue()
+{
+    static dispatch_queue_t queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("nim.demo.message.queue", 0);
+        dispatch_queue_set_specific(queue, NTESDispatchMessageDataPrepareSpecificKey, (void *)NTESDispatchMessageDataPrepareSpecificKey, NULL);
+    });
+    return queue;
+}
 
 @end

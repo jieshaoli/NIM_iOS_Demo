@@ -62,7 +62,14 @@
              [NIMMediaItem item:NTESMediaButtonWhiteBoard
                     normalImage:[UIImage imageNamed:@"btn_whiteboard_invite_normal"]
                   selectedImage:[UIImage imageNamed:@"btn_whiteboard_invite_pressed"]
-                          title:@"白板"]];
+                          title:@"白板"],
+             
+             [NIMMediaItem item:NTESMediaButtonTip
+                    normalImage:[UIImage imageNamed:@"btn_whiteboard_invite_normal"]
+                  selectedImage:[UIImage imageNamed:@"btn_whiteboard_invite_pressed"]
+                          title:@"提醒消息"]];
+    
+    
 }
 
 
@@ -92,6 +99,7 @@
             }
         }
         default:
+        //其他类型的Cell采用默认实现就返回nil即可。
             break;
     }
     return config;
@@ -100,6 +108,8 @@
 - (BOOL)disableProximityMonitor{
     return [NTESBundleSetting sharedConfig].disableProximityMonitor;
 }
+
+
 
 
 @end

@@ -12,4 +12,6 @@
 
 + (instancetype)currentFirstResponder;
 
++ (instancetype)currentSecondResponder;
+
 @end

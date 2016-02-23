@@ -25,7 +25,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.title = @"加入群组";
     self.teamNameLabel.text = self.joinTeam.teamName;
     self.teamIdLabel.text = [NSString stringWithFormat:@"群号：%@", self.joinTeam.teamId];

@@ -72,7 +72,7 @@
     if (avatarUrlString.length) {
         url = [NSURL URLWithString:avatarUrlString];
     }
-    [self.avatarImageView nim_setImageWithURL:url placeholderImage:sourceMember.avatarImage];
+    [self.avatarImageView nim_setImageWithURL:url placeholderImage:sourceMember.avatarImage options:NIMWebImageRetryFailed];
     self.textLabel.text        = sourceMember.showName;
     [self.textLabel sizeToFit];
     switch (type) {

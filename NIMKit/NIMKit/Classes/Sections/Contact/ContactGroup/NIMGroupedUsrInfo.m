@@ -24,7 +24,7 @@
     self = [super init];
     if (self) {
         _userId = userId;
-        _info = [[NIMKit sharedKit].provider infoByUser:userId];
+        _info = [[NIMKit sharedKit] infoByUser:userId];
     }
     return self;
 }

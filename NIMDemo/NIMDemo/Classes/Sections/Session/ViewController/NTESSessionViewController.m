@@ -45,6 +45,7 @@
 #import "SVProgressHUD.h"
 #import "NTESSessionCardViewController.h"
 #import "NTESFPSLabel.h"
+#import "UIAlertView+NTESBlock.h"
 
 typedef enum : NSUInteger {
     NTESImagePickerModeImage,
@@ -74,10 +75,11 @@ NIMContactSelectDelegate>
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    DDLogInfo(@"enter session, id = %@",self.session.sessionId);
     _notificaionSender  = [[NTESCustomSysNotificationSender alloc] init];
     [self setUpNav];
-    self.disableCommandTyping = (self.session.sessionType == NIMSessionTypeP2P &&[[NIMSDK sharedSDK].userManager isUserInBlackList:self.session.sessionId]);
-    if (!self.disableCommandTyping) {
+    BOOL disableCommandTyping = self.disableCommandTyping || (self.session.sessionType == NIMSessionTypeP2P &&[[NIMSDK sharedSDK].userManager isUserInBlackList:self.session.sessionId]);
+    if (!disableCommandTyping) {
         _titleTimer = [[NTESTimerHolder alloc] init];
         [[[NIMSDK sharedSDK] systemNotificationManager] addDelegate:self];
     }
@@ -338,6 +340,36 @@ NIMContactSelectDelegate>
 
 
 
+#pragma mark - 提醒消息
+- (void)mediaTipPressed
+{
+    UIAlertView *alert =[[UIAlertView alloc] initWithTitle:nil message:@"输入提醒" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert showAlertWithCompletionHandler:^(NSInteger index) {
+        switch (index) {
+            case 1:{
+                UITextField *textField = [alert textFieldAtIndex:0];
+                NIMMessage *message = [NTESSessionMsgConverter msgWithTip:textField.text];
+                if ([NTESBundleSetting sharedConfig].needSendTipMessage)
+                {
+                    [self sendMessage:message];
+                }
+                else
+                {
+                    __weak typeof(self) weakSelf = self;
+                    [[NIMSDK sharedSDK].conversationManager saveMessage:message forSession:self.session completion:^(NSError *error) {
+                        [weakSelf uiAddMessages:@[message]];
+                    }];
+                }
+
+            }
+                break;
+            default:
+                break;
+        }
+    }];
+}
+
 #pragma mark - ImagePicker初始化
 - (void)initImagePicker
 {
@@ -546,17 +578,6 @@ NIMContactSelectDelegate>
     }
 }
 
-- (void)playAudio:(NIMMessage *)message
-{
-    NIMAudioObject *audioObject = (NIMAudioObject*)message.messageObject;
-    if ([self.playingAudioPath isEqualToString:audioObject.path]) {
-        [[NIMSDK sharedSDK].mediaManager stopPlay];
-    } else {
-        [[NIMSDK sharedSDK].mediaManager switchAudioOutputDevice:NIMAudioOutputDeviceSpeaker];
-        [[NIMSDK sharedSDK].mediaManager playAudio:audioObject.path withDelegate:self];
-    }
-}
-
 - (void)showVideo:(NIMMessage *)message
 {
     NIMVideoObject *object = message.messageObject;
@@ -715,8 +736,8 @@ NIMContactSelectDelegate>
                     @(NTESMediaButtonAudioChat) : @"mediaAudioChatPressed",
                     @(NTESMediaButtonFileTrans) : @"mediaFileTransPressed",
                     @(NTESMediaButtonSnapchat)  : @"mediaSnapchatPressed",
-                    @(NTESMediaButtonWhiteBoard): @"mediaWhiteBoardPressed"};
-        
+                    @(NTESMediaButtonWhiteBoard): @"mediaWhiteBoardPressed",
+                    @(NTESMediaButtonTip)       : @"mediaTipPressed"};
     });
     return actions;
 }

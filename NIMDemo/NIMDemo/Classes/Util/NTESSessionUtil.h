@@ -31,5 +31,10 @@
 
 + (NSString *)formatedMessage:(NIMMessage *)message;
 
++ (NSDictionary *)dictByJsonData:(NSData *)data;
+
++ (NSDictionary *)dictByJsonString:(NSString *)jsonString;
+
+
 
 @end

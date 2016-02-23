@@ -88,7 +88,7 @@
     [dict setObject:data forKey:CMData];
 
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
-                                                   options:NSJSONWritingPrettyPrinted
+                                                   options:0
                                                      error:nil];
     
     return [[NSString alloc] initWithData:jsonData

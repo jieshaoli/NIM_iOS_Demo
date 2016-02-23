@@ -21,7 +21,7 @@
 #import "NTESClientUtil.h"
 #import "NTESNotificationCenter.h"
 #import "NIMKit.h"
-#import "NTESDataProvider.h"
+#import "NTESDataManager.h"
 
 NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 @interface NTESAppDelegate ()<NIMLoginManagerDelegate>
@@ -47,12 +47,13 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 
     [NIMCustomObject registerCustomDecoder:[NTESCustomAttachmentDecoder new]];
     
-    [[NIMKit sharedKit] setProvider:[NTESDataProvider new]];
 
     [self setupServices];
     [self registerAPNs];
     
     [self commonInitListenEvents];
+    
+    [[NIMKit sharedKit] setProvider:[NTESDataManager sharedInstance]];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor grayColor];
@@ -60,6 +61,7 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     [self setupMainViewController];
+    
     
     return YES;
 }
@@ -73,8 +75,6 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 
 #pragma mark - ApplicationDelegate
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -83,20 +83,17 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [[NIMSDK sharedSDK] updateApnsToken:deviceToken];
+    [[NIMSDK sharedSDK] updateApnsToken:deviceToken];   
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{

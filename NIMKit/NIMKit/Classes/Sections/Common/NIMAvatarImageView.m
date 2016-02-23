@@ -101,12 +101,24 @@ CGRect NIMKit_CGRectWithCenterAndSize(CGPoint center, CGSize size){
 
 - (void)setAvatarBySession:(NIMSession *)session
 {
-    NIMKitInfo *info;
-    if (session.sessionType == NIMSessionTypeTeam) {
+    NIMKitInfo *info = nil;
+    if (session.sessionType == NIMSessionTypeTeam)
+    {
         info = [[NIMKit sharedKit] infoByTeam:session.sessionId];
-    }else{
-        info = [[NIMKit sharedKit] infoByUser:session.sessionId];
     }
+    else
+    {
+        info = [[NIMKit sharedKit] infoByUser:session.sessionId
+                                    inSession:session];
+    }
+    NSURL *url = info.avatarUrlString ? [NSURL URLWithString:info.avatarUrlString] : nil;
+    [self nim_setImageWithURL:url placeholderImage:info.avatarImage];
+}
+
+- (void)setAvatarByMessage:(NIMMessage *)message
+{
+    NIMKitInfo *info = [[NIMKit sharedKit] infoByUser:message.from
+                                          withMessage:message];
     NSURL *url = info.avatarUrlString ? [NSURL URLWithString:info.avatarUrlString] : nil;
     [self nim_setImageWithURL:url placeholderImage:info.avatarImage];
 }

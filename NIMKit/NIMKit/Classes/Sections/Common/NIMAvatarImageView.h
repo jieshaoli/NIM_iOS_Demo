@@ -16,6 +16,7 @@
 @property (nonatomic,assign)    BOOL    clipPath;
 
 - (void)setAvatarBySession:(NIMSession *)session;
+- (void)setAvatarByMessage:(NIMMessage *)message;
 @end
 
 

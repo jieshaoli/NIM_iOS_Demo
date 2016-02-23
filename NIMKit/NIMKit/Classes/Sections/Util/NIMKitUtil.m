@@ -11,30 +11,24 @@
 
 @implementation NIMKitUtil
 
-+ (NSString *)showNick:(NSString*)uid inMessage:(NIMMessage*)message{
-    NSString *nickname = [NIMKitUtil showNick:uid inSession:message.session];
-    nickname = nickname? nickname : message.senderName;
-    nickname = nickname? nickname : uid;
-    return nickname;
++ (NSString *)showNick:(NSString*)uid inMessage:(NIMMessage*)message
+{
+    if (!uid.length) {
+        return nil;
+    }
+    
+    return [[NIMKit sharedKit] infoByUser:uid
+                              withMessage:message].showName;
 }
 
 + (NSString *)showNick:(NSString*)uid inSession:(NIMSession*)session{
     if (!uid.length) {
         return nil;
     }
-    NSString *nickname = nil;
-    if (session.sessionType == NIMSessionTypeTeam)
-    {
-        NIMTeamMember *member = [[NIMSDK sharedSDK].teamManager teamMember:uid inTeam:session.sessionId];
-        nickname = member.nickname;
-    }
-    if (!nickname.length) {
-        NIMKitInfo *info = [[NIMKit sharedKit] infoByUser:uid];
-        nickname = info.showName;
-    }
-    nickname = nickname? nickname : uid;
-    return nickname;
+    return [[NIMKit sharedKit] infoByUser:uid
+                                inSession:session].showName;
 }
+
 
 + (NSString*)showTime:(NSTimeInterval) msglastTime showDetail:(BOOL)showDetail
 {
@@ -126,6 +120,8 @@
     switch (message.messageType) {
         case NIMMessageTypeNotification:
             return [NIMKitUtil notificationMessage:message];
+        case NIMMessageTypeTip:
+            return message.text;
         default:
             break;
     }
@@ -141,6 +137,9 @@
         }
         case NIMNotificationTypeNetCall:{
             return [NIMKitUtil netcallNotificationFormatedMessage:message];
+        }
+        case NIMNotificationTypeChatroom:{
+            return [NIMKitUtil chatroomNotificationFormatedMessage:message];
         }
         default:
             return @"";
@@ -278,6 +277,86 @@
             break;
     }
     return text;
+}
+
+
++ (NSString *)chatroomNotificationFormatedMessage:(NIMMessage *)message{
+    NIMNotificationObject *object = message.messageObject;
+    NIMChatroomNotificationContent *content = (NIMChatroomNotificationContent *)object.content;
+    NSMutableArray *targetNicks = [[NSMutableArray alloc] init];
+    for (NIMChatroomNotificationMember *memebr in content.targets) {
+        if ([memebr.userId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
+           [targetNicks addObject:@"你"];
+        }else{
+           [targetNicks addObject:memebr.nick];
+        }
+
+    }
+    NSString *targetText =[targetNicks componentsJoinedByString:@","];
+    switch (content.eventType) {
+        case NIMChatroomEventTypeEnter:
+        {
+            return [NSString stringWithFormat:@"欢迎%@进入直播间",targetText];
+        }
+        case NIMChatroomEventTypeAddBlack:
+        {
+            return [NSString stringWithFormat:@"%@被管理员拉入黑名单",targetText];
+        }
+        case NIMChatroomEventTypeRemoveBlack:
+        {
+            return [NSString stringWithFormat:@"%@被管理员解除拉黑",targetText];
+        }
+        case NIMChatroomEventTypeAddMute:
+        {
+            if (content.targets.count == 1 && [[content.targets.firstObject userId] isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]])
+            {
+                return @"你已被禁言";
+            }
+            else
+            {
+                return [NSString stringWithFormat:@"%@被管理员禁言",targetText];
+            }
+        }
+        case NIMChatroomEventTypeRemoveMute:
+        {
+            return [NSString stringWithFormat:@"%@被管理员解除禁言",targetText];
+        }
+        case NIMChatroomEventTypeAddManager:
+        {
+            return [NSString stringWithFormat:@"%@被任命管理员身份",targetText];
+        }
+        case NIMChatroomEventTypeRemoveManager:
+        {
+            return [NSString stringWithFormat:@"%@被解除管理员身份",targetText];
+        }
+        case NIMChatroomEventTypeRemoveCommon:
+        {
+            return [NSString stringWithFormat:@"%@被解除直播室成员身份",targetText];
+        }
+        case NIMChatroomEventTypeAddCommon:
+        {
+            return [NSString stringWithFormat:@"%@被添加为直播室成员身份",targetText];
+        }
+        case NIMChatroomEventTypeInfoUpdated:
+        {
+            return [NSString stringWithFormat:@"直播间公告已更新"];
+        }
+        case NIMChatroomEventTypeKicked:
+        {
+            return [NSString stringWithFormat:@"%@被管理员移出直播间",targetText];
+        }
+        case NIMChatroomEventTypeExit:
+        {
+            return [NSString stringWithFormat:@"%@离开了直播间",targetText];
+        }
+        case NIMChatroomEventTypeClosed:
+        {
+            return [NSString stringWithFormat:@"直播间已关闭"];
+        }
+        default:
+            break;
+    }
+    return @"";
 }
 
 

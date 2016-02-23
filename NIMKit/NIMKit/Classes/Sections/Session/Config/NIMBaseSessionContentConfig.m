@@ -15,6 +15,7 @@
 #import "NIMNotificationContentConfig.h"
 #import "NIMLocationContentConfig.h"
 #import "NIMUnsupportContentConfig.h"
+#import "NIMTipContentConfig.h"
 
 @implementation NIMBaseSessionContentConfig
 @end
@@ -46,7 +47,8 @@
                   @(NIMMessageTypeVideo)        :       [NIMVideoContentConfig new],
                   @(NIMMessageTypeFile)         :       [NIMFileContentConfig new],
                   @(NIMMessageTypeLocation)     :       [NIMLocationContentConfig new],
-                  @(NIMMessageTypeNotification) :       [NIMNotificationContentConfig new]};
+                  @(NIMMessageTypeNotification) :       [NIMNotificationContentConfig new],
+                  @(NIMMessageTypeTip)          :       [NIMTipContentConfig new]};
     }
     return self;
 }

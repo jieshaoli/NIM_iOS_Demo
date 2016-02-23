@@ -14,8 +14,9 @@
 #import "NTESBundleSetting.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/ALAssetsLibrary.h>
+#import "UIViewController+NTES.h"
 
-//十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入聊天室
+//十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入房间
 #define DelaySelfStartControlTime 10
 //激活铃声后无人接听的超时时间
 #define NoBodyResponseTimeOut 40
@@ -100,6 +101,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self useClearNavigationBar];
     [self setUpStatusBar:UIStatusBarStyleLightContent];
 }
 
@@ -153,7 +155,7 @@
             if (!error && wself) {
                 wself.callInfo.callID = callID;
                 wself.chatRoom = [[NSMutableArray alloc]init];
-                //十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入聊天室
+                //十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入房间
                 NSTimeInterval delayTime = DelaySelfStartControlTime;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [wself onControl:callID from:wself.callInfo.callee type:NIMNetCallControlTypeFeedabck];
@@ -211,7 +213,7 @@
                 [wself onCalling];
                 [wself.player stop];
                 [wself.chatRoom addObject:wself.callInfo.callee];
-                NSTimeInterval delay = 10.f; //10秒后判断下聊天室
+                NSTimeInterval delay = 10.f; //10秒后判断下房间
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if (wself.chatRoom.count == 1) {
                         [wself.navigationController.view makeToast:@"通话失败"
@@ -241,7 +243,7 @@
     transition.duration = 0.25;
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
     transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromBottom;
+    transition.subtype  = kCATransitionFromBottom;
     transition.delegate = self;
     [self.navigationController.view.layer addAnimation:transition forKey:nil];
     self.navigationController.navigationBarHidden = NO;
@@ -295,7 +297,7 @@
             if (room && !room.count) {
                 [self playSenderRing];
                 [room addObject:self.callInfo.caller];
-                //40秒之后查看一下聊天室状态，如果聊天室还在一个人的话，就播放铃声超时
+                //40秒之后查看一下房间状态，如果房间还在一个人的话，就播放铃声超时
                 __weak typeof(self) wself = self;
                 uint64_t callId = self.callInfo.callID;
                 NSTimeInterval delayTime = NoBodyResponseTimeOut;

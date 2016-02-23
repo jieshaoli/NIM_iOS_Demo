@@ -24,6 +24,8 @@ static DDLogLevel ddLogLevel = DDLogLevelVerbose;
 static DDLogLevel ddLogLevel = DDLogLevelInfo;
 #endif
 
-#endif
+#define NTES_USE_CLEAR_BAR - (BOOL)useClearBar{return YES;}
 
+
+#endif
 #endif

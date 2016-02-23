@@ -21,6 +21,15 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
 
 @implementation NTESSystemNotificationViewController
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.edgesForExtendedLayout = UIRectEdgeAll;
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     if (_shouldMarkAsRead)
@@ -69,6 +78,9 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                                                                              target:self
                                                                              action:@selector(clearAll:)];
 }
+
+
+
 
 - (void)loadMore:(id)sender
 {
@@ -158,7 +170,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
                     [wself.tableView reloadData];
-                    DDLogDebug(error.localizedDescription);
+                    DDLogDebug(@"%@",error.localizedDescription);
                 }
             }];
             break;
@@ -186,7 +198,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
                     [wself.tableView reloadData];
-                    DDLogDebug(error.localizedDescription);
+                    DDLogDebug(@"%@",error.localizedDescription);
                 }
             }];
         }
@@ -212,7 +224,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                                                                                            position:CSToastPositionCenter];
                                                      }
                                                      [wself.tableView reloadData];
-                                                     DDLogDebug(error.localizedDescription);
+                                                     DDLogDebug(@"%@",error.localizedDescription);
                                                  }];
         }
             break;
@@ -242,7 +254,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
                     [wself.tableView reloadData];
-                    DDLogDebug(error.localizedDescription);
+                    DDLogDebug(@"%@",error.localizedDescription);
                 }
             }];
         }
@@ -271,7 +283,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                         notification.handleStatus = NotificationHandleTypeOutOfDate;
                     }
                     [wself.tableView reloadData];
-                    DDLogDebug(error.localizedDescription);
+                    DDLogDebug(@"%@",error.localizedDescription);
                 }
             }];
 
@@ -298,7 +310,7 @@ static NSString *reuseIdentifier = @"reuseIdentifier";
                                                                                            position:CSToastPositionCenter];
                                                      }
                                                      [wself.tableView reloadData];
-                                                     DDLogDebug(error.localizedDescription);
+                                                     DDLogDebug(@"%@",error.localizedDescription);
                                                  }];
         }
             break;

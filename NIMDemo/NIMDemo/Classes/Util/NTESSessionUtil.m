@@ -213,4 +213,30 @@ double OnedayTimeIntervalValue = 24*60*60;  //一天的秒数
 }
 
 
++ (NSDictionary *)dictByJsonData:(NSData *)data
+{
+    NSDictionary *dict = nil;
+    if ([data isKindOfClass:[NSData class]])
+    {
+        NSError *error = nil;
+        dict = [NSJSONSerialization JSONObjectWithData:data
+                                               options:0
+                                                 error:&error];
+        if (error) {
+            DDLogError(@"dictByJsonData failed %@ error %@",data,error);
+        }
+    }
+    return [dict isKindOfClass:[NSDictionary class]] ? dict : nil;
+}
+
+
++ (NSDictionary *)dictByJsonString:(NSString *)jsonString
+{
+    if (!jsonString.length) {
+        return nil;
+    }
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    return [NTESSessionUtil dictByJsonData:data];
+}
+
 @end

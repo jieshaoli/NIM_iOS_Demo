@@ -60,7 +60,6 @@ NSString *const NIMTextMessageLabelLinkData = @"NIMTextMessageLabelLinkData";
     event.message = self.model.message;
     event.data = linkData;
     [self.delegate onCatchEvent:event];
-
 }
 
 @end

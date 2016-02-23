@@ -57,7 +57,7 @@
 
 - (void)refreshAvatar:(NIMKitInfo *)info{
     NSURL *url = info.avatarUrlString ? [NSURL URLWithString:info.avatarUrlString] : nil;
-    [_avatarImageView nim_setImageWithURL:url placeholderImage:info.avatarImage];
+    [_avatarImageView nim_setImageWithURL:url placeholderImage:info.avatarImage options:NIMWebImageRetryFailed];
 }
 
 

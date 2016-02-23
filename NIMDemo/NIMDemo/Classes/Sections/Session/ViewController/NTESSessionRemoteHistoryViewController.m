@@ -41,6 +41,7 @@
     self.navigationItem.leftBarButtonItems = @[];
     self.navigationItem.rightBarButtonItems = @[];
     [SVProgressHUD show];
+    [[[NIMSDK sharedSDK] chatManager] removeDelegate:self];
 }
 
 - (NSString *)sessionTitle{
@@ -54,6 +55,8 @@
 - (NSArray *)menusItems:(NIMMessage *)message{
     return nil;
 }
+
+- (void)uiAddMessages:(NSArray *)messages{}
 
 #pragma mark - NTESRemoteSessionDelegate
 - (void)fetchRemoteDataError:(NSError *)error{

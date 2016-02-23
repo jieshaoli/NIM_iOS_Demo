@@ -23,4 +23,6 @@
 
 @property (nonatomic,strong) NIMInputTextView *inputTextView;
 
+- (void)setInputBarItemTypes:(NSArray<NSNumber *> *)types;
+
 @end

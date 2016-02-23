@@ -45,7 +45,7 @@
     if (member.info.avatarUrlString.length) {
         url = [NSURL URLWithString:member.info.avatarUrlString];
     }
-    [_avatarImageView nim_setImageWithURL:url placeholderImage:member.info.avatarImage];
+    [_avatarImageView nim_setImageWithURL:url placeholderImage:member.info.avatarImage options:NIMWebImageRetryFailed];
 }
 
 

@@ -47,8 +47,20 @@
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"show_fps_for_app"] boolValue];
 }
 
-- (BOOL)disableProximityMonitor{
+- (BOOL)disableProximityMonitor
+{
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"disable_proxmity_monitor"] boolValue];
+}
+
+
+- (BOOL)needSendTipMessage
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"tip_message_need_send"] boolValue];
+}
+
+- (BOOL)enableRotate
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"enable_rotate"] boolValue];
 }
 
 - (NIMNetCallVideoQuality)preferredVideoQuality
@@ -64,7 +76,7 @@
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n\
-auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n disable_proxmity_monitor %d\nvideochat_preferred_video_quality %zd\n",
+auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n disable_proxmity_monitor %d\n  tip_message_need_send %d\n videochat_preferred_video_quality %zd\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
@@ -72,6 +84,7 @@ auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_veri
                                         [self needVerifyForFriend],
                                         [self showFps],
                                         [self disableProximityMonitor],
+                                        [self needSendTipMessage],
                                         [self preferredVideoQuality]];
 }
 @end

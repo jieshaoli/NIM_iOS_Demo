@@ -16,13 +16,12 @@
 #import "NTESService.h"
 #import "UIView+NTES.h"
 #import "NSString+NTES.h"
-#import "UIImage+NTESColor.h"
 #import "NTESLoginManager.h"
 #import "NTESNotificationCenter.h"
 #import "UIActionSheet+NTESBlock.h"
 #import "NTESLogManager.h"
 #import "NTESRegisterViewController.h"
-#import "NTESRegisterManager.h"
+#import "UIViewController+NTES.h"
 
 @interface NTESLoginViewController ()<NTESRegisterViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *registerButton;
@@ -47,6 +46,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+
+NTES_USE_CLEAR_BAR
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.usernameTextField.tintColor = [UIColor whiteColor];
@@ -60,13 +61,12 @@
     
     [_registerButton setHidden:![[NIMSDK sharedSDK] isUsingDemoAppKey]];
     
-    
-    [self configNav];
     self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self configNav];
     [self configStatusBar];
 }
 
@@ -74,10 +74,7 @@
 
 - (void)configNav{
     self.navigationItem.title = @"";
-    UIImage *clearImage = [UIImage clearColorImage];
-    [self.navigationController.navigationBar setBackgroundImage:clearImage forBarMetrics:UIBarMetricsDefault];
-    
-    [self.navigationController.navigationBar setShadowImage:clearImage];
+    [self useClearNavigationBar];
     UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [loginBtn setTitle:@"完成" forState:UIControlStateNormal];
     loginBtn.titleLabel.font = [UIFont systemFontOfSize:15.f];
@@ -172,9 +169,7 @@
     }
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
+
 
 
 #pragma mark - Notification
@@ -271,6 +266,9 @@
     [_passwordTextField resignFirstResponder];
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations

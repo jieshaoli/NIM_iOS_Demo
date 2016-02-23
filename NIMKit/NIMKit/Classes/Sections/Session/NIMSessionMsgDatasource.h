@@ -32,15 +32,16 @@
 
 
 - (NSInteger)indexAtModelArray:(NIMMessageModel*)model;
-- (NSInteger)msgCount;
 
 //复位消息
 - (void)resetMessages:(void(^)(NSError *error)) handler;
 
 //数据对外接口
 - (void)loadHistoryMessagesWithComplete:(void(^)(NSInteger index , NSArray *messages ,NSError *error))handler;
-- (NSArray*)addMessages:(NSArray*)messages;
-- (NSArray*)deleteMessageModel:(NIMMessageModel*)model;
+
+- (NSArray<NSNumber *> *)addMessageModels:(NSArray*)models;
+
+- (NSArray<NSNumber *> *)deleteMessageModel:(NIMMessageModel*)model;
 
 //清理缓存数据
 - (void)cleanCache;

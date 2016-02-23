@@ -43,7 +43,8 @@
         _showTimeInterval  = timeInterval;
         _firstTimeInterval = 0;
         _lastTimeInterval  = 0;
-        [[[NIMSDK sharedSDK] conversationManager] markAllMessagesReadInSession:_currentSession];
+        _modelArray        = [NSMutableArray array];
+        _msgIdDict         = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -60,7 +61,7 @@
         __weak typeof(self) wself = self;
         [self.dataProvider pullDown:nil handler:^(NSError *error, NSArray *messages) {
             NIMKit_Dispatch_Async_Main(^{
-                [wself appendMessages:messages];
+                [wself appendMessageModels:[self modelsWithMessages:messages]];
                 wself.firstTimeInterval = [messages.firstObject timestamp];
                 wself.lastTimeInterval  = [messages.lastObject timestamp];
                 if ([self.delegate respondsToSelector:@selector(messageDataIsReady)]) {
@@ -74,7 +75,7 @@
         NSArray *messages = [[[NIMSDK sharedSDK] conversationManager] messagesInSession:_currentSession
                                                                                    message:nil
                                                                                      limit:_messageLimit];
-        [self appendMessages:messages];
+        [self appendMessageModels:[self modelsWithMessages:messages]];
         self.firstTimeInterval = [messages.firstObject timestamp];
         self.lastTimeInterval  = [messages.lastObject timestamp];
         if ([self.delegate respondsToSelector:@selector(messageDataIsReady)]) {
@@ -96,7 +97,8 @@
     for (NIMMessage *message in messages.reverseObjectEnumerator.allObjects) {
         [self insertMessage:message];
     }
-    return self.modelArray.count - count;
+    NSInteger currentIndex = self.modelArray.count - 1;
+    return currentIndex - count;
 }
 
 
@@ -107,13 +109,13 @@
  *
  *  @return 插入的消息的index
  */
-- (NSArray *)appendMessages:(NSArray *)messages{
-    if (!messages.count) {
+- (NSArray *)appendMessageModels:(NSArray *)models{
+    if (!models.count) {
         return @[];
     }
     NSInteger count = self.modelArray.count;
-    for (NIMMessage *message in messages) {
-        [self appendMessage:message];
+    for (NIMMessageModel *model in models) {
+        [self appendMessageModel:model];
     }
     NSMutableArray *append = [[NSMutableArray alloc] init];
     for (NSInteger i = count; i < self.modelArray.count; i++) {
@@ -141,14 +143,10 @@
 }
 
 #pragma mark - msg
-- (NSInteger)msgCount
-{
-    return [_modelArray count];
-}
 
-- (NSArray*)addMessages:(NSArray*)messages
+- (NSArray<NSNumber *> *)addMessageModels:(NSArray*)models
 {
-    return [self appendMessages:messages];
+    return [self appendMessageModels:models];
 }
 
 - (BOOL)modelIsExist:(NIMMessageModel *)model
@@ -167,37 +165,30 @@
         }
     }];
     NSInteger index = 0;
-    if (currentOldestMsg) {
-        if ([self.dataProvider respondsToSelector:@selector(pullDown:handler:)])
-        {
-            __weak typeof(self) wself = self;
-            [self.dataProvider pullDown:currentOldestMsg.message handler:^(NSError *error, NSArray *messages) {
-                NIMKit_Dispatch_Async_Main(^{
-                    NSInteger index = [wself insertMessages:messages];
-                    if (handler) {
-                        handler(index,messages,error);
-                    }
-                });
-            }];
-            return;
-        }
-        else
-        {
-            NSArray *messages = [[[NIMSDK sharedSDK] conversationManager] messagesInSession:_currentSession
-                                                                                    message:currentOldestMsg.message
-                                                                                      limit:self.messageLimit];
-            index = [self insertMessages:messages];
-            if (handler) {
-                NIMKit_Dispatch_Async_Main(^{
-                    handler(index,messages,nil);
-                });
-            }
-        }
+    if ([self.dataProvider respondsToSelector:@selector(pullDown:handler:)])
+    {
+        __weak typeof(self) wself = self;
+        [self.dataProvider pullDown:currentOldestMsg.message handler:^(NSError *error, NSArray *messages) {
+            NIMKit_Dispatch_Async_Main(^{
+                NSInteger index = [wself insertMessages:messages];
+                if (handler) {
+                    handler(index,messages,error);
+                }
+            });
+        }];
+        return;
     }
-    if (handler) {
-        NIMKit_Dispatch_Async_Main(^{
-            handler(index,nil,nil);
-        });
+    else
+    {
+        NSArray *messages = [[[NIMSDK sharedSDK] conversationManager] messagesInSession:_currentSession
+                                                                                message:currentOldestMsg.message
+                                                                                  limit:self.messageLimit];
+        index = [self insertMessages:messages];
+        if (handler) {
+            NIMKit_Dispatch_Async_Main(^{
+                handler(index,messages,nil);
+            });
+        }
     }
 }
 
@@ -241,32 +232,64 @@
         return;
     }
     if (self.firstTimeInterval && self.firstTimeInterval - model.message.timestamp < self.showTimeInterval) {
-        //此时至少有一条时间戳和一条消息
-        //干掉时间戳
-        [self.modelArray removeObjectAtIndex:0];
+        //此时至少有一条消息和时间戳（如果有的话）
+        //干掉时间戳（如果有的话）
+        if ([self.modelArray.firstObject isKindOfClass:[NIMTimestampModel class]]) {
+            [self.modelArray removeObjectAtIndex:0];
+        }
     }
     [self.modelArray insertObject:model atIndex:0];
-    NIMTimestampModel *timeModel = [[NIMTimestampModel alloc] init];
-    timeModel.messageTime = model.message.timestamp;
-    [self.modelArray insertObject:timeModel atIndex:0];
+    if (![self.dataProvider respondsToSelector:@selector(needTimetag)] || self.dataProvider.needTimetag) {
+        NIMTimestampModel *timeModel = [[NIMTimestampModel alloc] init];
+        timeModel.messageTime = model.message.timestamp;
+        [self.modelArray insertObject:timeModel atIndex:0];
+    }
     self.firstTimeInterval = model.message.timestamp;
     [self.msgIdDict setObject:model forKey:model.message.messageId];
 }
 
 
-- (void)appendMessage:(NIMMessage *)message{
-    NIMMessageModel *model = [[NIMMessageModel alloc] initWithMessage:message];
+- (void)appendMessageModel:(NIMMessageModel *)model{
     if ([self modelIsExist:model]) {
         return;
     }
-    if (model.message.timestamp - self.lastTimeInterval > self.showTimeInterval) {
-        NIMTimestampModel *timeModel = [[NIMTimestampModel alloc] init];
-        timeModel.messageTime = model.message.timestamp;
-        [self.modelArray addObject:timeModel];
+
+    if (![self.dataProvider respondsToSelector:@selector(needTimetag)] || self.dataProvider.needTimetag)
+    {
+        if (model.message.timestamp - self.lastTimeInterval > self.showTimeInterval) {
+            NIMTimestampModel *timeModel = [[NIMTimestampModel alloc] init];
+            timeModel.messageTime = model.message.timestamp;
+            [self.modelArray addObject:timeModel];
+        }
     }
     [self.modelArray addObject:model];
     self.lastTimeInterval = model.message.timestamp;
     [self.msgIdDict setObject:model forKey:model.message.messageId];
+}
+
+- (void)subHeadMessages:(NSInteger)count
+{
+    NSInteger catch = 0;
+    NSArray *modelArray = [NSArray arrayWithArray:self.modelArray];
+    for (NIMMessageModel *model in modelArray) {
+        if ([model isKindOfClass:[NIMMessageModel class]]) {
+            catch++;
+            [self deleteMessageModel:model];
+        }
+        if (catch == count) {
+            break;
+        }
+    }
+}
+
+- (NSArray<NIMMessageModel *> *)modelsWithMessages:(NSArray<NIMMessage *> *)messages
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (NIMMessage *message in messages) {
+        NIMMessageModel *model = [[NIMMessageModel alloc] initWithMessage:message];
+        [array addObject:model];
+    }
+    return array;
 }
 
 

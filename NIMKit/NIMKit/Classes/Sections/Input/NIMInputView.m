@@ -66,7 +66,13 @@
         NSString *placeholder = [_inputConfig inputViewPlaceholder];
         _toolBar.inputTextView.placeHolder = placeholder;
     }
-    _moreContainer.config = config;
+    //设置input bar 上的按钮
+    if ([_inputConfig respondsToSelector:@selector(inputBarItemTypes)]) {
+        NSArray *types = [_inputConfig inputBarItemTypes];
+        [_toolBar setInputBarItemTypes:types];
+    }
+    _moreContainer.config     = config;
+    _emoticonContainer.config = config;
 }
 
 - (void)setInputDelegate:(id<NIMInputDelegate>)delegate
@@ -116,6 +122,7 @@
 
 - (void)initUIComponents
 {
+    self.backgroundColor = [UIColor whiteColor];
     _toolBar = [[NIMInputToolBar alloc] initWithFrame:CGRectZero];
     [_toolBar.emoticonBtn addTarget:self action:@selector(onTouchEmoticonBtn:) forControlEvents:UIControlEventTouchUpInside];
     [_toolBar.moreMediaBtn addTarget:self action:@selector(onTouchMoreBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -252,7 +259,7 @@
     void(^animations)() = ^{
         [self willShowKeyboardFromFrame:beginFrame toFrame:endFrame];
     };
-    
+    NSLog(@"------> end frame height %.2f",endFrame.origin.y);
     [UIView animateWithDuration:duration delay:0.0f options:(curve << 16 | UIViewAnimationOptionBeginFromCurrentState) animations:animations completion:nil];
 }
 
@@ -378,10 +385,12 @@
         }
     } else
     {
-        _inputType = InputTypeText;
-        [self inputTextViewToHeight:[self getTextViewContentH:self.toolBar.inputTextView]];;
-        [self.toolBar.inputTextView becomeFirstResponder];
-        [self updateAllButtonImages];
+        if (self.toolBar.inputTextView.superview) {
+            _inputType = InputTypeText;
+            [self inputTextViewToHeight:[self getTextViewContentH:self.toolBar.inputTextView]];;
+            [self.toolBar.inputTextView becomeFirstResponder];
+            [self updateAllButtonImages];
+        }
     }
 }
 

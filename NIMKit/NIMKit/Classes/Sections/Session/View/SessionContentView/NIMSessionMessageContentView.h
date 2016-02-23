@@ -58,7 +58,19 @@ typedef NS_ENUM(NSInteger,NIMKitBubbleType){
  */
 - (void)onTouchUpOutside:(id)sender;
 
-
+/**
+ *  手指按下contentView
+ */
 - (void)onTouchDown:(id)sender;
+
+
+/**
+ *  聊天气泡图
+ *
+ *  @param state    目前的按压状态
+ *  @param outgoing 是否是发出去的消息
+ *
+ */
+- (UIImage *)chatBubbleImageForState:(UIControlState)state outgoing:(BOOL)outgoing;
 
 @end

@@ -11,6 +11,7 @@
 #import "UIView+NIM.h"
 #import "NIMKitUtil.h"
 #import "NIMDefaultValueMaker.h"
+#import "UIImage+NIM.h"
 
 @implementation NIMSessionNotificationContentView
 
@@ -34,6 +35,10 @@
         _label.text = [model.layoutConfig formatedMessage:model];;
         [_label sizeToFit];
     }
+}
+
+- (UIImage *)chatBubbleImageForState:(UIControlState)state outgoing:(BOOL)outgoing{
+    return [[UIImage nim_imageInKit:@"icon_session_time_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(8,20,8,20) resizingMode:UIImageResizingModeStretch];
 }
 
 - (void)layoutSubviews

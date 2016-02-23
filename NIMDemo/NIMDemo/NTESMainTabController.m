@@ -14,14 +14,31 @@
 #import "UIImage+NTESColor.h"
 #import "NTESCustomNotificationDB.h"
 #import "NTESNotificationCenter.h"
+#import "NTESNavigationHandler.h"
+#import "NTESNavigationAnimator.h"
+#import "NTESBundleSetting.h"
 
 #define TabbarVC    @"vc"
 #define TabbarTitle @"title"
 #define TabbarImage @"image"
 #define TabbarSelectedImage @"selectedImage"
 #define TabbarItemBadgeValue @"badgeValue"
+#define TabBarCount 4
 
-@interface NTESMainTabController ()<NIMSystemNotificationManagerDelegate,NIMConversationManagerDelegate,UINavigationControllerDelegate>
+typedef NS_ENUM(NSInteger,NTESMainTabType) {
+    NTESMainTabTypeMessageList,    //聊天
+    NTESMainTabTypeContact,        //通讯录
+    NTESMainTabTypeChatroomList,   //聊天室
+    NTESMainTabTypeSetting,        //设置
+};
+
+
+
+@interface NTESMainTabController ()<NIMSystemNotificationManagerDelegate,NIMConversationManagerDelegate>
+
+@property (nonatomic,strong) NSArray *navigationHandlers;
+
+@property (nonatomic,strong) NTESNavigationAnimator *animator;
 
 @property (nonatomic,assign) NSInteger sessionUnreadCount;
 
@@ -42,6 +59,7 @@
         return nil;
     }
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -73,47 +91,27 @@
     self.sessionUnreadCount  = [NIMSDK sharedSDK].conversationManager.allUnreadCount;
     self.systemUnreadCount   = [NIMSDK sharedSDK].systemNotificationManager.allUnreadCount;
     self.customSystemUnreadCount = [[NTESCustomNotificationDB sharedInstance] unreadCount];
-    NSArray *item = @[
-                      @{
-                          TabbarVC           : @"NTESSessionListViewController",
-                          TabbarTitle        : @"云信",
-                          TabbarImage        : @"icon_message_normal",
-                          TabbarSelectedImage: @"icon_message_pressed",
-                          TabbarItemBadgeValue: @(self.sessionUnreadCount)
-                          },
-                      @{
-                          TabbarVC           : @"NTESContactViewController",
-                          TabbarTitle        : @"通讯录",
-                          TabbarImage        : @"icon_contact_normal",
-                          TabbarSelectedImage: @"icon_contact_pressed",
-                          TabbarItemBadgeValue: @(self.systemUnreadCount)
-                          },
-                      @{
-                          TabbarVC           : @"NTESSettingViewController",
-                          TabbarTitle        : @"设置",
-                          TabbarImage        : @"icon_setting_normal",
-                          TabbarSelectedImage: @"icon_setting_pressed",
-                          TabbarItemBadgeValue: @(self.customSystemUnreadCount)
-                          },
-
-                      ];
-     return item;
+    NSMutableArray *items = [[NSMutableArray alloc] init];
+    for (NSInteger tabbar = 0; tabbar < TabBarCount; tabbar++) {
+        [items addObject:@(tabbar)];
+    }
+    return items;
 }
 
 
 - (void)setUpSubNav{
-    NSMutableArray * array = [[NSMutableArray alloc] init];
+    NSMutableArray *handleArray = [[NSMutableArray alloc] init];
+    NSMutableArray *vcArray = [[NSMutableArray alloc] init];
     [self.tabbars enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSDictionary * item = obj;
-        NSString * vcName = item[TabbarVC];
-        NSString * title  = item[TabbarTitle];
-        NSString * imageName = item[TabbarImage];
-        NSString * imageSelected = item[TabbarSelectedImage];
+        NSDictionary * item =[self vcInfoForTabType:[obj integerValue]];
+        NSString *vcName = item[TabbarVC];
+        NSString *title  = item[TabbarTitle];
+        NSString *imageName = item[TabbarImage];
+        NSString *imageSelected = item[TabbarSelectedImage];
         Class clazz = NSClassFromString(vcName);
-        UIViewController * vc = [[clazz alloc] initWithNibName:nil bundle:nil];
+        UIViewController *vc = [[clazz alloc] initWithNibName:nil bundle:nil];
         vc.hidesBottomBarWhenPushed = NO;
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-        nav.delegate = self;
         nav.tabBarItem = [[UITabBarItem alloc] initWithTitle:title
                                                        image:[UIImage imageNamed:imageName]
                                                selectedImage:[UIImage imageNamed:imageSelected]];
@@ -122,9 +120,14 @@
         if (badge) {
             nav.tabBarItem.badgeValue = [NSString stringWithFormat:@"%zd",badge];
         }
-        [array addObject:nav];
+        NTESNavigationHandler *handler = [[NTESNavigationHandler alloc] initWithNavigationController:nav];
+        nav.delegate = handler;
+        
+        [vcArray addObject:nav];
+        [handleArray addObject:handler];
     }];
-    self.viewControllers = array;
+    self.viewControllers = [NSArray arrayWithArray:vcArray];
+    self.navigationHandlers = [NSArray arrayWithArray:handleArray];
 }
 
 
@@ -182,18 +185,18 @@
 
 
 - (void)refreshSessionBadge{
-    UINavigationController *nav = self.viewControllers[0];
+    UINavigationController *nav = self.viewControllers[NTESMainTabTypeMessageList];
     nav.tabBarItem.badgeValue = self.sessionUnreadCount ? @(self.sessionUnreadCount).stringValue : nil;
 }
 
 - (void)refreshContactBadge{
-    UINavigationController *nav = self.viewControllers[1];
+    UINavigationController *nav = self.viewControllers[NTESMainTabTypeContact];
     NSInteger badge = self.systemUnreadCount;
     nav.tabBarItem.badgeValue = badge ? @(badge).stringValue : nil;
 }
 
 - (void)refreshSettingBadge{
-    UINavigationController *nav = self.viewControllers[2];
+    UINavigationController *nav = self.viewControllers[NTESMainTabTypeSetting];
     NSInteger badge = self.customSystemUnreadCount;
     nav.tabBarItem.badgeValue = badge ? @(badge).stringValue : nil;
 }
@@ -203,13 +206,66 @@
     return UIStatusBarStyleDefault;
 }
 
+#pragma mark - NTESNavigationGestureHandlerDataSource
+- (UINavigationController *)navigationController
+{
+    return self.selectedViewController;
+}
+
+
+#pragma mark - Rotate
+
 - (BOOL)shouldAutorotate{
-    return [self.selectedViewController shouldAutorotate];
+    BOOL enableRotate = [NTESBundleSetting sharedConfig].enableRotate;
+    return enableRotate ? [self.selectedViewController shouldAutorotate] : NO;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return [self.selectedViewController supportedInterfaceOrientations];
+    BOOL enableRotate = [NTESBundleSetting sharedConfig].enableRotate;
+    return enableRotate ? [self.selectedViewController supportedInterfaceOrientations] : UIInterfaceOrientationMaskPortrait;
 }
+
+
+#pragma mark - VC
+- (NSDictionary *)vcInfoForTabType:(NTESMainTabType)type{
+    static NSDictionary *dict;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dict = @{
+                 @(NTESMainTabTypeMessageList) : @{
+                                                     TabbarVC           : @"NTESSessionListViewController",
+                                                     TabbarTitle        : @"云信",
+                                                     TabbarImage        : @"icon_message_normal",
+                                                     TabbarSelectedImage: @"icon_message_pressed",
+                                                     TabbarItemBadgeValue: @(self.sessionUnreadCount)
+                                                  },
+                 @(NTESMainTabTypeContact)     : @{
+                                                     TabbarVC           : @"NTESContactViewController",
+                                                     TabbarTitle        : @"通讯录",
+                                                     TabbarImage        : @"icon_contact_normal",
+                                                     TabbarSelectedImage: @"icon_contact_pressed",
+                                                     TabbarItemBadgeValue: @(self.systemUnreadCount)
+                                                  },
+                 @(NTESMainTabTypeChatroomList): @{
+                                                     TabbarVC           : @"NTESChatroomListViewController",
+                                                     TabbarTitle        : @"直播间",
+                                                     TabbarImage        : @"icon_chatroom_normal",
+                                                     TabbarSelectedImage: @"icon_chatroom_pressed",
+                                                  },
+                 @(NTESMainTabTypeSetting)     : @{
+                                                     TabbarVC           : @"NTESSettingViewController",
+                                                     TabbarTitle        : @"设置",
+                                                     TabbarImage        : @"icon_setting_normal",
+                                                     TabbarSelectedImage: @"icon_setting_pressed",
+                                                     TabbarItemBadgeValue: @(self.customSystemUnreadCount)
+                                                  }
+                };
+    });
+    return dict[@(type)];
+}
+
+
+
 
 
 @end

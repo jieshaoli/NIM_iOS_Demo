@@ -54,5 +54,13 @@
 }
 
 
+- (UIImage *)chatBubbleImageForState:(UIControlState)state outgoing:(BOOL)outgoing{
+    if (self.model.message.session.sessionType == NIMSessionTypeChatroom) {
+        return nil;
+    }
+    return [super chatBubbleImageForState:state outgoing:outgoing];
+}
+
+
 
 @end

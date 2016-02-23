@@ -32,7 +32,6 @@
 
 
 - (UIEdgeInsets)contentViewInsets:(NIMMessageModel *)model{
-    
     id<NIMSessionContentConfig>config = [[NIMSessionContentConfigFactory sharedFacotry] configBy:model.message];
     return [config contentViewInsets];
 }
@@ -45,13 +44,18 @@
     }
     CGFloat cellTopToBubbleTop           = 3;
     CGFloat otherNickNameHeight          = 20;
-    CGFloat otherBubbleOriginX           = 55;
+    CGFloat otherBubbleOriginX           = [self shouldShowAvatar:model]? 55 : 0;
     CGFloat cellBubbleButtomToCellButtom = 13;
-    if ([self shouldShowNickName:model]) {
+    if ([self shouldShowNickName:model])
+    {
         //要显示名字
         return UIEdgeInsetsMake(cellTopToBubbleTop + otherNickNameHeight ,otherBubbleOriginX,cellBubbleButtomToCellButtom, 0);
     }
-    return UIEdgeInsetsMake(cellTopToBubbleTop,otherBubbleOriginX,cellBubbleButtomToCellButtom, 0);
+    else
+    {
+        return UIEdgeInsetsMake(cellTopToBubbleTop,otherBubbleOriginX,cellBubbleButtomToCellButtom, 0);
+    }
+
 }
 
 - (BOOL)shouldShowAvatar:(NIMMessageModel *)model
@@ -76,11 +80,30 @@
 }
 
 
+- (BOOL)shouldShowLeft:(NIMMessageModel *)model
+{
+    return !model.message.isOutgoingMsg;
+}
+
+- (CGFloat)avatarMargin:(NIMMessageModel *)model
+{
+    return 8.f;
+}
+
+- (CGFloat)nickNameMargin:(NIMMessageModel *)model
+{
+    return [self shouldShowAvatar:model] ? 57.f : 10.f;
+}
+
+
 - (NSString *)formatedMessage:(NIMMessageModel *)model{
     return [NIMKitUtil formatedMessage:model.message];
 }
 
-
+- (NSArray *)customViews:(NIMMessageModel *)model
+{
+    return nil;
+}
 
 
 @end

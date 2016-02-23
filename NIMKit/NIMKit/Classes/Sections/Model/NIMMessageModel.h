@@ -32,9 +32,15 @@
 
 @property (nonatomic, readonly) UIEdgeInsets  bubbleViewInsets;
 
+@property (nonatomic, readonly) CGFloat avatarMargin;
+
+@property (nonatomic, readonly) CGFloat nickNameMargin;
+
 @property (nonatomic, readonly) BOOL shouldShowAvatar;
 
 @property (nonatomic, readonly) BOOL shouldShowNickName;
+
+@property (nonatomic, readonly) BOOL shouldShowLeft;
 
 /**
  *  计算内容大小

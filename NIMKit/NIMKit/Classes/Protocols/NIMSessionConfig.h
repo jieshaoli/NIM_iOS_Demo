@@ -10,15 +10,29 @@
 #import "NIMMediaItem.h"
 #import "NIMCellConfig.h"
 #import "NIMKitMessageProvider.h"
+#import "NIMInputBarItemType.h"
 
 
 @protocol NIMSessionConfig <NSObject>
 @optional
 
 /**
+ *  输入按钮类型，请填入 NIMInputBarItemType 枚举，按顺序排列。不实现则按默认排列。
+ */
+- (NSArray<NSNumber *> *)inputBarItemTypes;
+
+
+/**
  *  可以显示在点击输入框“+”按钮之后的多媒体按钮
  */
-- (NSArray *)mediaItems;
+- (NSArray<NIMMediaItem *> *)mediaItems;
+
+
+/**
+ *  禁用贴图表情
+ */
+- (BOOL)disableCharlet;
+
 
 /**
  *  是否隐藏多媒体按钮
@@ -72,6 +86,13 @@
  */
 - (BOOL)disableProximityMonitor;
 
+
+/**
+ *  在进入会话的时候是否禁止自动去拿历史消息,默认打开
+ */
+- (BOOL)autoFetchWhenOpenSession;
+
+
 /**
  *  消息数据提供器
  *
@@ -85,7 +106,9 @@
  *
  *  @param message 需要排版的消息
  *
- *  @return 排版配置
+ *  @return 排版配置，可以继承 NIMCellLayoutDefaultConfig 或者自己定义一个配置类实现 NIMCellLayoutConfig 接口。
+ *                  每次新的消息都会调用一次这个方法获取排版配置。
+                    如果方法返回nil，会有一套消息默认的配置布局。
  */
 - (id<NIMCellLayoutConfig>)layoutConfigWithMessage:(NIMMessage *)message;
 

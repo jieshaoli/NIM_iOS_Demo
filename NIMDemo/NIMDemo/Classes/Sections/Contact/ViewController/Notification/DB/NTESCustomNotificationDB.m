@@ -188,28 +188,29 @@ typedef NS_ENUM(NSInteger, CustomNotificationStatus){
     }
 }
 
-static const void * const DispatchSharedSpecificKey = &DispatchSharedSpecificKey;
-dispatch_queue_t NotificationSharedQueue()
+static const void * const NTESDispatchIOSpecificKey = &NTESDispatchIOSpecificKey;
+dispatch_queue_t NTESDispatchIOQueue()
 {
     static dispatch_queue_t queue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         queue = dispatch_queue_create("nim.demo.io.queue", 0);
-        dispatch_queue_set_specific(queue, DispatchSharedSpecificKey, (void *)DispatchSharedSpecificKey, NULL);
+        dispatch_queue_set_specific(queue, NTESDispatchIOSpecificKey, (void *)NTESDispatchIOSpecificKey, NULL);
     });
     return queue;
 }
 
 
 typedef void(^dispatch_block)(void);
-void io_sync_safe(dispatch_block block){
-    if (dispatch_get_specific(DispatchSharedSpecificKey))
+void io_sync_safe(dispatch_block block)
+{
+    if (dispatch_get_specific(NTESDispatchIOSpecificKey))
     {
         block();
     }
     else
     {
-        dispatch_sync(NotificationSharedQueue(), ^() {
+        dispatch_sync(NTESDispatchIOQueue(), ^() {
             block();
         });
     }
@@ -217,7 +218,7 @@ void io_sync_safe(dispatch_block block){
 
 
 void io_async(dispatch_block block){
-    dispatch_async(NotificationSharedQueue(), ^() {
+    dispatch_async(NTESDispatchIOQueue(), ^() {
         block();
     });
 }

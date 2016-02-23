@@ -26,6 +26,8 @@
 
 @property (nonatomic,strong) NIMMessageModel *model;
 
+@property (nonatomic,copy)   NSArray *customViews;
+
 @end
 
 @implementation NIMMessageCell
@@ -33,7 +35,6 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier]) {
-        //
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.backgroundColor = NIMKit_UIColorFromRGB(0xe4e7ec);
         [self makeComponents];
@@ -53,7 +54,7 @@
     _retryButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_retryButton setImage:[UIImage nim_imageInKit:@"icon_message_cell_error"] forState:UIControlStateNormal];
     [_retryButton setImage:[UIImage nim_imageInKit:@"icon_message_cell_error"] forState:UIControlStateHighlighted];
-    [_retryButton setFrame:CGRectMake(0, 0, 25, 25)];
+    [_retryButton setFrame:CGRectMake(0, 0, 20, 20)];
     [_retryButton addTarget:self action:@selector(onRetryMessage:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_retryButton];
     
@@ -72,8 +73,9 @@
     
     //nicknamel
     _nameLabel = [[UILabel alloc] init];
+    _nameLabel.backgroundColor = [UIColor clearColor];
     _nameLabel.opaque = YES;
-    _nameLabel.font = [UIFont systemFontOfSize:12.0];
+    _nameLabel.font = [UIFont systemFontOfSize:13.0];
     [_nameLabel setTextColor:[UIColor darkGrayColor]];
     [_nameLabel setHidden:YES];
     [self.contentView addSubview:_nameLabel];
@@ -103,27 +105,27 @@
 
 - (void)refresh{
     [self addContentViewIfNotExist];
+    [self addUserCustomViews];
     
     if ([self needShowAvatar])
     {
-        NSString *from = self.model.message.from;
-        NIMSession *avatarSession = [NIMSession session:from
-                                                   type:NIMSessionTypeP2P];
-        [_headImageView setAvatarBySession:avatarSession];
+        [_headImageView setAvatarByMessage:self.model.message];
     }
-    
+
     if([self needShowNickName])
     {
         NSString *nick = [NIMKitUtil showNick:self.model.message.from inMessage:self.model.message];
-        [_nameLabel setText:nick];
+        [self.nameLabel setText:nick];
     }
     [_nameLabel setHidden:![self needShowNickName]];
     [_bubbleView refresh:self.model];
     
     BOOL isActivityIndicatorHidden = [self activityIndicatorHidden];
-    if (isActivityIndicatorHidden) {
+    if (isActivityIndicatorHidden)
+    {
         [_traningActivityIndicator stopAnimating];
-    } else
+    }
+    else
     {
         [_traningActivityIndicator startAnimating];
     }
@@ -160,6 +162,19 @@
     }
 }
 
+- (void)addUserCustomViews
+{
+    for (UIView *view in self.customViews) {
+        [view removeFromSuperview];
+    }
+    if ([self.model.layoutConfig respondsToSelector:@selector(customViews:)]) {
+        self.customViews = [self.model.layoutConfig customViews:self.model];
+    }
+    for (UIView *view in self.customViews) {
+        [self.contentView addSubview:view];
+    }
+}
+
 - (NIMSessionMessageContentView *)unSupportContentView{
     return [[NIMSessionUnknowContentView alloc] initSessionMessageContentView];
 }
@@ -188,17 +203,23 @@
 - (void)layoutNameLabel
 {
     if ([self needShowNickName]) {
-        CGFloat otherBubbleOriginX  = 55.f;
+        CGFloat otherBubbleOriginX  = self.cellPaddingToNick;
+        CGFloat otherBubbleOriginy  = -3.f;
+        CGFloat otherNickNameWidth  = 200.f;
         CGFloat otherNickNameHeight = 20.f;
-        _nameLabel.frame = CGRectMake(otherBubbleOriginX + 2, -3,
-                                      200, otherNickNameHeight);
+        CGFloat cellPaddingToProtrait = self.cellPaddingToProtrait;
+        CGFloat avatarWidth = self.headImageView.nim_width;
+        CGFloat myBubbleOriginX = self.nim_width - cellPaddingToProtrait - avatarWidth - self.cellPaddingToNick;
+        _nameLabel.frame = self.model.shouldShowLeft ? CGRectMake(otherBubbleOriginX,otherBubbleOriginy,
+                                                                  otherNickNameWidth, otherNickNameHeight) :        CGRectMake(myBubbleOriginX,otherBubbleOriginy,                   otherNickNameWidth,otherNickNameHeight) ;
     }
 }
 
 - (void)layoutBubbleView
 {
     UIEdgeInsets contentInsets = self.model.bubbleViewInsets;
-    if (self.model.message.isOutgoingMsg) {
+    if (!self.model.shouldShowLeft)
+    {
         CGFloat protraitRightToBubble = 5.f;
         CGFloat right = self.model.shouldShowAvatar? CGRectGetMinX(self.headImageView.frame)  - protraitRightToBubble : self.nim_width;
         contentInsets.left = right - CGRectGetWidth(self.bubbleView.bounds);
@@ -211,9 +232,11 @@
 {
     if (_traningActivityIndicator.isAnimating) {
         CGFloat centerX = 0;
-        if (self.model.message.isOutgoingMsg) {
+        if (!self.model.shouldShowLeft)
+        {
             centerX = CGRectGetMinX(_bubbleView.frame) - [self retryButtonBubblePadding] - CGRectGetWidth(_traningActivityIndicator.bounds)/2;;
-        } else
+        }
+        else
         {
             centerX = CGRectGetMaxX(_bubbleView.frame) + [self retryButtonBubblePadding] +  CGRectGetWidth(_traningActivityIndicator.bounds)/2;
         }
@@ -226,9 +249,11 @@
 {
     if (!_retryButton.isHidden) {
         CGFloat centerX = 0;
-        if (!self.model.message.isOutgoingMsg) {
+        if (self.model.shouldShowLeft)
+        {
             centerX = CGRectGetMaxX(_bubbleView.frame) + [self retryButtonBubblePadding] +CGRectGetWidth(_retryButton.bounds)/2;
-        } else
+        }
+        else
         {
             centerX = CGRectGetMinX(_bubbleView.frame) - [self retryButtonBubblePadding] - CGRectGetWidth(_retryButton.bounds)/2;
         }
@@ -240,9 +265,11 @@
 - (void)layoutAudioPlayedIcon{
     if (!_audioPlayedIcon.hidden) {
         CGFloat padding = [self audioPlayedIconBubblePadding];
-        if (!self.model.message.isOutgoingMsg) {
+        if (self.model.shouldShowLeft)
+        {
             _audioPlayedIcon.nim_left = _bubbleView.nim_right + padding;
-        } else
+        }
+        else
         {
             _audioPlayedIcon.nim_right = _bubbleView.nim_left - padding;
         }
@@ -282,7 +309,8 @@
 {
     //更新DB
     NIMMessage * message = self.model.message;
-    if (!message.isPlayed) {
+    if (!message.isPlayed)
+    {
         message.isPlayed  = YES;
         [self refreshData:self.model];
     }
@@ -294,12 +322,9 @@
 - (CGRect)avatarViewRect
 {
     CGFloat cellWidth = self.bounds.size.width;
-    CGFloat cellPaddingToProtrait = 8.f;
     CGFloat protraitImageWidth    = 42;//头像宽
-    CGFloat selfProtraitOriginX   = (cellWidth - cellPaddingToProtrait - protraitImageWidth);
-    return self.model.message.isOutgoingMsg ? CGRectMake(selfProtraitOriginX, 0,
-                                                                       protraitImageWidth,
-                                                                       protraitImageWidth) : CGRectMake(cellPaddingToProtrait, 0,                      protraitImageWidth, protraitImageWidth);
+    CGFloat selfProtraitOriginX   = (cellWidth - self.cellPaddingToProtrait - protraitImageWidth);
+    return self.model.shouldShowLeft ? CGRectMake(self.cellPaddingToProtrait,0,protraitImageWidth, protraitImageWidth) :  CGRectMake(selfProtraitOriginX, 0,protraitImageWidth,protraitImageWidth);
 }
 
 - (BOOL)needShowAvatar
@@ -324,7 +349,7 @@
 }
 
 - (CGFloat)retryButtonBubblePadding {
-    BOOL isFromMe = self.model.message.isOutgoingMsg;
+    BOOL isFromMe = !self.model.shouldShowLeft;
     if (self.model.message.messageType == NIMMessageTypeAudio) {
         return isFromMe ? 15 : 13;
     }
@@ -333,9 +358,11 @@
 
 - (BOOL)activityIndicatorHidden
 {
-    if (!self.model.message.isReceivedMsg) {
+    if (!self.model.message.isReceivedMsg)
+    {
         return self.model.message.deliveryState != NIMMessageDeliveryStateDelivering;
-    } else
+    }
+    else
     {
         return self.model.message.attachmentDownloadState != NIMMessageAttachmentDownloadStateDownloading;
     }
@@ -358,6 +385,15 @@
 }
 
 
+- (CGFloat)cellPaddingToProtrait
+{
+    return self.model.avatarMargin;
+}
+
+- (CGFloat)cellPaddingToNick
+{
+    return self.model.nickNameMargin;
+}
 
 - (void)onTapAvatar:(id)sender{
     if ([_messageDelegate respondsToSelector:@selector(onTapAvatar:)]) {

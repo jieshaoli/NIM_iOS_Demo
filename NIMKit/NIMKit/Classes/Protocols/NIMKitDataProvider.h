@@ -14,24 +14,14 @@
 @protocol NIMKitDataProvider <NSObject>
 
 @optional
-/**
- *  上层提供用户信息的方法
- *
- *  @param userId 用户Id
- *
- *  @return 用户信息
- */
-- (NIMKitInfo *)infoByUser:(NSString *)userId;
 
+- (NIMKitInfo *)infoByUser:(NSString *)userId
+                 inSession:(NIMSession *)session;
 
-/**
- *  上层提供群组信息的方法
- *
- *  @param teamId 群组id
- *
- *  @return 群组信息
- */
 - (NIMKitInfo *)infoByTeam:(NSString *)teamId;
+
+- (NIMKitInfo *)infoByUser:(NSString *)userId
+               withMessage:(NIMMessage *)message;
 
 
 @end

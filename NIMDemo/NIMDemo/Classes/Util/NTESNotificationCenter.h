@@ -9,7 +9,7 @@
 #import "NTESService.h"
 @class NTESCustomNotificationDB;
 
-NSString *NTESCustomNotificationCountChanged;
+extern NSString *NTESCustomNotificationCountChanged;
 
 @interface NTESNotificationCenter : NSObject
 

@@ -148,4 +148,17 @@
 }
 
 
++ (NIMMessage *)msgWithTip:(NSString *)tip
+{
+    NIMMessage *message        = [[NIMMessage alloc] init];
+    NIMTipObject *tipObject    = [[NIMTipObject alloc] init];
+    message.messageObject      = tipObject;
+    message.text               = tip;
+    NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
+    setting.apnsEnabled        = NO;
+    message.setting            = setting;
+    return message;
+}
+
+
 @end

@@ -51,7 +51,7 @@
         [self.nameLabel sizeToFit];
         self.accountLabel.text = [NSString stringWithFormat:@"帐号：%@",uid];
         [self.accountLabel sizeToFit];
-        [self.avatar nim_setImageWithURL:[NSURL URLWithString:info.avatarUrlString] placeholderImage:info.avatarImage];
+        [self.avatar nim_setImageWithURL:[NSURL URLWithString:info.avatarUrlString] placeholderImage:info.avatarImage options:NIMWebImageRetryFailed];
     }
 }
 

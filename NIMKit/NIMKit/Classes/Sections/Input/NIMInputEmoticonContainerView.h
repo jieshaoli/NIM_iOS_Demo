@@ -7,6 +7,7 @@
 //
 
 #import "NIMPageView.h"
+#import "NIMSessionConfig.h"
 
 @class NIMInputEmoticonCatalog;
 @class NIMInputEmoticonTabView;
@@ -29,6 +30,7 @@
 @property (nonatomic, readonly)NSArray            *allEmoticons;
 @property (nonatomic, strong)  NIMInputEmoticonTabView   *tabView;
 @property (nonatomic, weak)    id<NIMInputEmoticonProtocol>  delegate;
+@property (nonatomic, weak)    id<NIMSessionConfig> config;
 
 @end
 

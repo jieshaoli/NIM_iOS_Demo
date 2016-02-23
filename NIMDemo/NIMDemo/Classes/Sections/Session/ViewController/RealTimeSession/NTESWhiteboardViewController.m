@@ -73,6 +73,8 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 @property (assign, nonatomic) BOOL audioConnected;
 @property (assign, nonatomic) BOOL dismissed;
 
+@property (assign, nonatomic) BOOL rtsTerminated;
+
 @end
 
 @implementation NTESWhiteboardViewController
@@ -110,7 +112,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     if (info.avatarUrlString.length) {
         avatarURL = [NSURL URLWithString:info.avatarUrlString];
     }
-    [_avatarImageView nim_setImageWithURL:avatarURL placeholderImage:info.avatarImage];
+    [_avatarImageView nim_setImageWithURL:avatarURL placeholderImage:info.avatarImage options:NIMWebImageRetryFailed];
     
     [_nameTextLabel setText:[info showName]];
     
@@ -151,6 +153,10 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 
+- (void)dealloc
+{
+    [self termimateRTS];
+}
 
 #pragma mark - user interfaces
 - (IBAction)onRejectButtonPressed:(id)sender {
@@ -221,10 +227,12 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (void)onRTSTerminate:(NSString *)sessionID
                     by:(NSString *)user
 {
-    DDLogInfo(@"RTSDemo: peer terminated");
-    [self makeToast:@"对方已离开"];
-    [self termimateRTS];
-    [self dismissAfter:2];
+    DDLogInfo(@"RTSDemo: peer terminated, session id %@, current session id %@", sessionID, _sessionID);
+    if (sessionID == _sessionID) {
+        [self makeToast:@"对方已离开"];
+        [self termimateRTS];
+        [self dismissAfter:2];
+    }
 }
 
 - (void)onRTSResponsedByOther:(NSString *)sessionID
@@ -414,7 +422,10 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 
 - (void)termimateRTS
 {
-    [[NIMSDK sharedSDK].rtsManager terminateRTS:_sessionID];
+    if (!_rtsTerminated) {
+        _rtsTerminated = YES;
+        [[NIMSDK sharedSDK].rtsManager terminateRTS:_sessionID];
+    }
 }
 
 - (void)onPointCollected:(CGPoint)p type:(WhiteBoardCmdType)type

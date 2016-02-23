@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NTESSystemNotificationViewController : UITableViewController
+@interface NTESSystemNotificationViewController : UIViewController
+
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 @end

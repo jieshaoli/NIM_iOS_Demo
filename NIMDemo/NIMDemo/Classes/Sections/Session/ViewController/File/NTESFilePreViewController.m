@@ -7,7 +7,6 @@
 //
 
 #import "NTESFilePreViewController.h"
-#import "AFHTTPRequestOperation.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 @interface NTESFilePreViewController ()
 

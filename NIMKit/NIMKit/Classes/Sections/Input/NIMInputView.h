@@ -32,9 +32,11 @@ typedef NS_ENUM(NSInteger, NIMAudioRecordPhase) {
 
 @protocol NIMInputDelegate <NSObject>
 
-@required
+@optional
+
 - (void)showInputView;
 - (void)hideInputView;
+
 - (void)inputViewSizeToHeight:(CGFloat)toHeight
                 showInputView:(BOOL)show;
 @end

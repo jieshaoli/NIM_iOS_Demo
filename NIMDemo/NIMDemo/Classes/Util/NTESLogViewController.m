@@ -47,8 +47,6 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [_logTextView scrollRangeToVisible:NSMakeRange([_logTextView.text length], 0)];
-    [_logTextView setScrollEnabled:NO];
-    [_logTextView setScrollEnabled:YES];
 }
 
 

@@ -28,7 +28,11 @@
 
 - (BOOL)showFps;                                    //是否显示Fps
 
-- (BOOL)disableProximityMonitor;                       //贴耳的时候是否需要自动切换成听筒模式
+- (BOOL)disableProximityMonitor;                    //贴耳的时候是否需要自动切换成听筒模式
+
+- (BOOL)needSendTipMessage;                         //Tip类型消息是否需要发送到对面
+
+- (BOOL)enableRotate;                               //支持旋转(仅组件部分，其他部分可能会显示不正常，谨慎开启)
 
 - (NIMNetCallVideoQuality)preferredVideoQuality;
 

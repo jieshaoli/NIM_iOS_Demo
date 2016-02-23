@@ -30,16 +30,8 @@
     _model = data;
     CGSize size = [self bubbleViewSize:data];
     self.bounds = CGRectMake(0, 0, size.width, size.height);
-    switch (self.bubbleType) {
-        case NIMKitBubbleTypeChat:
-            [_bubbleImageView setImage:[self chatBubbleImageForState:UIControlStateNormal]];
-            [_bubbleImageView setHighlightedImage:[self chatBubbleImageForState:UIControlStateHighlighted]];
-            break;
-        case NIMKitBubbleTypeNotify:
-            [_bubbleImageView setImage:[self notifyBubbleImageForState:UIControlStateNormal]];
-        default:
-            break;
-    }
+    [_bubbleImageView setImage:[self chatBubbleImageForState:UIControlStateNormal outgoing:data.message.isOutgoingMsg]];
+    [_bubbleImageView setHighlightedImage:[self chatBubbleImageForState:UIControlStateHighlighted outgoing:data.message.isOutgoingMsg]];
     _bubbleImageView.frame = self.bounds;
     [self setNeedsLayout];
 }
@@ -71,9 +63,8 @@
 
 
 #pragma mark - Private
-- (UIImage *)chatBubbleImageForState:(UIControlState)state{
-    
-    if (self.model.message.isOutgoingMsg) {
+- (UIImage *)chatBubbleImageForState:(UIControlState)state outgoing:(BOOL)outgoing{
+    if (outgoing) {
         if (state == UIControlStateNormal)
         {
             UIImage *image = [UIImage nim_imageInKit:@"icon_sender_text_node_normal.png"];
@@ -100,11 +91,6 @@
     return nil;
 }
 
-
-- (UIImage *)notifyBubbleImageForState:(UIControlState)state
-{
-    return [[UIImage nim_imageInKit:@"icon_session_time_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(8,20,8,20) resizingMode:UIImageResizingModeStretch];
-}
 
 - (CGSize)bubbleViewSize:(NIMMessageModel *)model
 {

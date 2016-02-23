@@ -84,6 +84,26 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>发送提醒类型消息</string>
+			<key>Key</key>
+			<string>tip_message_need_send</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+        <dict>
+            <key>Type</key>
+            <string>PSToggleSwitchSpecifier</string>
+            <key>Title</key>
+            <string>支持旋转(需要重启)</string>
+            <key>Key</key>
+            <string>enable_rotate</string>
+            <key>DefaultValue</key>
+            <false/>
+        </dict>
+		<dict>
+			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
 			<string>视频聊天期望清晰度</string>

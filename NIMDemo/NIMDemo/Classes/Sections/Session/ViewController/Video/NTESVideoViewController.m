@@ -11,7 +11,8 @@
 #import "Reachability.h"
 #import "UIAlertView+NTESBlock.h"
 #import "SVProgressHUD.h"
-#import "AFHTTPRequestOperation.h"
+#import "NTESNavigationHandler.h"
+
 @interface NTESVideoViewController ()
 
 @property (nonatomic,strong) NIMVideoObject *videoObject;
@@ -170,7 +171,9 @@
 - (void)topStatusUIHidden:(BOOL)isHidden
 {
     [[UIApplication sharedApplication] setStatusBarHidden:isHidden];
-    self.navigationController.navigationBar.hidden = isHidden;    
+    self.navigationController.navigationBar.hidden = isHidden;
+    NTESNavigationHandler *handler = (NTESNavigationHandler *)self.navigationController.delegate;
+    handler.recognizer.enabled = !isHidden;
 }
 
 - (void)onTap: (UIGestureRecognizer *)recognizer

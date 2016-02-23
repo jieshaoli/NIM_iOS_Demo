@@ -17,7 +17,7 @@
     NSDictionary *dict = @{CMType : @(CustomMessageTypeWhiteboard),
                            CMData : @{CMFlag:@(self.flag)}};
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict
-                                                   options:NSJSONWritingPrettyPrinted
+                                                   options:0
                                                      error:nil];
     NSString *content = nil;
     if (data) {

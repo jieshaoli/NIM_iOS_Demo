@@ -31,13 +31,17 @@ NSInteger NIMCustomPageViewHeight    = 159;
 {
     if (self = [super initWithFrame:frame]) {
         [self loadConfig];
-        [self loadUIComponents];
     }
     return self;
 }
 
 - (void)loadConfig{
     self.backgroundColor = [UIColor clearColor];
+}
+
+- (void)setConfig:(id<NIMSessionConfig>)config{
+    _config = config;
+    [self loadUIComponents];
 }
 
 
@@ -83,7 +87,11 @@ NSInteger NIMCustomPageViewHeight    = 159;
 
 - (NSArray *)reloadData{
     NIMInputEmoticonCatalog * defaultCatalog = [self loadDefaultCatalog];
-    NSArray *charlets = [self loadChartlet];
+    BOOL disableCharlet = NO;
+    if ([self.config respondsToSelector:@selector(disableCharlet)]) {
+        disableCharlet = [self.config disableCharlet];
+    }
+    NSArray *charlets = disableCharlet ? nil : [self loadChartlet];
     NSArray *catalogs = defaultCatalog? [@[defaultCatalog] arrayByAddingObjectsFromArray:charlets] : charlets;
     self.currentCatalogData = catalogs.firstObject;
     return catalogs;

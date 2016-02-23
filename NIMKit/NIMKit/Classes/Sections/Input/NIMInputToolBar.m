@@ -10,10 +10,15 @@
 #import "NIMInputTextView.h"
 #import "UIView+NIM.h"
 #import "UIImage+NIM.h"
+#import "NIMInputBarItemType.h"
 
 @interface NIMInputToolBar()
 
+@property (nonatomic,copy)  NSArray<NSNumber *> *types;
+
 @property (nonatomic,strong) UIView *sep;
+
+@property (nonatomic,copy)  NSDictionary *dict;
 
 @end
 
@@ -28,40 +33,48 @@
         [_voiceBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_voice_normal"] forState:UIControlStateNormal];
         [_voiceBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_voice_pressed"] forState:UIControlStateHighlighted];
         [_voiceBtn sizeToFit];
-        [self addSubview:_voiceBtn];
         
         
         _emoticonBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_emoticonBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_emotion_normal"] forState:UIControlStateNormal];
         [_emoticonBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_emotion_pressed"] forState:UIControlStateHighlighted];
         [_emoticonBtn sizeToFit];
-        [self addSubview:_emoticonBtn];
         
         _moreMediaBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_moreMediaBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_add_normal"] forState:UIControlStateNormal];
         [_moreMediaBtn setImage:[UIImage nim_imageInKit:@"icon_toolview_add_pressed"] forState:UIControlStateHighlighted];
         [_moreMediaBtn sizeToFit];
-        [self addSubview:_moreMediaBtn];
         
         _recordButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_recordButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [_recordButton.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
         [_recordButton setBackgroundImage:[[UIImage nim_imageInKit:@"icon_input_text_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(15,80,15,80) resizingMode:UIImageResizingModeStretch] forState:UIControlStateNormal];
         [_recordButton sizeToFit];
-        [self addSubview:_recordButton];
         
         _inputTextBkgImage = [[UIImageView alloc] initWithFrame:CGRectZero];
         [_inputTextBkgImage setImage:[[UIImage nim_imageInKit:@"icon_input_text_bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(15,80,15,80) resizingMode:UIImageResizingModeStretch]];
-        [self addSubview:_inputTextBkgImage];
         
         _inputTextView = [[NIMInputTextView alloc] initWithFrame:CGRectZero];
-        [self addSubview:_inputTextView];
         
         _sep = [[UIView alloc] initWithFrame:CGRectZero];
         _sep.backgroundColor = [UIColor lightGrayColor];
         [self addSubview:_sep];
+        
+        self.types = @[
+                         @(NIMInputBarItemTypeVoice),
+                         @(NIMInputBarItemTypeTextAndRecord),
+                         @(NIMInputBarItemTypeEmoticon),
+                         @(NIMInputBarItemTypeMore),
+                       ];
     }
     return self;
+}
+
+
+
+- (void)setInputBarItemTypes:(NSArray<NSNumber *> *)types{
+    self.types = types;
+    [self setNeedsLayout];
 }
 
 
@@ -70,31 +83,71 @@
     return CGSizeMake(size.width,height);
 }
 
-
 - (void)layoutSubviews{
     [super layoutSubviews];
-    CGFloat spacing               = 6.f;
-    CGFloat textViewMargin        = 2.f;
-    //左边话筒按钮
-    self.voiceBtn.nim_left        = spacing;
-    self.voiceBtn.nim_centerY     = self.nim_height * .5f;
-    //中间输入框按钮
-    self.inputTextBkgImage.nim_width = self.nim_width - 5 * spacing - self.emoticonBtn.nim_width - self.voiceBtn.nim_width - self.moreMediaBtn.nim_width;
-    self.inputTextBkgImage.nim_height = self.nim_height - spacing * 2;
-    self.inputTextBkgImage.nim_left = self.voiceBtn.nim_right + spacing;
-    self.inputTextBkgImage.nim_centerY = self.voiceBtn.nim_centerY;
-    self.inputTextView.frame = CGRectInset(self.inputTextBkgImage.frame, textViewMargin, textViewMargin);
-    //中间点击录音按钮
-    self.recordButton.frame    = self.inputTextBkgImage.frame;
-    //右边表情按钮
-    self.emoticonBtn.nim_left     = self.recordButton.nim_right + spacing;
-    self.emoticonBtn.nim_centerY  = self.nim_height * .5f;
-    //右边加号按钮
-    self.moreMediaBtn.nim_left    = self.emoticonBtn.nim_right + spacing;
-    self.moreMediaBtn.nim_centerY = self.nim_height * .5f;
-    CGFloat sepHeight = .5f;
+    
+    if ([self.types containsObject:@(NIMInputBarItemTypeTextAndRecord)]) {
+        //先把文本输入框的宽度计算出来
+        [self resetInputTextView];
+    }
+    CGFloat left = 0;
+    for (NSNumber *type in self.types) {
+        UIView *view  = [self subViewForType:type.integerValue];
+        [self addSubview:view];
+        view.nim_left = left + self.spacing;
+        view.nim_centerY = self.nim_height * .5f;
+        left = view.nim_right;
+    }
+    
+    [self adjustTextAndRecordView];
+    
     //底部分割线
+    CGFloat sepHeight = .5f;
     _sep.nim_size     = CGSizeMake(self.nim_width, sepHeight);
     _sep.nim_bottom   = self.nim_height - sepHeight;
 }
+
+- (void)resetInputTextView{
+    self.inputTextBkgImage.nim_width = 0;
+    CGFloat width = 0;
+    for (NSNumber *type in self.types) {
+        UIView *view = [self subViewForType:type.integerValue];
+        width += view.nim_width;
+    }
+    width += (self.spacing * (self.types.count + 1));
+    self.inputTextBkgImage.nim_width  = self.nim_width  - width;
+    self.inputTextBkgImage.nim_height = self.nim_height - self.spacing * 2;
+}
+
+- (void)adjustTextAndRecordView{
+    if (self.inputTextBkgImage.superview) {
+        CGFloat textViewMargin        = 2.f;
+        //输入框
+        self.inputTextView.frame  = CGRectInset(self.inputTextBkgImage.frame, textViewMargin, textViewMargin);
+        [self addSubview:self.inputTextView];
+        //中间点击录音按钮
+        self.recordButton.frame  = self.inputTextBkgImage.frame;
+        [self addSubview:self.recordButton];
+    }
+}
+
+
+#pragma mark - Get
+- (UIView *)subViewForType:(NIMInputBarItemType)type{
+    if (!_dict) {
+        _dict = @{
+                  @(NIMInputBarItemTypeVoice) : self.voiceBtn,
+                  @(NIMInputBarItemTypeTextAndRecord)  : self.inputTextBkgImage,
+                  @(NIMInputBarItemTypeEmoticon) : self.emoticonBtn,
+                  @(NIMInputBarItemTypeMore)     : self.moreMediaBtn
+                  };
+    }
+    return _dict[@(type)];
+}
+
+- (CGFloat)spacing{
+    return 6.f;
+}
+
+
 @end

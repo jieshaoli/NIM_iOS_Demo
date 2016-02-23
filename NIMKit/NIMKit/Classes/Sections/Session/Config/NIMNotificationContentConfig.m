@@ -18,7 +18,9 @@
     CGSize contentSize = CGSizeZero;
     NIMNotificationObject *object = self.message.messageObject;
     switch (object.notificationType) {
-        case NIMNotificationTypeTeam:{
+        case NIMNotificationTypeTeam:
+        case NIMNotificationTypeChatroom:
+        {
             CGFloat TeamNotificationMessageWidth  = cellWidth;
             UILabel *label = [[UILabel alloc] init];
             label.text  = [NIMKitUtil formatedMessage:self.message];
@@ -68,6 +70,9 @@
         case NIMNotificationTypeNetCall:
             cellContent = @"NIMSessionNetChatNotifyContentView";
             break;
+        case NIMNotificationTypeChatroom:
+            cellContent = @"NIMSessionNotificationContentView";
+            break;
         default:
         {
             NIMUnsupportContentConfig *config = [NIMUnsupportContentConfig sharedConfig];
@@ -87,6 +92,7 @@
     NIMNotificationObject *object = (NIMNotificationObject *)self.message.messageObject;
     switch (object.notificationType) {
         case NIMNotificationTypeTeam:
+        case NIMNotificationTypeChatroom:
             edgeInsets = UIEdgeInsetsZero;
             break;
         case NIMNotificationTypeNetCall:
