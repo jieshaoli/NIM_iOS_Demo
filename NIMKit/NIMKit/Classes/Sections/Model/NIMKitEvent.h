@@ -7,12 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NIMSDK.h"
+#import "NIMMessageModel.h"
 
 @interface NIMKitEvent : NSObject
 
 @property (nonatomic,copy) NSString *eventName;
 
-@property (nonatomic,strong) NIMMessage *message;
+@property (nonatomic,strong) NIMMessageModel *messageModel;
 
 @property (nonatomic,strong) id data;
 

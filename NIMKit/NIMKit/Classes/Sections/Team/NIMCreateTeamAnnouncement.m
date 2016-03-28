@@ -8,6 +8,7 @@
 
 #import "NIMCreateTeamAnnouncement.h"
 #import "UIView+NIM.h"
+#import "NIMGlobalMacro.h"
 
 @interface NIMCreateTeamAnnouncement () <UITextFieldDelegate, UITextViewDelegate>
 @property (strong, nonatomic) UITextField *titleTextField;

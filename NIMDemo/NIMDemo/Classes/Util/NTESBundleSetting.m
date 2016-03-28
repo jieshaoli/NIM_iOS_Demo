@@ -53,14 +53,15 @@
 }
 
 
-- (BOOL)needSendTipMessage
-{
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"tip_message_need_send"] boolValue];
-}
 
 - (BOOL)enableRotate
 {
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"enable_rotate"] boolValue];
+}
+
+- (BOOL)usingAmr
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"using_amr"] boolValue];
 }
 
 - (NIMNetCallVideoQuality)preferredVideoQuality
@@ -75,8 +76,10 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n\
-auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\n disable_proxmity_monitor %d\n  tip_message_need_send %d\n videochat_preferred_video_quality %zd\n",
+    return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n \
+                                        auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\n \
+                                        show app %d\n disable_proxmity_monitor %d\n \
+                                        using amr %d\n videochat_preferred_video_quality %zd\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
@@ -84,7 +87,7 @@ auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_veri
                                         [self needVerifyForFriend],
                                         [self showFps],
                                         [self disableProximityMonitor],
-                                        [self needSendTipMessage],
+                                        [self usingAmr],
                                         [self preferredVideoQuality]];
 }
 @end

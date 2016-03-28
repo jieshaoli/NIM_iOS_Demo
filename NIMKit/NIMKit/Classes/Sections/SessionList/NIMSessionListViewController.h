@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "NIMCellConfig.h"
+#import "NIMSDK.h"
 
 @interface NIMSessionListViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NIMLoginManagerDelegate>
 /**

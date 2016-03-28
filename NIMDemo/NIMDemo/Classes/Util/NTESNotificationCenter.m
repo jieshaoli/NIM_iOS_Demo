@@ -89,40 +89,44 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
 
 #pragma mark - NIMNetCallManagerDelegate
 - (void)onReceive:(UInt64)callID from:(NSString *)caller type:(NIMNetCallType)type message:(NSString *)extendMessage{
-    if ([NIMSDK sharedSDK].netCallManager.currentCallID > 0) {
-        [[NIMSDK sharedSDK].netCallManager control:callID type:NIMNetCallControlTypeBusyLine];
-        return;
-    };
-    UIViewController *vc;
-    switch (type) {
-        case NIMNetCallTypeVideo:{
-            vc = [[NTESVideoChatViewController alloc] initWithCaller:caller callId:callID];
-        }
-            break;
-        case NIMNetCallTypeAudio:{
-            vc = [[NTESAudioChatViewController alloc] initWithCaller:caller callId:callID];
-        }
-            break;
-        default:
-            break;
-    }
-    if (!vc) {
-        return;
-    }
+    
     NTESMainTabController *tabVC = [NTESMainTabController instance];
     [tabVC.view endEditing:YES];
     UINavigationController *nav = tabVC.selectedViewController;
-   
-    CATransition *transition = [CATransition animation];
-    transition.duration = 0.25;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
-    transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromTop;
-    transition.delegate = self;
-    [nav.view.layer addAnimation:transition forKey:nil];
-    nav.navigationBarHidden = YES;
-    [nav pushViewController:vc animated:NO];
-    
+
+    if ([nav.topViewController isKindOfClass:[NTESNetChatViewController class]]){
+        [[NIMSDK sharedSDK].netCallManager control:callID type:NIMNetCallControlTypeBusyLine];
+    }
+    else {
+        UIViewController *vc;
+        switch (type) {
+            case NIMNetCallTypeVideo:{
+                vc = [[NTESVideoChatViewController alloc] initWithCaller:caller callId:callID];
+            }
+                break;
+            case NIMNetCallTypeAudio:{
+                vc = [[NTESAudioChatViewController alloc] initWithCaller:caller callId:callID];
+            }
+                break;
+            default:
+                break;
+        }
+        if (!vc) {
+            return;
+        }
+        
+        //由于音视频聊天里头有音频和视频聊天界面的切换，直接用present的话页面过渡会不太自然，这里还是用push，然后做出present的效果
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
+        transition.type = kCATransitionPush;
+        transition.subtype = kCATransitionFromTop;
+        transition.delegate = self;
+        [nav.view.layer addAnimation:transition forKey:nil];
+        nav.navigationBarHidden = YES;
+        [nav pushViewController:vc animated:NO];
+    }
+
 }
 
 - (void)onRTSRequest:(NSString *)sessionID
@@ -132,17 +136,23 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
 {
     NTESMainTabController *tabVC = [NTESMainTabController instance];
     [tabVC.view endEditing:YES];
-    NTESWhiteboardViewController *vc = [[NTESWhiteboardViewController alloc] initWithSessionID:sessionID
-                                                                          peerID:caller
-                                                                           types:types
-                                                                            info:info];
-    if (tabVC.presentedViewController) {
-        __weak NTESMainTabController *wtabVC = (NTESMainTabController *)tabVC;
-        [tabVC.presentedViewController dismissViewControllerAnimated:NO completion:^{
-            [wtabVC presentViewController:vc animated:NO completion:nil];
-        }];
-    }else{
-        [tabVC presentViewController:vc animated:NO completion:nil];
+    
+    if (tabVC.presentedViewController && [tabVC.presentedViewController isKindOfClass:[NTESWhiteboardViewController class]]) {
+        [[NIMSDK sharedSDK].rtsManager responseRTS:sessionID accept:NO option:nil completion:nil];
+    }
+    else {
+        NTESWhiteboardViewController *vc = [[NTESWhiteboardViewController alloc] initWithSessionID:sessionID
+                                                                                            peerID:caller
+                                                                                             types:types
+                                                                                              info:info];
+        if (tabVC.presentedViewController) {
+            __weak NTESMainTabController *wtabVC = (NTESMainTabController *)tabVC;
+            [tabVC.presentedViewController dismissViewControllerAnimated:NO completion:^{
+                [wtabVC presentViewController:vc animated:NO completion:nil];
+            }];
+        }else{
+            [tabVC presentViewController:vc animated:NO completion:nil];
+        }
     }
 }
 

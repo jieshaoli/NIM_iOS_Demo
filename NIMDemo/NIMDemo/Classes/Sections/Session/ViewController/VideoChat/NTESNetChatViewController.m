@@ -14,7 +14,6 @@
 #import "NTESBundleSetting.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/ALAssetsLibrary.h>
-#import "UIViewController+NTES.h"
 
 //十秒之后如果还是没有收到对方响应的control字段，则自己发起一个假的control，用来激活铃声并自己先进入房间
 #define DelaySelfStartControlTime 10
@@ -29,17 +28,24 @@
 
 @interface NTESNetChatViewController ()
 
-@property (nonatomic,strong) NTESTimerHolder *timer;
+@property (nonatomic, strong) NTESTimerHolder *timer;
 
-@property (nonatomic,strong) NSMutableArray *chatRoom;
+@property (nonatomic, strong) NSMutableArray *chatRoom;
 
 @property (nonatomic, assign) BOOL recordWillStopForLackSpace;
 
-@property (nonatomic,strong) NTESTimerHolder *diskCheckTimer;
+@property (nonatomic, strong) NTESTimerHolder *diskCheckTimer;
+
+@property (nonatomic, assign) BOOL userHangup;
+
+@property (nonatomic, strong) NTESTimerHolder *calleeResponseTimer; //被叫等待用户响应接听或者拒绝的时间
+@property (nonatomic, assign) BOOL calleeResponsed;
 
 @end
 
 @implementation NTESNetChatViewController
+
+NTES_FORBID_INTERACTIVE_POP
 
 - (instancetype)initWithCallee:(NSString *)callee{
     self = [self initWithNibName:nil bundle:nil];
@@ -101,7 +107,6 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self useClearNavigationBar];
     [self setUpStatusBar:UIStatusBarStyleLightContent];
 }
 
@@ -143,13 +148,19 @@
         if (!wself) {
             return;
         }
+        if (wself.userHangup) {
+            DDLogError(@"Netcall request was cancelled before, ignore it.");
+            return;
+        }
         wself.callInfo.isStart = YES;
         NSArray *callees = [NSArray arrayWithObjects:wself.callInfo.callee, nil];
         
         NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
-        option.message = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
         option.extendMessage = @"音视频请求扩展信息";
         option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+        
+        option.apnsContent = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
+        option.apnsSound = @"video_chat_tip_receiver.aac";
 
         [[NIMSDK sharedSDK].netCallManager start:callees type:wself.callInfo.callType option:option completion:^(NSError *error, UInt64 callID) {
             if (!error && wself) {
@@ -183,10 +194,13 @@
     self.chatRoom = room;
     [[NIMSDK sharedSDK].netCallManager control:self.callInfo.callID type:NIMNetCallControlTypeFeedabck];
     [self playReceiverRing];
+    _calleeResponseTimer = [[NTESTimerHolder alloc] init];
+    [_calleeResponseTimer startTimer:NoBodyResponseTimeOut delegate:self repeats:NO];
 }
 
 
 - (void)hangup{
+    _userHangup = YES;
     [[NIMSDK sharedSDK].netCallManager hangup:self.callInfo.callID];
     
     if (self.callInfo.localRecording) {
@@ -203,10 +217,12 @@
 }
 
 - (void)response:(BOOL)accept{
-    __weak typeof(self) wself = self;
+    
+    _calleeResponsed = YES;
     
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
     option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+    __weak typeof(self) wself = self;
 
     [[NIMSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept option:option completion:^(NSError *error, UInt64 callID) {
         if (!error) {
@@ -239,6 +255,7 @@
 }
 
 - (void)dismiss:(void (^)(void))completion{
+    //由于音视频聊天里头有音频和视频聊天界面的切换，直接用present的话页面过渡会不太自然，这里还是用push，然后做出present的效果
     CATransition *transition = [CATransition animation];
     transition.duration = 0.25;
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
@@ -316,9 +333,14 @@
             }
             break;
         }
-        case NIMNetCallControlTypeBusyLine:
+        case NIMNetCallControlTypeBusyLine: {
             [self playOnCallRing];
+            __weak typeof(self) wself = self;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [wself dismiss:nil];
+            });
             break;
+        }
         case NIMNetCallControlTypeStartLocalRecord:
             [self.view makeToast:@"对方开始了本地录制"
                         duration:1
@@ -443,6 +465,14 @@
 - (void)onNTESTimerFired:(NTESTimerHolder *)holder{
     if (holder == self.diskCheckTimer) {
         [self checkFreeDiskSpace];
+    }
+    else if(holder == self.calleeResponseTimer) {
+        if (!_calleeResponsed) {
+            [self.navigationController.view makeToast:@"接听超时"
+                                              duration:2
+                                              position:CSToastPositionCenter];
+            [self response:NO];
+        }
     }
 }
 

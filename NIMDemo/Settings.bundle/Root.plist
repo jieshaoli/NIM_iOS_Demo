@@ -86,22 +86,22 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>发送提醒类型消息</string>
+			<string>支持旋转(需要重启)</string>
 			<key>Key</key>
-			<string>tip_message_need_send</string>
+			<string>enable_rotate</string>
 			<key>DefaultValue</key>
 			<false/>
 		</dict>
-        <dict>
-            <key>Type</key>
-            <string>PSToggleSwitchSpecifier</string>
-            <key>Title</key>
-            <string>支持旋转(需要重启)</string>
-            <key>Key</key>
-            <string>enable_rotate</string>
-            <key>DefaultValue</key>
-            <false/>
-        </dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>使用 amr 格式</string>
+			<key>Key</key>
+			<string>using_amr</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>

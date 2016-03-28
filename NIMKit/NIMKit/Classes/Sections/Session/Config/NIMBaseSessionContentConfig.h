@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NIMSDK.h"
+#import "NIMGlobalMacro.h"
 
 @protocol NIMSessionContentConfig <NSObject>
 - (CGSize)contentSize:(CGFloat)cellWidth;

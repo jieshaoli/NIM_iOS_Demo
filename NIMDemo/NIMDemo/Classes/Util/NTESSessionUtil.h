@@ -12,8 +12,6 @@
 
 @interface NTESSessionUtil : NSObject
 
-+ (BOOL)messageIsFromMe:(NIMMessage *)message;
-
 + (CGSize)getImageSizeWithImageOriginSize:(CGSize)originSize
                                   minSize:(CGSize)imageMinSize
                                   maxSize:(CGSize)imageMaxSize;
@@ -28,8 +26,6 @@
                   outputURL:(NSURL*)outputURL
                blockHandler:(void (^)(AVAssetExportSession*))handler;
 
-
-+ (NSString *)formatedMessage:(NIMMessage *)message;
 
 + (NSDictionary *)dictByJsonData:(NSData *)data;
 

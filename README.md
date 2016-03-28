@@ -6,7 +6,7 @@
 
 ##项目构建
 
-* 使用 **pod install** 命令下载依赖并生成 **NIM.xcworkspace**.
+* 进入NIMDemo目录，使用 **pod install** 命令下载依赖并生成 **NIM.xcworkspace**.
 * 打开 **NIM.xcworkspace** 编译即可
 
 

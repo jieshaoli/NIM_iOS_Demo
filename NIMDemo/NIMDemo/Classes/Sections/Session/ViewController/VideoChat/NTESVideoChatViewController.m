@@ -192,6 +192,7 @@
 
 //切换接听中界面(语音)
 - (void)audioCallingInterface{
+    
     NTESAudioChatViewController *vc = [[NTESAudioChatViewController alloc] initWithCallInfo:self.callInfo];
     [UIView  beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];

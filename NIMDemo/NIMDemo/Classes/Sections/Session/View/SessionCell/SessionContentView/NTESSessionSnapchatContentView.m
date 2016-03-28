@@ -66,9 +66,9 @@ NSString *const NIMDemoEventNameCloseSnapPicture = @"NIMDemoEventNameCloseSnapPi
     self.imageView.frame  = imageViewFrame;
 
     CGFloat customSnapMessageImageRightToText = .5f;
-    CGFloat customSnapMessageTextBottom       = .5f;
-    self.label.left = [NTESSessionUtil messageIsFromMe:self.model.message] ? self.imageView.left - customSnapMessageImageRightToText - self.label.width : self.imageView.right + customSnapMessageImageRightToText;
-    self.label.bottom = self.imageView.bottom - customSnapMessageTextBottom;
+    CGFloat customSnapMessageTextBottom       = 20.5f;
+    self.label.left = self.model.message.isOutgoingMsg ? self.imageView.left - customSnapMessageImageRightToText - self.label.width : self.imageView.right + customSnapMessageImageRightToText;
+    self.label.bottom = self.imageView.bottom - customSnapMessageTextBottom ;
     
 }
 
@@ -77,7 +77,7 @@ NSString *const NIMDemoEventNameCloseSnapPicture = @"NIMDemoEventNameCloseSnapPi
 - (void)onLongPressDown:(UILongPressGestureRecognizer *)recognizer
 {
     NIMMessage *message = self.model.message;
-    if ([NTESSessionUtil messageIsFromMe:message] && message.deliveryState != NIMMessageDeliveryStateDeliveried) {
+    if (!message.isReceivedMsg && message.deliveryState != NIMMessageDeliveryStateDeliveried) {
         return;
     }
     if (recognizer.state != UIGestureRecognizerStateBegan) {
@@ -104,7 +104,7 @@ NSString *const NIMDemoEventNameCloseSnapPicture = @"NIMDemoEventNameCloseSnapPi
     if ([self.delegate respondsToSelector:@selector(onCatchEvent:)]) {
         NIMKitEvent *event = [[NIMKitEvent alloc] init];
         event.eventName = NIMDemoEventNameOpenSnapPicture;
-        event.message = self.model.message;
+        event.messageModel = self.model;
         event.data = self;
         [self.delegate onCatchEvent:event];
     }
@@ -114,7 +114,7 @@ NSString *const NIMDemoEventNameCloseSnapPicture = @"NIMDemoEventNameCloseSnapPi
     if ([self.delegate respondsToSelector:@selector(onCatchEvent:)]) {
         NIMKitEvent *event = [[NIMKitEvent alloc] init];
         event.eventName = NIMDemoEventNameCloseSnapPicture;
-        event.message = self.model.message;
+        event.messageModel = self.model;
         event.data = self;
         [self.delegate onCatchEvent:event];
     }

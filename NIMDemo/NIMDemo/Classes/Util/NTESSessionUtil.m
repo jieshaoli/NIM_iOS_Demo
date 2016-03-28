@@ -16,16 +16,6 @@
 double OnedayTimeIntervalValue = 24*60*60;  //一天的秒数
 @implementation NTESSessionUtil
 
-+ (BOOL)messageIsFromMe:(NIMMessage *)message{
-    NSString *currentUserID = [[[NIMSDK sharedSDK] loginManager] currentAccount];
-    if (message.session.sessionType == NIMSessionTypeP2P && [message.session.sessionId isEqualToString:currentUserID]) {
-        //自己和自己说话
-        return  !message.isReceivedMsg;
-    }else{
-        return  [message.from isEqualToString:currentUserID];
-    }
-}
-
 + (CGSize)getImageSizeWithImageOriginSize:(CGSize)originSize
                                   minSize:(CGSize)imageMinSize
                                   maxSize:(CGSize)imageMaxSiz
@@ -198,18 +188,6 @@ double OnedayTimeIntervalValue = 24*60*60;  //一天的秒数
      {
          handler(session);
      }];
-}
-
-
-+ (NSString *)formatedMessage:(NIMMessage *)message{
-    NSAssert(message.messageType == NIMMessageTypeCustom, @"message type custom");
-    NIMCustomObject *object = (NIMCustomObject *)message.messageObject;
-    id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)object.attachment;
-    if ([attachment respondsToSelector:@selector(formatedMessage)]) {
-        return [attachment formatedMessage];
-    }else{
-        return @"";
-    }
 }
 
 

@@ -80,6 +80,8 @@
 
 @property (nonatomic,strong) NIMRemoteMessageDataProvider *provider;
 
+
+
 @end
 
 @implementation NTESRemoteSessionConfig
@@ -107,7 +109,12 @@
 
 - (BOOL)disableInputView{
     return YES;
-} 
+}
+
+//云消息不显示已读
+- (BOOL)shouldHandleReceipt{
+    return NO;
+}
 
 @end
 

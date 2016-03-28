@@ -7,12 +7,12 @@
 //
 
 #import "NTESChatroomConfig.h"
-#import "NIMChatroomMessageDataProvider.h"
+#import "NTESChatroomMessageDataProvider.h"
 #import "NTESChatroomCellLayoutConfig.h"
 
 @interface NTESChatroomConfig()
 
-@property (nonatomic,strong) NIMChatroomMessageDataProvider *provider;
+@property (nonatomic,strong) NTESChatroomMessageDataProvider *provider;
 
 @end
 
@@ -21,7 +21,7 @@
 - (instancetype)initWithChatroom:(NSString *)roomId{
     self = [super init];
     if (self) {
-        self.provider = [[NIMChatroomMessageDataProvider alloc] initWithChatroom:roomId];
+        self.provider = [[NTESChatroomMessageDataProvider alloc] initWithChatroom:roomId];
     }
     return self;
 }
@@ -55,6 +55,11 @@
 }
 
 - (BOOL)autoFetchWhenOpenSession
+{
+    return NO;
+}
+
+- (BOOL)shouldHandleReceipt
 {
     return NO;
 }

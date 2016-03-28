@@ -26,17 +26,6 @@
     });
 }
 
-
-#pragma mark - InitWithNibName:bundle:
-//如果希望vchidesBottomBarWhenPushed为NO的话，请在vc init方法之后调用vc.hidesBottomBarWhenPushed = NO;
-- (instancetype)swizzling_initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
-    id instance = [self swizzling_initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (instance) {
-        self.hidesBottomBarWhenPushed = YES;
-    }
-    return instance;
-}
-
 #pragma mark - ViewDidLoad
 - (void)swizzling_viewDidLoad{
     if (self.navigationController) {
@@ -47,6 +36,17 @@
         self.navigationItem.backBarButtonItem = backItem;
     }
     [self swizzling_viewDidLoad];
+}
+
+
+#pragma mark - InitWithNibName:bundle:
+//如果希望vchidesBottomBarWhenPushed为NO的话，请在vc init方法之后调用vc.hidesBottomBarWhenPushed = NO;
+- (instancetype)swizzling_initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
+    id instance = [self swizzling_initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (instance) {
+        self.hidesBottomBarWhenPushed = YES;
+    }
+    return instance;
 }
 
 #pragma mark - ViewWillAppear
@@ -96,7 +96,7 @@ static char UIFirstResponderViewAddress;
     SEL  sel = NSSelectorFromString(@"useClearBar");
     BOOL use = NO;
     if ([self respondsToSelector:sel]) {
-        SuppressPerformSelectorLeakWarning(use = [self performSelector:sel]);
+        SuppressPerformSelectorLeakWarning(use = (BOOL)[self performSelector:sel]);
     }
     return use;
 }

@@ -16,6 +16,4 @@
 - (NSString *)cerName;
 
 
-
-
 @end

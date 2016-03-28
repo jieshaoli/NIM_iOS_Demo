@@ -8,7 +8,7 @@
 
 //UI常量
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface NIMUIConfig : NSObject
 //输入框上部高度

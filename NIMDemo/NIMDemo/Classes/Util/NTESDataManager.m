@@ -8,8 +8,9 @@
 
 #import "NTESDataManager.h"
 #import "NTESChatroomManager.h"
+#import "NTESCustomAttachmentDefines.h"
 
-@interface NTESDataRequestArray : NSObject
+@interface NTESDataRequest : NSObject
 
 @property (nonatomic,assign) NSInteger maxMergeCount; //最大合并数
 
@@ -20,7 +21,7 @@
 
 @interface NTESDataManager()
 
-@property (nonatomic,strong) NTESDataRequestArray *requestArray;
+@property (nonatomic,strong) NTESDataRequest *request;
 
 @end
 
@@ -40,8 +41,8 @@
     if (self) {
         _defaultUserAvatar = [UIImage imageNamed:@"avatar_user"];
         _defaultTeamAvatar = [UIImage imageNamed:@"avatar_team"];
-        _requestArray = [[NTESDataRequestArray alloc] init];
-        _requestArray.maxMergeCount = 20;
+        _request = [[NTESDataRequest alloc] init];
+        _request.maxMergeCount = 20;
     }
     return self;
 }
@@ -91,7 +92,7 @@
     
     if (needFetchInfo)
     {
-        [self.requestArray requestUserIds:@[userId]];
+        [self.request requestUserIds:@[userId]];
     }
     return info;
 }
@@ -133,6 +134,21 @@
     }
 }
 
+- (NSString *)tipMessage:(NIMMessage *)message
+{
+    NSString *text = nil;
+    NIMMessageType type = message.messageType;
+    if (type == NIMMessageTypeCustom) {
+        NIMCustomObject *object = (NIMCustomObject *)message.messageObject;
+        id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)object.attachment;
+        if ([attachment respondsToSelector:@selector(formatedMessage)]) {
+            text =  [attachment formatedMessage];
+        }
+        
+    }
+    return text;
+}
+
 #pragma mark - nickname
 - (NSString *)nickname:(NIMUser *)user
             memberInfo:(NIMTeamMember *)memberInfo
@@ -164,7 +180,7 @@
 
 
 
-@implementation NTESDataRequestArray{
+@implementation NTESDataRequest{
     NSMutableArray *_requstUserIdArray; //待请求池
     BOOL _isRequesting;
 }

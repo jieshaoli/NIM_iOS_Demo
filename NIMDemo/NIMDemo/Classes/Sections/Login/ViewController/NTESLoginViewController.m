@@ -21,7 +21,6 @@
 #import "UIActionSheet+NTESBlock.h"
 #import "NTESLogManager.h"
 #import "NTESRegisterViewController.h"
-#import "UIViewController+NTES.h"
 
 @interface NTESLoginViewController ()<NTESRegisterViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *registerButton;
@@ -74,7 +73,6 @@ NTES_USE_CLEAR_BAR
 
 - (void)configNav{
     self.navigationItem.title = @"";
-    [self useClearNavigationBar];
     UIButton *loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [loginBtn setTitle:@"完成" forState:UIControlStateNormal];
     loginBtn.titleLabel.font = [UIFont systemFontOfSize:15.f];

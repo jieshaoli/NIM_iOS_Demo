@@ -12,7 +12,6 @@
 #import "UIView+Toast.h"
 #import "UIView+NTES.h"
 #import "SVProgressHUD.h"
-#import "UIViewController+NTES.h"
 
 @interface NTESRegisterViewController ()
 
@@ -40,7 +39,6 @@ NTES_USE_CLEAR_BAR
 
 - (void)setupNav
 {
-    [self useClearNavigationBar];
     UIButton *registerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [registerBtn setTitle:@"完成" forState:UIControlStateNormal];
     registerBtn.titleLabel.font = [UIFont systemFontOfSize:15.f];

@@ -136,7 +136,12 @@
 
 - (void)didUpdateRecentSession:(NIMRecentSession *)recentSession
               totalUnreadCount:(NSInteger)totalUnreadCount{
-    [self.recentSessions removeObject:recentSession];
+    for (NIMRecentSession *recent in self.recentSessions) {
+        if ([recentSession.session.sessionId isEqualToString:recent.session.sessionId]) {
+            [self.recentSessions removeObject:recent];
+            break;
+        }
+    }
     NSInteger insert = [self findInsertPlace:recentSession];
     [self.recentSessions insertObject:recentSession atIndex:insert];
     [self reload];
@@ -288,6 +293,9 @@
         }
         case NIMMessageTypeFile:
             text = @"[文件]";
+            break;
+        case NIMMessageTypeTip:
+            text = @"[提醒消息]";   //调整成你需要显示的文案
             break;
         default:
             text = @"[未知消息]";

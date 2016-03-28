@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NIMSDK.h"
 
 @class NIMMessageModel;
-@class NIMMessage;
+
 /**
  *  返回消息结果集的回调
  *  @param messages 消息结果集
  *  @discussion 消息结果需要排序，内部按消息结果已经事先排序处理。
  */
-typedef void (^NIMKitDataProvideHandler)(NSError *error, NSArray *messages);
+typedef void (^NIMKitDataProvideHandler)(NSError *error, NSArray<NIMMessage *> *messages);
 
 @protocol NIMKitMessageProvider <NSObject>
 

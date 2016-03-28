@@ -102,11 +102,11 @@
         CGFloat otherContentButtomToBubbleForBoard = 9.f;
         CGFloat otherContentRightToBubbleForBoard  = 9.f;
         
-        BOOL isFromMe = [NTESSessionUtil messageIsFromMe:message];
-        return isFromMe ? UIEdgeInsetsMake(selfBubbleTopToContentForBoard,
-                                           selfBubbleLeftToContentForBoard,
-                                           selfContentButtomToBubbleForBoard,
-                                           selfBubbleRightToContentForBoard):
+
+        return message.isOutgoingMsg ? UIEdgeInsetsMake(selfBubbleTopToContentForBoard,
+                                                        selfBubbleLeftToContentForBoard,
+                                                        selfContentButtomToBubbleForBoard,
+                                                        selfBubbleRightToContentForBoard):
         UIEdgeInsetsMake(otherBubbleTopToContentForBoard,
                          otherBubbleLeftToContentForBoard,
                          otherContentButtomToBubbleForBoard,

@@ -159,6 +159,46 @@ static const GLfloat kColorConversion709[] = {
     1.793, -0.533,  0.0,
 };
 
+@interface NTESVideoRenderThread : NSObject
+
++ (NSThread *)thread;
+
+@end
+
+
+@implementation NTESVideoRenderThread
+
++ (NSThread *)thread
+{
+    static NSThread *theThread = nil;
+    static dispatch_once_t oncePredicate;
+    dispatch_once(&oncePredicate, ^{
+        theThread = [[NSThread alloc] initWithTarget:self selector:@selector(threadEntryPoint:) object:nil];
+        if ([theThread respondsToSelector:@selector(setQualityOfService:)]) {
+            [theThread setQualityOfService:NSQualityOfServiceUserInteractive];
+        }
+        else {
+            [theThread setThreadPriority:0.9];
+        }
+        [theThread start];
+    });
+    
+    return theThread;
+}
+
++ (void)threadEntryPoint:(id)__unused object
+{
+    @autoreleasepool {
+        [[NSThread currentThread] setName:@"com.netease.video.render.thread"];
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+        [runLoop run];
+    }
+}
+
+@end
+
+
 @interface NTESGLVoutOverlay : NSObject
 {
     UInt16 _pitches[3];
@@ -350,8 +390,6 @@ static const GLfloat kColorConversion709[] = {
     BOOL            _didSetupGL;
     BOOL            _didStopGL;
     NSMutableArray *_registeredNotifications;
-    
-    NSThread       *_videoRenderThread;
 }
 
 enum {
@@ -374,33 +412,12 @@ enum {
         _registeredNotifications = [[NSMutableArray alloc] init];
         [self registerApplicationObservers];
         
-        _videoRenderThread = [[NSThread alloc] initWithTarget:self selector:@selector(videoRenderThreadEntryPoint:) object:nil];
-        if ([_videoRenderThread respondsToSelector:@selector(setQualityOfService:)]) {
-            [_videoRenderThread setQualityOfService:NSQualityOfServiceUserInteractive];
-        }
-        else {
-            [_videoRenderThread setThreadPriority:0.9];
-        }
-        [_videoRenderThread start];
-        
         _didSetupGL = NO;
         [self setupGLOnce];
     }
     
     return self;
 }
-
-- (void)videoRenderThreadEntryPoint:(id)__unused object
-{
-    @autoreleasepool {
-        [[NSThread currentThread] setName:@"NTESGLRenderProcess"];
-        
-        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-        [runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
-        [runLoop run];
-    }
-}
-
 
 - (BOOL)setupEAGLContext:(EAGLContext *)context
 {
@@ -570,9 +587,6 @@ enum {
     [self unregisterApplicationObservers];
     
     [self unlockGLActive];
-    
-    [_videoRenderThread cancel];
-    _videoRenderThread = nil;
 }
 
 - (void)setScaleFactor:(CGFloat)scaleFactor
@@ -617,7 +631,7 @@ enum {
     _didSetContentMode = YES;
     
     [self performSelector:@selector(displayInRenderThread:)
-                 onThread:_videoRenderThread
+                 onThread:[NTESVideoRenderThread thread]
                withObject:[[NTESGLVoutOverlay alloc] initWithData:nil w:0 h:0]
             waitUntilDone:NO];
 }
@@ -767,7 +781,7 @@ exit:
     NTESGLVoutOverlay *overlay = [[NTESGLVoutOverlay alloc] initWithData:yuvData w:width h:height];
     
     [self performSelector:@selector(displayInRenderThread:)
-                 onThread:_videoRenderThread
+                 onThread:[NTESVideoRenderThread thread]
                withObject:overlay
             waitUntilDone:NO];
 }

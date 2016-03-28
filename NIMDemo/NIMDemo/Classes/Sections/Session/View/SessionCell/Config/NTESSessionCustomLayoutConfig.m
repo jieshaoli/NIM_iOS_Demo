@@ -12,9 +12,7 @@
 #import "NTESSessionCustomContentConfig.h"
 
 @interface NTESSessionCustomLayoutConfig()
-
-@property (nonatomic,strong) NTESSessionCustomContentConfig *contentConfig;
-
+@property (nonatomic,strong) NTESSessionCustomContentConfig *contentConfig; //所有的自定义消息都使用这个对象，重用
 @end
 
 @implementation NTESSessionCustomLayoutConfig
@@ -27,11 +25,7 @@
     return self;
 }
 
-+ (BOOL)supportMessage:(NIMMessage *)message{
-    NSArray *supportType = [NTESSessionCustomLayoutConfig supportAttachmentType];
-    NIMCustomObject *object = message.messageObject;
-    return [supportType indexOfObject:NSStringFromClass([object.attachment class])] != NSNotFound;
-}
+
 
 - (CGSize)contentSize:(NIMMessageModel *)model cellWidth:(CGFloat)width{
     id<NIMSessionContentConfig> config = [self sessionContentConfig:model.message];
@@ -50,6 +44,19 @@
 }
 
 
+#pragma mark - misc
+- (id<NIMSessionContentConfig>)sessionContentConfig:(NIMMessage *)message{
+    self.contentConfig.message = message;
+    return self.contentConfig;
+}
+
+#pragma mark - 支持类型配置
++ (BOOL)supportMessage:(NIMMessage *)message{
+    NSArray *supportType = [NTESSessionCustomLayoutConfig supportAttachmentType];
+    NIMCustomObject *object = message.messageObject;
+    return [supportType indexOfObject:NSStringFromClass([object.attachment class])] != NSNotFound;
+}
+
 + (NSArray *)supportAttachmentType
 {
     static NSArray *types = nil;
@@ -64,22 +71,6 @@
                    ];
     });
     return types;
-}
-
-
-- (NSString *)formatedMessage:(NIMMessageModel *)model{
-    NIMCustomObject *object = (NIMCustomObject *)model.message.messageObject;
-    id<NTESCustomAttachmentInfo> attachment = (id<NTESCustomAttachmentInfo>)object.attachment;
-    if ([attachment respondsToSelector:@selector(formatedMessage)]) {
-        return [attachment formatedMessage];
-    }else{
-        return @"";
-    }
-}
-
-- (id<NIMSessionContentConfig>)sessionContentConfig:(NIMMessage *)message{
-    self.contentConfig.message = message;
-    return self.contentConfig;
 }
 
 @end

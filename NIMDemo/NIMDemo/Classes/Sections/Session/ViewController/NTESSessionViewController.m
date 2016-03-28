@@ -236,6 +236,7 @@ NIMContactSelectDelegate>
 - (void)mediaAudioChatPressed
 {
     if ([self checkCondition]) {
+        //由于音视频聊天里头有音频和视频聊天界面的切换，直接用present的话页面过渡会不太自然，这里还是用push，然后做出present的效果
         NTESAudioChatViewController *vc = [[NTESAudioChatViewController alloc] initWithCallee:self.session.sessionId];
         CATransition *transition = [CATransition animation];
         transition.duration = 0.25;
@@ -253,6 +254,7 @@ NIMContactSelectDelegate>
 - (void)mediaVideoChatPressed
 {
     if ([self checkCondition]) {
+        //由于音视频聊天里头有音频和视频聊天界面的切换，直接用present的话页面过渡会不太自然，这里还是用push，然后做出present的效果
         NTESVideoChatViewController *vc = [[NTESVideoChatViewController alloc] initWithCallee:self.session.sessionId];
         CATransition *transition = [CATransition animation];
         transition.duration = 0.25;
@@ -350,17 +352,7 @@ NIMContactSelectDelegate>
             case 1:{
                 UITextField *textField = [alert textFieldAtIndex:0];
                 NIMMessage *message = [NTESSessionMsgConverter msgWithTip:textField.text];
-                if ([NTESBundleSetting sharedConfig].needSendTipMessage)
-                {
-                    [self sendMessage:message];
-                }
-                else
-                {
-                    __weak typeof(self) weakSelf = self;
-                    [[NIMSDK sharedSDK].conversationManager saveMessage:message forSession:self.session completion:^(NSError *error) {
-                        [weakSelf uiAddMessages:@[message]];
-                    }];
-                }
+                [self sendMessage:message];
 
             }
                 break;
@@ -409,50 +401,48 @@ NIMContactSelectDelegate>
 {
     NSString *mediaType = info[UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
-        [picker dismissViewControllerAnimated:YES completion:^{
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSURL *inputURL  = [info objectForKey:UIImagePickerControllerMediaURL];
-                NSString *outputFileName = [NTESFileLocationHelper genFilenameWithExt:VideoExt];
-                NSString *outputPath = [NTESFileLocationHelper filepathForVideo:outputFileName];
-                AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
-                AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset
-                                                                                 presetName:AVAssetExportPresetMediumQuality];
-                session.outputURL = [NSURL fileURLWithPath:outputPath];
-                session.outputFileType = AVFileTypeMPEG4;   // 支持安卓某些机器的视频播放
-                session.shouldOptimizeForNetworkUse = YES;
-                [session exportAsynchronouslyWithCompletionHandler:^(void)
-                 {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         if (session.status == AVAssetExportSessionStatusCompleted) {
-                             [self sendMessage:[NTESSessionMsgConverter msgWithVideo:outputPath]];
-                         }
-                         else {
-                             [self.view makeToast:@"发送失败"
-                                         duration:2
-                                         position:CSToastPositionCenter];
-                         }
-                     });
-                 }];
-                
-            });
-        }];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *inputURL  = [info objectForKey:UIImagePickerControllerMediaURL];
+            NSString *outputFileName = [NTESFileLocationHelper genFilenameWithExt:VideoExt];
+            NSString *outputPath = [NTESFileLocationHelper filepathForVideo:outputFileName];
+            AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
+            AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset
+                                                                             presetName:AVAssetExportPresetMediumQuality];
+            session.outputURL = [NSURL fileURLWithPath:outputPath];
+            session.outputFileType = AVFileTypeMPEG4;   // 支持安卓某些机器的视频播放
+            session.shouldOptimizeForNetworkUse = YES;
+            [session exportAsynchronouslyWithCompletionHandler:^(void)
+             {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if (session.status == AVAssetExportSessionStatusCompleted) {
+                         [self sendMessage:[NTESSessionMsgConverter msgWithVideo:outputPath]];
+                     }
+                     else {
+                         [self.view makeToast:@"发送失败"
+                                     duration:2
+                                     position:CSToastPositionCenter];
+                     }
+                 });
+             }];
+            
+        });
+
+        
     }else{
         UIImage *orgImage = info[UIImagePickerControllerOriginalImage];
-        __weak typeof(self) wself = self;
-        [picker dismissViewControllerAnimated:YES completion:^{
-            switch (_mode) {
-                case NTESImagePickerModeImage:
-                    [wself sendMessage:[NTESSessionMsgConverter msgWithImage:orgImage]];
-                    break;
-                case NTESImagePickerModeSnapChat:
-                    [wself sendSnapchatMessage:orgImage];
-                    break;
-                default:
-                    break;
-            }
-            
-        }];
+        switch (_mode) {
+            case NTESImagePickerModeImage:
+                [self sendMessage:[NTESSessionMsgConverter msgWithImage:orgImage]];
+                break;
+            case NTESImagePickerModeSnapChat:
+                [self sendSnapchatMessage:orgImage];
+                break;
+            default:
+                break;
+        }
     }
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - 录音事件
@@ -484,7 +474,7 @@ NIMContactSelectDelegate>
     NSString *eventName = event.eventName;
     if ([eventName isEqualToString:NIMKitEventNameTapContent])
     {
-        NIMMessage *message = event.message;
+        NIMMessage *message = event.messageModel.message;
         NSDictionary *actions = [self cellActions];
         NSString *value = actions[@(message.messageType)];
         if (value) {
@@ -505,7 +495,7 @@ NIMContactSelectDelegate>
     }
     else if([eventName isEqualToString:NIMDemoEventNameOpenSnapPicture])
     {
-        NIMCustomObject *object = event.message.messageObject;
+        NIMCustomObject *object = event.messageModel.message.messageObject;
         NTESSnapchatAttachment *attachment = (NTESSnapchatAttachment *)object.attachment;
         if(attachment.isFired){
             return;
@@ -516,8 +506,8 @@ NIMContactSelectDelegate>
     }
     else if([eventName isEqualToString:NIMDemoEventNameCloseSnapPicture])
     {
-        NIMCustomObject *object = event.message.messageObject;
         //点击很快的时候可能会触发两次查看，所以这里不管有没有查看过 先强直销毁掉
+        NIMCustomObject *object = event.messageModel.message.messageObject;
         UIView *senderView = event.data;
         [senderView dismissPresentedView:YES complete:nil];
         
@@ -530,6 +520,7 @@ NIMContactSelectDelegate>
         if ([NTESBundleSetting sharedConfig].autoRemoveSnapMessage) {
             [[NIMSDK sharedSDK].conversationManager deleteMessage:message];
             [self uiDeleteMessage:message];
+            
         }else{
             [[NIMSDK sharedSDK].conversationManager updateMessage:message forSession:message.session completion:nil];
             [self uiUpdateMessage:message];

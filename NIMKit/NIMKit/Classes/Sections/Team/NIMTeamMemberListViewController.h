@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NIMSDK.h"
 
 @interface NIMTeamMemberListViewController : UIViewController
 

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NIMWebImageCompat.h"
 #import "NIMWebImageManager.h"
-
+#import "NIMSDK.h"
 
 @interface NIMAvatarImageView : UIControl
 @property (nonatomic,strong)    UIImage *image;

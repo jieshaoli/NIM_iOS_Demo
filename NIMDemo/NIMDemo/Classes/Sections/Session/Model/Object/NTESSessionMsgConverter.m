@@ -141,9 +141,11 @@
     NIMCustomObject *customObject     = [[NIMCustomObject alloc] init];
     customObject.attachment           = attachment;
     message.messageObject             = customObject;
-    if (attachment.flag == CustomWhiteboardFlagInvite) {
-        message.apnsContent = @"邀请你加入白板会话";
-    }
+    
+    NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
+    setting.apnsEnabled        = NO;
+    message.setting            = setting;
+
     return message;
 }
 

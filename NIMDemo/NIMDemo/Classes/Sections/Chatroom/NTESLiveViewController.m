@@ -14,7 +14,6 @@
 #import "NTESChatroomMemberListViewController.h"
 #import "NTESLiveInfoViewController.h"
 #import "UIImageView+WebCache.h"
-#import "UIViewController+NTES.h"
 #import "SVProgressHUD.h"
 #import "UIImage+NTESColor.h"
 #import "NTESLiveActionView.h"

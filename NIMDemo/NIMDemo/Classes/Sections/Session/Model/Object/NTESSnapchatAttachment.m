@@ -49,7 +49,7 @@
 }
 
 - (CGSize)contentSize:(NIMMessage *)message cellWidth:(CGFloat)width{
-    self.isFromMe = [NTESSessionUtil messageIsFromMe:message];
+    self.isFromMe = message.isOutgoingMsg;
     CGSize size = self.showCoverImage.size;
     CGFloat customSnapMessageImageRightToText = 5;
     return CGSizeMake(size.width + customSnapMessageImageRightToText, size.height);
@@ -59,7 +59,7 @@
 {
     CGFloat bubblePaddingForImage    = 3.f;
     CGFloat bubbleArrowWidthForImage = 5.f;
-    if ([NTESSessionUtil messageIsFromMe:message]) {
+    if (message.isOutgoingMsg) {
         return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage);
     }else{
         return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage, bubblePaddingForImage,bubblePaddingForImage);

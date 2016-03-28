@@ -16,6 +16,7 @@
 #import "NTESWhiteboardAttachment.h"
 #import "NTESSessionMsgConverter.h"
 #import "NIMRTSRecordingInfo.h"
+#import "NTESDevice.h"
 
 typedef NS_ENUM(NSUInteger, WhiteBoardCmdType){
     WhiteBoardCmdTypePointStart    = 1,
@@ -73,7 +74,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 @property (assign, nonatomic) BOOL audioConnected;
 @property (assign, nonatomic) BOOL dismissed;
 
-@property (assign, nonatomic) BOOL rtsTerminated;
+@property (assign, nonatomic) BOOL needTerminateRTS;
 
 @end
 
@@ -96,6 +97,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
         _cmds = [[NSMutableString alloc] initWithCapacity:1];
         _cmdsLock = [[NSLock alloc] init];
         _sendCmdsTimer = [[NTESTimerHolder alloc] init];
+        _needTerminateRTS = YES;
     }
     return self;
 
@@ -153,6 +155,11 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:animated];
+}
 - (void)dealloc
 {
     [self termimateRTS];
@@ -161,9 +168,17 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 #pragma mark - user interfaces
 - (IBAction)onRejectButtonPressed:(id)sender {
     [self responseRTS:NO];
-    [self dismiss:nil];
+    [self dismiss];
 }
 - (IBAction)onAcceptButtonPressed:(id)sender {
+    
+    if (_types & NIMRTSServiceAudio) {
+        UInt64 currentNetcall = [[NIMSDK sharedSDK].netCallManager currentCallID];
+        if (currentNetcall) {
+            [[NIMSDK sharedSDK].netCallManager hangup:currentNetcall];
+        }
+    }
+    
     [self responseRTS:YES];
     [self switchToWaitingConnectView];
 }
@@ -185,7 +200,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
         if (index != sheet.cancelButtonIndex) {
             [wself termimateRTS];
-            [wself dismiss:nil];
+            [wself dismiss];
         }
     }];
 }
@@ -203,7 +218,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (IBAction)onCancelRequestButtonPressed:(id)sender
 {
     [self termimateRTS];
-    [self dismiss:nil];
+    [self dismiss];
 }
 
 
@@ -216,7 +231,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     if (!accepted) {
         DDLogInfo(@"RTSDemo: peer rejected");
         [self makeToast:@"对方拒绝了本次请求"];
-        [self dismiss:nil];
+        [self dismiss];
     }
     else {
         [self switchToWaitingConnectView];
@@ -231,7 +246,12 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     if (sessionID == _sessionID) {
         [self makeToast:@"对方已离开"];
         [self termimateRTS];
-        [self dismissAfter:2];
+        if ([[NTESDevice currentDevice] isInBackground]) {
+            [self dismiss];
+        }
+        else {
+            [self dismissAfter:2];
+        }
     }
 }
 
@@ -240,6 +260,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 {
     DDLogInfo(@"RTSDemo: responsed by other");
     [self makeToast:[NSString stringWithFormat:@"已在其他端%@", accepted ? @"接受" : @"拒绝"]];
+    _needTerminateRTS = NO;
     [self dismissAfter:2];
 
 
@@ -384,10 +405,17 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 #pragma mark - private methods
 - (void)requestRTS
 {
+    
+    NIMRTSOption *option = [[NIMRTSOption alloc] init];
+    
+    option.extendMessage = @"白板请求扩展信息";
+    option.apnsContent = @"邀请你加入白板会话";
+    option.apnsSound = @"video_chat_tip_receiver.aac";
+    
     __weak typeof(self) wself = self;
     _sessionID = [[NIMSDK sharedSDK].rtsManager requestRTS:[NSArray arrayWithObject:_peerID]
                                                   services:_types
-                                                    option:nil
+                                                    option:option
                                                 completion:^(NSError *error, NSString *sessionID)
     {
         if (error) {
@@ -422,8 +450,8 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 
 - (void)termimateRTS
 {
-    if (!_rtsTerminated) {
-        _rtsTerminated = YES;
+    if (_needTerminateRTS) {
+        _needTerminateRTS = NO;
         [[NIMSDK sharedSDK].rtsManager terminateRTS:_sessionID];
     }
 }
@@ -567,11 +595,11 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     [self.view setUserInteractionEnabled:NO];
     __weak typeof(self) wself = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [wself dismiss:nil];
+        [wself dismiss];
     });
 }
 
-- (void)dismiss:(void (^)(void))completion{
+- (void)dismiss{
     if (_dismissed) {
         return;
     }
@@ -586,7 +614,9 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
                                                forSession:[NIMSession session:_peerID type:NIMSessionTypeP2P]
                                                            completion:nil];
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
-    [self dismissViewControllerAnimated:NO completion:completion];
+    [self dismissViewControllerAnimated:NO completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
+    }];
 }
 
 - (void)makeToast:(NSString *)toast

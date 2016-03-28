@@ -10,6 +10,7 @@
 #import "NTESSessionUtil.h"
 #import "UIView+NTES.h"
 #import "M80AttributedLabel.h"
+#import "NIMKitUtil.h"
 
 @interface NTESSessionWhiteBoardContentView()
 
@@ -38,9 +39,9 @@
 
 - (void)refresh:(NIMMessageModel *)data{
     [super refresh:data];
-    NSString *text = [NTESSessionUtil formatedMessage:data.message];
+    NSString *text = [NIMKitUtil messageTipContent:data.message];
     [_textLabel setText:text];
-    if (![NTESSessionUtil messageIsFromMe:data.message]) {
+    if (!data.message.isOutgoingMsg) {
         _textLabel.textColor = [UIColor blackColor];
     }else{
         _textLabel.textColor = [UIColor whiteColor];

@@ -6,7 +6,8 @@
 //  Copyright (c) 2015年 NetEase. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 @class NIMSessionMessageContentView;
 @class NIMMessageModel;
 
@@ -68,11 +69,5 @@
  */
 - (NSArray *)customViews:(NIMMessageModel *)model;
 
-
-/**
- *  格式化消息文本
- *  @discussion ，仅当cellContent为NIMSessionNotificationContentView时会调用.如果是NIMSessionNotificationContentView的子类,需要继承refresh:方法。
- */
-- (NSString *)formatedMessage:(NIMMessageModel *)model;
 
 @end

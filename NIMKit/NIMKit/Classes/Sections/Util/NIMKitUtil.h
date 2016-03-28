@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NIMSDK.h"
+#import "NIMGlobalMacro.h"
 
 @interface NIMKitUtil : NSObject
 
@@ -16,7 +18,7 @@
 
 + (NSString *)showTime:(NSTimeInterval)msglastTime showDetail:(BOOL)showDetail;
 
-+ (NSString *)formatedMessage:(NIMMessage *)message;
++ (NSString *)messageTipContent:(NIMMessage *)message;
 
 
 @end

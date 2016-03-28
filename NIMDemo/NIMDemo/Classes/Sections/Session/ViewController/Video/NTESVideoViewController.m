@@ -58,6 +58,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear: animated];
+    [SVProgressHUD dismiss];
     if (![[self.navigationController viewControllers] containsObject: self])
     {
         [self topStatusUIHidden:NO];

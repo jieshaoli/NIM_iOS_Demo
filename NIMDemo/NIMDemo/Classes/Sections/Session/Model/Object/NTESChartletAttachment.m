@@ -47,7 +47,7 @@
 {
     CGFloat bubblePaddingForImage    = 3.f;
     CGFloat bubbleArrowWidthForImage = 5.f;
-    if ([NTESSessionUtil messageIsFromMe:message]) {
+    if (message.isOutgoingMsg) {
         return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage);
     }else{
         return  UIEdgeInsetsMake(bubblePaddingForImage,bubblePaddingForImage + bubbleArrowWidthForImage, bubblePaddingForImage,bubblePaddingForImage);

@@ -22,6 +22,7 @@
 #import "NIMContactSelectConfig.h"
 #import "NIMContactSelectViewController.h"
 #import "NIMProgressHUD.h"
+#import "NIMGlobalMacro.h"
 
 #define TableCellReuseId        @"tableCell"
 #define TableButtonCellReuseId  @"tableButtonCell"

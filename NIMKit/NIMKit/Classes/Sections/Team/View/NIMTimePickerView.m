@@ -8,6 +8,7 @@
 
 #import "NIMTimePickerView.h"
 #import "UIView+NIM.h"
+#import "NIMGlobalMacro.h"
 
 @interface NIMTimePickerView()<UIPickerViewDelegate,UIPickerViewDataSource>
 
