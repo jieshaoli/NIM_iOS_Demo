@@ -19,4 +19,5 @@
 - (NSString *)stringByDeletingPictureResolution;
 
 - (NSString *)tokenByPassword;
+
 @end

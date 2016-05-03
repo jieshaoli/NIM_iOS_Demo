@@ -46,6 +46,8 @@ typedef NS_ENUM(NSInteger,NTESMainTabType) {
 
 @property (nonatomic,assign) NSInteger customSystemUnreadCount;
 
+@property (nonatomic,copy)  NSDictionary *configs;
+
 @end
 
 @implementation NTESMainTabController
@@ -136,6 +138,7 @@ typedef NS_ENUM(NSInteger,NTESMainTabType) {
     [[UIApplication sharedApplication] setStatusBarStyle:style
                                                 animated:NO];
 }
+
 
 #pragma mark - NIMConversationManagerDelegate
 - (void)didAddRecentSession:(NIMRecentSession *)recentSession
@@ -228,40 +231,41 @@ typedef NS_ENUM(NSInteger,NTESMainTabType) {
 
 #pragma mark - VC
 - (NSDictionary *)vcInfoForTabType:(NTESMainTabType)type{
-    static NSDictionary *dict;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dict = @{
-                 @(NTESMainTabTypeMessageList) : @{
-                                                     TabbarVC           : @"NTESSessionListViewController",
-                                                     TabbarTitle        : @"云信",
-                                                     TabbarImage        : @"icon_message_normal",
-                                                     TabbarSelectedImage: @"icon_message_pressed",
-                                                     TabbarItemBadgeValue: @(self.sessionUnreadCount)
-                                                  },
-                 @(NTESMainTabTypeContact)     : @{
-                                                     TabbarVC           : @"NTESContactViewController",
-                                                     TabbarTitle        : @"通讯录",
-                                                     TabbarImage        : @"icon_contact_normal",
-                                                     TabbarSelectedImage: @"icon_contact_pressed",
-                                                     TabbarItemBadgeValue: @(self.systemUnreadCount)
-                                                  },
-                 @(NTESMainTabTypeChatroomList): @{
-                                                     TabbarVC           : @"NTESChatroomListViewController",
-                                                     TabbarTitle        : @"直播间",
-                                                     TabbarImage        : @"icon_chatroom_normal",
-                                                     TabbarSelectedImage: @"icon_chatroom_pressed",
-                                                  },
-                 @(NTESMainTabTypeSetting)     : @{
-                                                     TabbarVC           : @"NTESSettingViewController",
-                                                     TabbarTitle        : @"设置",
-                                                     TabbarImage        : @"icon_setting_normal",
-                                                     TabbarSelectedImage: @"icon_setting_pressed",
-                                                     TabbarItemBadgeValue: @(self.customSystemUnreadCount)
-                                                  }
-                };
-    });
-    return dict[@(type)];
+    
+    if (_configs == nil)
+    {
+        _configs = @{
+                     @(NTESMainTabTypeMessageList) : @{
+                             TabbarVC           : @"NTESSessionListViewController",
+                             TabbarTitle        : @"云信",
+                             TabbarImage        : @"icon_message_normal",
+                             TabbarSelectedImage: @"icon_message_pressed",
+                             TabbarItemBadgeValue: @(self.sessionUnreadCount)
+                             },
+                     @(NTESMainTabTypeContact)     : @{
+                             TabbarVC           : @"NTESContactViewController",
+                             TabbarTitle        : @"通讯录",
+                             TabbarImage        : @"icon_contact_normal",
+                             TabbarSelectedImage: @"icon_contact_pressed",
+                             TabbarItemBadgeValue: @(self.systemUnreadCount)
+                             },
+                     @(NTESMainTabTypeChatroomList): @{
+                             TabbarVC           : @"NTESChatroomListViewController",
+                             TabbarTitle        : @"直播间",
+                             TabbarImage        : @"icon_chatroom_normal",
+                             TabbarSelectedImage: @"icon_chatroom_pressed",
+                             },
+                     @(NTESMainTabTypeSetting)     : @{
+                             TabbarVC           : @"NTESSettingViewController",
+                             TabbarTitle        : @"设置",
+                             TabbarImage        : @"icon_setting_normal",
+                             TabbarSelectedImage: @"icon_setting_pressed",
+                             TabbarItemBadgeValue: @(self.customSystemUnreadCount)
+                             }
+                     };
+
+    }
+    return _configs[@(type)];
 }
 
 

@@ -34,6 +34,7 @@
     imageObject.displayName = [NSString stringWithFormat:@"图片发送于%@",dateString];
     NIMImageOption *option = [[NIMImageOption alloc] init];
     option.compressQuality = 0.8;
+    imageObject.option = option;
     NIMMessage *message          = [[NIMMessage alloc] init];
     message.messageObject        = imageObject;
     message.apnsContent = @"发来了一张图片";

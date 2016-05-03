@@ -74,12 +74,24 @@
     return NIMNetCallVideoQualityDefault;
 }
 
+- (BOOL)serverRecordAudio
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_audio"] boolValue];
+}
+
+- (BOOL)serverRecordVideo
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_video"] boolValue];
+}
+
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n \
                                         auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\n \
                                         show app %d\n disable_proxmity_monitor %d\n \
-                                        using amr %d\n videochat_preferred_video_quality %zd\n",
+                                        using amr %d\n server_record_audio %d\n server_record_video %d\n \
+                                        videochat_preferred_video_quality %zd\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
@@ -88,6 +100,8 @@
                                         [self showFps],
                                         [self disableProximityMonitor],
                                         [self usingAmr],
+                                        [self serverRecordAudio],
+                                        [self serverRecordVideo],
                                         [self preferredVideoQuality]];
 }
 @end

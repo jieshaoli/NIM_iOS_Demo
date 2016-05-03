@@ -203,14 +203,13 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 
 - (void)onAutoLoginFailed:(NSError *)error
 {
-    //添加密码出错等引起的自动登录错误处理
-    if ([error code] == NIMRemoteErrorCodeInvalidPass ||
-        [error code] == NIMRemoteErrorCodeExist)
-    {
-        [[[NIMSDK sharedSDK] loginManager] logout:^(NSError *error) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:NTESNotificationLogout object:nil];
-        }];
-    }
+    //只有连接发生严重错误才会走这个回调，在这个回调里应该登出，返回界面等待用户手动重新登录。
+    DDLogInfo(@"onAutoLoginFailed %zd",error.code);
+    NSString *toast = [NSString stringWithFormat:@"登录失败: %zd",error.code];
+    [self.window makeToast:toast duration:2.0 position:CSToastPositionCenter];
+    [[[NIMSDK sharedSDK] loginManager] logout:^(NSError *error) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NTESNotificationLogout object:nil];
+    }];
 }
 
 

@@ -161,6 +161,8 @@ NTES_FORBID_INTERACTIVE_POP
         
         option.apnsContent = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
         option.apnsSound = @"video_chat_tip_receiver.aac";
+        option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
+        option.serverRecordVideo = [[NTESBundleSetting sharedConfig] serverRecordVideo];
 
         [[NIMSDK sharedSDK].netCallManager start:callees type:wself.callInfo.callType option:option completion:^(NSError *error, UInt64 callID) {
             if (!error && wself) {
@@ -222,6 +224,9 @@ NTES_FORBID_INTERACTIVE_POP
     
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
     option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+    option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
+    option.serverRecordVideo = [[NTESBundleSetting sharedConfig] serverRecordVideo];
+
     __weak typeof(self) wself = self;
 
     [[NIMSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept option:option completion:^(NSError *error, UInt64 callID) {

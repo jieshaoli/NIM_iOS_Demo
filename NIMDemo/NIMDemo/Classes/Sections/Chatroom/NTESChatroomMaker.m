@@ -22,7 +22,7 @@
         chatroom.name    = [dict jsonString:@"name"];
         chatroom.creator = [dict jsonString:@"creator"];
         chatroom.announcement = [dict jsonString:@"announcement"];
-        chatroom.ext     = [NTESSessionUtil dictByJsonString:[dict jsonString:@"ext"]];
+        chatroom.ext     = [dict jsonString:@"ext"];
         chatroom.onlineUserCount = [dict jsonInteger:@"onlineusercount"];
         return chatroom;
     }

@@ -17,6 +17,7 @@
 #import "NTESSessionMsgConverter.h"
 #import "NIMRTSRecordingInfo.h"
 #import "NTESDevice.h"
+#import "NTESBundleSetting.h"
 
 typedef NS_ENUM(NSUInteger, WhiteBoardCmdType){
     WhiteBoardCmdTypePointStart    = 1,
@@ -411,6 +412,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     option.extendMessage = @"白板请求扩展信息";
     option.apnsContent = @"邀请你加入白板会话";
     option.apnsSound = @"video_chat_tip_receiver.aac";
+    option.disableRecord = ![[NTESBundleSetting sharedConfig] serverRecordAudio];
     
     __weak typeof(self) wself = self;
     _sessionID = [[NIMSDK sharedSDK].rtsManager requestRTS:[NSArray arrayWithObject:_peerID]
@@ -435,10 +437,13 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 }
 - (void)responseRTS:(BOOL)accepted
 {
+    NIMRTSOption *option = [[NIMRTSOption alloc] init];    
+    option.disableRecord = ![[NTESBundleSetting sharedConfig] serverRecordAudio];
+
     __weak typeof(self) wself = self;
     [[NIMSDK sharedSDK].rtsManager responseRTS:_sessionID
                                         accept:accepted
-                                        option:nil
+                                        option:option
                                     completion:^(NSError *error, NSString *sessionID) {
         if (error) {
             [wself makeToast:[NSString stringWithFormat:@"接听失败:%zd", error.code]];

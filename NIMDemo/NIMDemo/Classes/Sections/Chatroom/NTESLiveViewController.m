@@ -208,6 +208,8 @@ NTES_USE_CLEAR_BAR
     if ([roomId isEqualToString:self.chatroom.roomId]) {
         NSString *toast = [NSString stringWithFormat:@"你被踢出聊天室"];
         DDLogInfo(@"chatroom be kicked, roomId:%@  rease:%zd",roomId,reason);
+        [[NIMSDK sharedSDK].chatroomManager exitChatroom:roomId completion:nil];
+        
         [self.view.window makeToast:toast duration:2.0 position:CSToastPositionCenter];
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -216,6 +218,15 @@ NTES_USE_CLEAR_BAR
 - (void)chatroom:(NSString *)roomId connectionStateChanged:(NIMChatroomConnectionState)state;
 {
     DDLogInfo(@"chatroom connectionStateChanged roomId : %@  state:%zd",roomId,state);
+}
+
+- (void)chatroom:(NSString *)roomId autoLoginFailed:(NSError *)error
+{
+    NSString *toast = [NSString stringWithFormat:@"chatroom autoLoginFailed failed : %zd",error.code];
+    DDLogInfo(@"%@",toast);
+    [[NIMSDK sharedSDK].chatroomManager exitChatroom:roomId completion:nil];
+    [self.view.window makeToast:toast duration:2.0 position:CSToastPositionCenter];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Private

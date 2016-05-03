@@ -34,6 +34,10 @@
 
 - (BOOL)usingAmr;                                   //使用amr作为录音
 
-- (NIMNetCallVideoQuality)preferredVideoQuality;
+- (BOOL)serverRecordAudio;                          //服务器录制语音
+
+- (BOOL)serverRecordVideo;                          //服务器录制视频
+
+- (NIMNetCallVideoQuality)preferredVideoQuality;    //期望的视频发送清晰度
 
 @end

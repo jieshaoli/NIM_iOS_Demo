@@ -13,6 +13,9 @@
 #import "NTESChatroomManager.h"
 
 @interface NTESChatroomViewController ()<NIMInputDelegate>
+{
+    BOOL _isRefreshing;
+}
 
 @property (nonatomic,strong) NTESChatroomConfig *config;
 
@@ -76,6 +79,24 @@
 {
     if ([self.delegate respondsToSelector:@selector(hideInputView)]) {
         [self.delegate hideInputView];
+    }
+}
+
+
+#pragma mark - UIScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [super scrollViewDidScroll:scrollView];
+    CGFloat offset = 44.f;
+    if (scrollView.contentOffset.y <= -offset && !_isRefreshing && self.tableView.isDragging) {
+        _isRefreshing = YES;
+        [self.refreshControl beginRefreshing];
+        [self.refreshControl sendActionsForControlEvents:UIControlEventValueChanged];
+        [scrollView endEditing:YES];
+    }
+    else if(scrollView.contentOffset.y >= 0)
+    {
+        _isRefreshing = NO;
     }
 }
 

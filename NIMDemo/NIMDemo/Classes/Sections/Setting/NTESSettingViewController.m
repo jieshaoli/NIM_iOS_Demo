@@ -25,11 +25,12 @@
 #import "NTESUserInfoSettingViewController.h"
 #import "NTESBlackListViewController.h"
 #import "NTESUserUtil.h"
+#import "NTESLogUploader.h"
 
 @interface NTESSettingViewController ()<NIMUserManagerDelegate>
 
 @property (nonatomic,strong) NSArray *data;
-
+@property (nonatomic,strong) NTESLogUploader *logUploader;
 @property (nonatomic,strong) NTESCommonTableDelegate *delegator;
 
 @end
@@ -134,6 +135,10 @@
                                           CellAction :@"onTouchShowLog:",
                                           },
                                         @{
+                                            Title      :@"上传日志",
+                                            CellAction :@"onTouchUploadLog:",
+                                            },
+                                        @{
                                           Title      :@"清空所有聊天记录",
                                           CellAction :@"onTouchCleanAllChatRecord:",
                                          },
@@ -199,6 +204,29 @@
                 break;
             default:
                 break;
+        }
+    }];
+}
+
+- (void)onTouchUploadLog:(id)sender{
+    if (_logUploader == nil) {
+        _logUploader = [[NTESLogUploader alloc] init];
+    }
+    
+    [SVProgressHUD show];
+    
+    __weak typeof(self) weakSelf = self;
+    [_logUploader upload:^(NSString *urlString,NSError *error) {
+        [SVProgressHUD dismiss];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (error == nil && urlString)
+        {
+            [UIPasteboard generalPasteboard].string = urlString;
+            [strongSelf.view makeToast:@"上传日志成功,URL已复制到剪切板中" duration:3.0 position:CSToastPositionCenter];
+        }
+        else
+        {
+            [strongSelf.view makeToast:@"上传日志失败" duration:3.0 position:CSToastPositionCenter];
         }
     }];
 }
