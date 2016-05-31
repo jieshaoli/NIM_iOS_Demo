@@ -102,7 +102,7 @@
 	
   *  在工程配置，`Build Settings` 选项卡中，找到 `Prefix Header` 选项，填入预编译文件的**真实路径**,如 `$(PROJECT_DIR)/MyApplication/NIMDemo-Prefix.pch`，**注意此路径和预编译文件的实际路径必须匹配，请自行检查。**
 
-* Clean 工程，再次编译，将编译成功，如果报错请自行检查上述步骤。
+* `clean` 工程，再次编译，将编译成功，如果报错请自行检查上述步骤。
 * 将 ViewController.m 里代码替换成以下内容，并在 xib 上构造按钮连接 `	- (IBAction)enterIm:(id)sender` 点击事件。
 
   ```objc
@@ -136,5 +136,5 @@
 	@end
   ```
   
-* 至此，简单的集成工作就做完了，UI 上显示还会有一些异常，具体指南请参考。[云信iOS UI 组件](https://github.com/netease-im/NIM_iOS_UIKit)
+* 至此，简单的集成工作就做完了，UI 上显示还会有一些异常，具体指南请参考[云信iOS UI 组件](https://github.com/netease-im/NIM_iOS_UIKit)。
 * 移植的示例 Demo 请点击[这里](/Resource/MyApplication)。在使用前请先在根目录执行命令 `pod install`。
