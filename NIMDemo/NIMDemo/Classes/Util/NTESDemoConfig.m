@@ -9,9 +9,7 @@
 #import "NTESDemoConfig.h"
 
 @interface NTESDemoConfig ()
-@property (nonatomic,copy)  NSString    *appKey;
-@property (nonatomic,copy)  NSString    *apiURL;
-@property (nonatomic,copy)  NSString    *cerName;
+
 @end
 
 @implementation NTESDemoConfig
@@ -51,7 +49,6 @@
 {
     return _cerName;
 }
-
 
 
 @end

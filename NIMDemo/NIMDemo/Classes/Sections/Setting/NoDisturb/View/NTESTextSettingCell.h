@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
-@interface NTESTextSettingCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESTextSettingCell : UITableViewCell<NIMCommonTableViewCell>
 
 //textField的placeholder为NTESCommonTableRow.title
 //textField的text为NTESCommonTableRow.extraData

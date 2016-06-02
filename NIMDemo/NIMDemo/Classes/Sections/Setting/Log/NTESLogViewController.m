@@ -12,6 +12,7 @@
 @interface NTESLogViewController ()<NSLayoutManagerDelegate>
 @property (strong, nonatomic) IBOutlet UITextView *logTextView;
 @property (copy,nonatomic) NSString *path;
+@property (copy,nonatomic) NSString *content;
 @end
 
 @implementation NTESLogViewController
@@ -27,26 +28,50 @@
 }
 
 
+- (instancetype)initWithContent:(NSString *)content
+{
+    if (self = [self initWithNibName:@"NTESLogViewController" bundle:nil])
+    {
+        self.content = content;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"退出" style:UIBarButtonItemStyleDone target:self action:@selector(onDismiss:)];
-    NSData *data = [NSData dataWithContentsOfFile:_path];
-    NSString *content = [[NSString alloc] initWithData:data
-                                              encoding:NSUTF8StringEncoding];
-    if (content == nil)
+    
+    NSString *content = nil;
+    if (_path)
     {
+        NSData *data = [NSData dataWithContentsOfFile:_path];
         content = [[NSString alloc] initWithData:data
-                                        encoding:NSASCIIStringEncoding];
+                                        encoding:NSUTF8StringEncoding];
+        if (content == nil)
+        {
+            content = [[NSString alloc] initWithData:data
+                                            encoding:NSASCIIStringEncoding];
+        }
     }
+    else if(_content)
+    {
+        content = _content;
+    }
+    
     _logTextView.text = content;
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [_logTextView scrollRangeToVisible:NSMakeRange([_logTextView.text length], 0)];
+    
+    if ([_logTextView.text length])
+    {
+        [_logTextView scrollRangeToVisible:NSMakeRange([_logTextView.text length], 0)];
+    }
+    
 }
 
 

@@ -84,14 +84,31 @@
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_video"] boolValue];
 }
 
+- (NSArray *)ignoreTeamNotificationTypes
+{
+    static NSArray *types = nil;
+    if (types == nil)
+    {
+        NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:@"ignore_team_types"];
+        if ([value isKindOfClass:[NSString class]])
+        {
+            NSString *typeDescription = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([typeDescription length])
+            {
+                types = [typeDescription componentsSeparatedByString:@","];
+            }
+        }
+    }
+    if (types == nil)
+    {
+        types = [NSArray array];
+    }
+    return types;
+}
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\n \
-                                        auto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\n \
-                                        show app %d\n disable_proxmity_monitor %d\n \
-                                        using amr %d\n server_record_audio %d\n server_record_video %d\n \
-                                        videochat_preferred_video_quality %zd\n",
+    return [NSString stringWithFormat:@"\n\n\nenabled_remove_recent_session %d\nlocal_search_time_order_desc %d\nauto_remove_remote_session %d\nauto_remove_snap_message %d\nadd_friend_need_verify %d\nshow app %d\ndisable_proxmity_monitor %d\nusing amr %d\nserver_record_audio %d\nserver_record_video %d\nvideochat_preferred_video_quality %zd\nignore_team_types %@\n\n\n",
                                         [self removeSessionWheDeleteMessages],
                                         [self localSearchOrderByTimeDesc],
                                         [self autoRemoveRemoteSession],
@@ -102,6 +119,7 @@
                                         [self usingAmr],
                                         [self serverRecordAudio],
                                         [self serverRecordVideo],
-                                        [self preferredVideoQuality]];
+                                        [self preferredVideoQuality],
+                                        [self ignoreTeamNotificationTypes]];
 }
 @end

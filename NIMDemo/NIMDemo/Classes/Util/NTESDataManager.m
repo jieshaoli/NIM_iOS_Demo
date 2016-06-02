@@ -104,6 +104,7 @@
     info.showName    = team.teamName;
     info.infoId      = teamId;
     info.avatarImage = self.defaultTeamAvatar;
+    info.avatarUrlString = team.thumbAvatarUrl;
     return info;
 }
 

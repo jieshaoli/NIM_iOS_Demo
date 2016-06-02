@@ -7,8 +7,8 @@
 //
 
 #import "NTESUserInfoSettingViewController.h"
-#import "NTESCommonTableData.h"
-#import "NTESCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
 #import "NTESNickNameSettingViewController.h"
 #import "NTESGenderSettingViewController.h"
 #import "NTESBirthSettingViewController.h"
@@ -25,7 +25,7 @@
 
 @interface NTESUserInfoSettingViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate,NIMUserManagerDelegate>
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy)   NSArray *data;
 
@@ -38,12 +38,12 @@
     self.navigationItem.title = @"个人信息";
     [self buildData];
     __weak typeof(self) wself = self;
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     self.tableView.delegate   = self.delegator;
     self.tableView.dataSource = self.delegator;
-    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+    if ([NIMKit sharedKit].hostUserInfos) {
         //说明托管了用户信息，那就直接加 userManager 的监听
         [[NIMSDK sharedSDK].userManager addDelegate:self];
     }else{
@@ -122,7 +122,7 @@
                           FooterTitle:@""
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 

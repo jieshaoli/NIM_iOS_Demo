@@ -1,5 +1,5 @@
 //
-//  NTESCommonTableViewCell.h
+//  NIMCommonTableViewCell.h
 //  NIM
 //
 //  Created by chris on 15/6/29.
@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-@class NTESCommonTableRow;
+@class NIMCommonTableRow;
 
-@protocol NTESCommonTableViewCell <NSObject>
+@protocol NIMCommonTableViewCell <NSObject>
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 
 @optional
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView;
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView;
 
 @end

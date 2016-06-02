@@ -7,9 +7,9 @@
 //
 
 #import "NTESNoDisturbSettingViewController.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 #import "UIView+Toast.h"
-#import "NTESCommonTableDelegate.h"
+#import "NIMCommonTableDelegate.h"
 #import "NIMTimePickerView.h"
 #import "UIView+Toast.h"
 
@@ -17,7 +17,7 @@
 
 @property (nonatomic,copy) NSArray *data;
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,assign) BOOL isUpdate;
 
@@ -30,7 +30,7 @@
     self.navigationItem.title = @"免打扰设置";
     [self buildData];
     __weak typeof(self) wself = self;
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     self.tableView.delegate   = self.delegator;
@@ -85,7 +85,7 @@
                           FooterTitle:@"在设定的时间段内云信消息将不再提醒。"
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 - (void)refreshData{

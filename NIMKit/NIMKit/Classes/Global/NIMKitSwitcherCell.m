@@ -6,18 +6,16 @@
 //  Copyright © 2015年 Netease. All rights reserved.
 //
 
-#import "NTESSettingSwitcherCell.h"
+#import "NIMKitSwitcherCell.h"
 #import "NIMCommonTableData.h"
-#import "UIView+NTES.h"
+#import "UIView+NIM.h"
 
 
-@interface NTESSettingSwitcherCell ()
-
-@property(nonatomic,strong) UISwitch *switcher;
+@interface NIMKitSwitcherCell ()
 
 @end
 
-@implementation NTESSettingSwitcherCell
+@implementation NIMKitSwitcherCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -34,10 +32,10 @@
     self.detailTextLabel.text = rowData.detailTitle;
     NSString *actionName      = rowData.cellActionName;
     [self.switcher setOn:[rowData.extraInfo boolValue] animated:NO];
-    [self.switcher removeTarget:self.viewController action:NULL forControlEvents:UIControlEventValueChanged];
+    [self.switcher removeTarget:self.nim_viewController action:NULL forControlEvents:UIControlEventValueChanged];
     if (actionName.length) {
         SEL sel = NSSelectorFromString(actionName);
-        [self.switcher addTarget:tableView.viewController action:sel forControlEvents:UIControlEventValueChanged];
+        [self.switcher addTarget:tableView.nim_viewController action:sel forControlEvents:UIControlEventValueChanged];
     }
 }
 
@@ -46,8 +44,8 @@
 #define SwitcherRight 15
 - (void)layoutSubviews{
     [super layoutSubviews];
-    self.switcher.right   = self.width - SwitcherRight;
-    self.switcher.centerY = self.height * .5f;
+    self.switcher.nim_right   = self.nim_width - SwitcherRight;
+    self.switcher.nim_centerY = self.nim_height * .5f;
 }
 
 @end

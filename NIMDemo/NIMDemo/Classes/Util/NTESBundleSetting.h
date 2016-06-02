@@ -40,4 +40,6 @@
 
 - (NIMNetCallVideoQuality)preferredVideoQuality;    //期望的视频发送清晰度
 
+- (NSArray *)ignoreTeamNotificationTypes;            //需要忽略的群通知类型
+
 @end

@@ -7,8 +7,8 @@
 //
 
 #import "NTESSessionCardViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "SVProgressHUD.h"
 #import "UIView+Toast.h"
 #import "NIMMemberGroupView.h"
@@ -19,7 +19,7 @@
 
 @interface NTESSessionCardViewController ()<NIMMemberGroupViewDelegate,NIMContactSelectDelegate>
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -43,7 +43,7 @@
     [super viewDidLoad];
     self.navigationItem.title = @"聊天信息";
     __weak typeof(self) wself = self;
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     
@@ -81,7 +81,7 @@
                                   ],
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 

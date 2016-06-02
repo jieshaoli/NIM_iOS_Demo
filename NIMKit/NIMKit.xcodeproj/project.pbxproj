@@ -10,7 +10,37 @@
 	<string>46</string>
 	<key>objects</key>
 	<dict>
-		<key>04F2BF797E1758B932AD1B59</key>
+		<key>16FBDD7A34F76D89BF5F9C7C</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Check Pods Manifest.lock</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
+if [[ $? != 0 ]] ; then
+    cat &lt;&lt; EOM
+error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
+EOM
+    exit 1
+fi
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>1EA9BF5DD536C2D8F1514446</key>
 		<dict>
 			<key>includeInIndex</key>
 			<string>1</string>
@@ -19,26 +49,27 @@
 			<key>lastKnownFileType</key>
 			<string>text.xcconfig</string>
 			<key>name</key>
-			<string>Pods-NIMKit.release.xcconfig</string>
+			<string>Pods-NIMKit.debug.xcconfig</string>
 			<key>path</key>
-			<string>../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.release.xcconfig</string>
+			<string>../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.debug.xcconfig</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>34653D1C5AAD242F9A36585A</key>
+		<key>2DF22EAD3CB524B71D97F741</key>
 		<dict>
 			<key>children</key>
 			<array>
-				<string>36D531214C5557C08A5F554C</string>
+				<string>1EA9BF5DD536C2D8F1514446</string>
+				<string>8E817CA9BC1C0D5A3DAA63FA</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
 			<key>name</key>
-			<string>Frameworks</string>
+			<string>Pods</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>36D531214C5557C08A5F554C</key>
+		<key>33E85DEB72471924CF82C32F</key>
 		<dict>
 			<key>explicitFileType</key>
 			<string>archive.ar</string>
@@ -247,8 +278,8 @@
 			<array>
 				<string>61344C131B720CB2005A96AE</string>
 				<string>61344C121B720CB2005A96AE</string>
-				<string>D70D42EB223F1B57A8C19B85</string>
-				<string>34653D1C5AAD242F9A36585A</string>
+				<string>2DF22EAD3CB524B71D97F741</string>
+				<string>A59117E70A15777DEE0A8084</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -976,21 +1007,23 @@
 				<string>61D99FCB1BAFF48A0059D369</string>
 				<string>61D99FF21BAFFA760059D369</string>
 				<string>614B8E351C5209940091BF28</string>
-				<string>61D99FC71BAFF48A0059D369</string>
 				<string>6187F9D61B81915700EFFB3A</string>
 				<string>6187F9D71B81915700EFFB3A</string>
 				<string>6187F9D81B81915700EFFB3A</string>
 				<string>61D99FB11BAFF4770059D369</string>
 				<string>6187F9D91B81915700EFFB3A</string>
+				<string>61F4E56A1CE1DBC0000AD2A9</string>
 				<string>E4EA435F1BA7EAD8003FC1BA</string>
 				<string>6187F9DA1B81915700EFFB3A</string>
 				<string>6187F9DB1B81915700EFFB3A</string>
 				<string>6187F9DC1B81915700EFFB3A</string>
+				<string>61F4E55F1CE1AF6F000AD2A9</string>
 				<string>6187F9DD1B81915700EFFB3A</string>
 				<string>E4EB3B1A1C55EB6300A47C41</string>
 				<string>61A2C8911BA6BFE2006304F9</string>
 				<string>E4EA434A1BA7EA20003FC1BA</string>
 				<string>61D99FB41BAFF4770059D369</string>
+				<string>61F4E5641CE1C40D000AD2A9</string>
 				<string>6187F9DE1B81915700EFFB3A</string>
 				<string>61E906021BCF4EBE006DBDA6</string>
 				<string>6187F9DF1B81915700EFFB3A</string>
@@ -1003,6 +1036,7 @@
 				<string>6187F9E31B81915700EFFB3A</string>
 				<string>6187F9E51B81915700EFFB3A</string>
 				<string>6187F9E61B81915700EFFB3A</string>
+				<string>61BED5D71CE42BC4002E635C</string>
 				<string>6187F9E71B81915700EFFB3A</string>
 				<string>6187F9E81B81915700EFFB3A</string>
 				<string>61D99FF51BAFFA760059D369</string>
@@ -1026,8 +1060,10 @@
 				<string>E4EA435C1BA7EAC3003FC1BA</string>
 				<string>6187F9F31B81915700EFFB3A</string>
 				<string>6187F9F41B81915700EFFB3A</string>
+				<string>61F4E5691CE1DBC0000AD2A9</string>
 				<string>61A2C8941BA6C2A1006304F9</string>
 				<string>6187F9F51B81915700EFFB3A</string>
+				<string>61F4E5601CE1AF6F000AD2A9</string>
 				<string>6187F9F61B81915700EFFB3A</string>
 				<string>61D99FDB1BAFF6190059D369</string>
 				<string>6187F9F71B81915700EFFB3A</string>
@@ -1087,7 +1123,7 @@
 			<string>2147483647</string>
 			<key>files</key>
 			<array>
-				<string>CF0100AE93D09B892F94BB92</string>
+				<string>C3A93DBF644833A249A31598</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -1115,11 +1151,11 @@
 			<string>6187F9301B818ED800EFFB3A</string>
 			<key>buildPhases</key>
 			<array>
-				<string>D6C886BD631A3A8D9AA0FE0C</string>
+				<string>16FBDD7A34F76D89BF5F9C7C</string>
 				<string>6187F91B1B818ED800EFFB3A</string>
 				<string>6187F91C1B818ED800EFFB3A</string>
 				<string>6187F91D1B818ED800EFFB3A</string>
-				<string>69CC6D88838A080DC87D2248</string>
+				<string>CC8FF4F4103EB783A2E97D3A</string>
 			</array>
 			<key>buildRules</key>
 			<array/>
@@ -1166,7 +1202,7 @@
 		<key>6187F9311B818ED800EFFB3A</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>83A270042C2B0109EA31C8E0</string>
+			<string>1EA9BF5DD536C2D8F1514446</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
@@ -1217,7 +1253,7 @@
 		<key>6187F9321B818ED800EFFB3A</key>
 		<dict>
 			<key>baseConfigurationReference</key>
-			<string>04F2BF797E1758B932AD1B59</string>
+			<string>8E817CA9BC1C0D5A3DAA63FA</string>
 			<key>buildSettings</key>
 			<dict>
 				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
@@ -2164,809 +2200,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>61AACEC61CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACEC71CD1FF5300EFF1FB</string>
-				<string>61AACEFF1CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>NIMSDK</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEC71CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACEC81CD1FF5300EFF1FB</string>
-				<string>61AACECE1CD1FF5300EFF1FB</string>
-				<string>61AACEDD1CD1FF5300EFF1FB</string>
-				<string>61AACEDE1CD1FF5300EFF1FB</string>
-				<string>61AACEDF1CD1FF5300EFF1FB</string>
-				<string>61AACEE01CD1FF5300EFF1FB</string>
-				<string>61AACEE11CD1FF5300EFF1FB</string>
-				<string>61AACEE21CD1FF5300EFF1FB</string>
-				<string>61AACEE31CD1FF5300EFF1FB</string>
-				<string>61AACEE41CD1FF5300EFF1FB</string>
-				<string>61AACEE51CD1FF5300EFF1FB</string>
-				<string>61AACEE61CD1FF5300EFF1FB</string>
-				<string>61AACEE71CD1FF5300EFF1FB</string>
-				<string>61AACEE81CD1FF5300EFF1FB</string>
-				<string>61AACEE91CD1FF5300EFF1FB</string>
-				<string>61AACEEA1CD1FF5300EFF1FB</string>
-				<string>61AACEEB1CD1FF5300EFF1FB</string>
-				<string>61AACEEC1CD1FF5300EFF1FB</string>
-				<string>61AACEED1CD1FF5300EFF1FB</string>
-				<string>61AACEEE1CD1FF5300EFF1FB</string>
-				<string>61AACEEF1CD1FF5300EFF1FB</string>
-				<string>61AACEF01CD1FF5300EFF1FB</string>
-				<string>61AACEF11CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>ExportHeaders</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEC81CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACEC91CD1FF5300EFF1FB</string>
-				<string>61AACECA1CD1FF5300EFF1FB</string>
-				<string>61AACECB1CD1FF5300EFF1FB</string>
-				<string>61AACECC1CD1FF5300EFF1FB</string>
-				<string>61AACECD1CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Chatroom</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEC91CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroom.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECA1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroomEnterRequest.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECB1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroomMember.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECC1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroomMemberRequest.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECD1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessageChatroomExtension.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECE1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACECF1CD1FF5300EFF1FB</string>
-				<string>61AACED01CD1FF5300EFF1FB</string>
-				<string>61AACED11CD1FF5300EFF1FB</string>
-				<string>61AACED21CD1FF5300EFF1FB</string>
-				<string>61AACED31CD1FF5300EFF1FB</string>
-				<string>61AACED41CD1FF5300EFF1FB</string>
-				<string>61AACED51CD1FF5300EFF1FB</string>
-				<string>61AACED61CD1FF5300EFF1FB</string>
-				<string>61AACED71CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>MessageObject</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACECF1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMAudioObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED01CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMCustomObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED11CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMFileObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED21CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMImageObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED31CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMLocationObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED41CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMNotificationObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED51CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMTipObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED61CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMVideoObject.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED71CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACED81CD1FF5300EFF1FB</string>
-				<string>61AACED91CD1FF5300EFF1FB</string>
-				<string>61AACEDA1CD1FF5300EFF1FB</string>
-				<string>61AACEDB1CD1FF5300EFF1FB</string>
-				<string>61AACEDC1CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>NotificationContent</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED81CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroomNotificationContent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACED91CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMNetCallNotificationContent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDA1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMNotificationContent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDB1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMTeamNotificationContent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDC1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMUnsupportedNotificationContent.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDD1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMCustomSystemNotificationSetting.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDE1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMGlobalDefs.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEDF1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMLoginClient.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE01CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessage.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE11CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessageReceipt.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE21CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessageSearchOption.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE31CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessageSetting.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE41CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMNetCallOption.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE51CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMPushNotificationSetting.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE61CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMRecentSession.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE71CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMRTSOption.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE81CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMRTSRecordingInfo.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEE91CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSDK.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEEA1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSDKConfig.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEEB1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSDKHeaders.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEEC1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSession.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEED1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSystemNotification.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEEE1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMTeam.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEEF1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMTeamMember.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF01CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMUser.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF11CD1FF5300EFF1FB</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61AACEF21CD1FF5300EFF1FB</string>
-				<string>61AACEF31CD1FF5300EFF1FB</string>
-				<string>61AACEF41CD1FF5300EFF1FB</string>
-				<string>61AACEF51CD1FF5300EFF1FB</string>
-				<string>61AACEF61CD1FF5300EFF1FB</string>
-				<string>61AACEF71CD1FF5300EFF1FB</string>
-				<string>61AACEF81CD1FF5300EFF1FB</string>
-				<string>61AACEF91CD1FF5300EFF1FB</string>
-				<string>61AACEFA1CD1FF5300EFF1FB</string>
-				<string>61AACEFB1CD1FF5300EFF1FB</string>
-				<string>61AACEFC1CD1FF5300EFF1FB</string>
-				<string>61AACEFD1CD1FF5300EFF1FB</string>
-				<string>61AACEFE1CD1FF5300EFF1FB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Protocol</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF21CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMApnsManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF31CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF41CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMChatroomManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF51CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMConversationManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF61CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMLoginManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF71CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMediaManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF81CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMMessageObjectProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEF91CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMNetCallManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFA1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMResourceManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFB1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMRTSManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFC1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMSystemNotificationManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFD1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMTeamManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFE1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMUserManagerProtocol.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61AACEFF1CD1FF5300EFF1FB</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>archive.ar</string>
-			<key>path</key>
-			<string>libNIMSDK.a</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
 		<key>61B1F7A11B7866030065FEFB</key>
 		<dict>
 			<key>children</key>
@@ -2976,6 +2209,8 @@
 				<string>61B1F7A31B7866160065FEFB</string>
 				<string>6157802C1B8F246F00C441F2</string>
 				<string>6157802D1B8F246F00C441F2</string>
+				<string>61BED5D51CE42BC4002E635C</string>
+				<string>61BED5D61CE42BC4002E635C</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -3061,6 +2296,39 @@
 			<string>NIMInputEmoticonParser.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61BED5D51CE42BC4002E635C</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMKitDevice.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61BED5D61CE42BC4002E635C</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMKitDevice.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61BED5D71CE42BC4002E635C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61BED5D61CE42BC4002E635C</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
 		</dict>
 		<key>61D99F9C1BAFF4770059D369</key>
 		<dict>
@@ -3264,8 +2532,6 @@
 		<dict>
 			<key>children</key>
 			<array>
-				<string>61D99FB91BAFF48A0059D369</string>
-				<string>61D99FBA1BAFF48A0059D369</string>
 				<string>61D99FBB1BAFF48A0059D369</string>
 				<string>61D99FBC1BAFF48A0059D369</string>
 				<string>61D99FBD1BAFF48A0059D369</string>
@@ -3276,37 +2542,13 @@
 				<string>61D99FC31BAFF48A0059D369</string>
 				<string>61D99FC51BAFF48A0059D369</string>
 				<string>61D99FC61BAFF48A0059D369</string>
+				<string>61F4E5621CE1C40D000AD2A9</string>
+				<string>61F4E5631CE1C40D000AD2A9</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
 			<key>path</key>
 			<string>View</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61D99FB91BAFF48A0059D369</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>NIMKitColorButtonCell.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61D99FBA1BAFF48A0059D369</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>NIMKitColorButtonCell.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
@@ -3439,13 +2681,6 @@
 			<string>NIMTimePickerView.m</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
-		</dict>
-		<key>61D99FC71BAFF48A0059D369</key>
-		<dict>
-			<key>fileRef</key>
-			<string>61D99FBA1BAFF48A0059D369</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>61D99FC81BAFF48A0059D369</key>
 		<dict>
@@ -4302,6 +3537,184 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
+		<key>61F4E55B1CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMCommonTableData.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E55C1CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMCommonTableData.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E55D1CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMCommonTableDelegate.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E55E1CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMCommonTableDelegate.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E55F1CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61F4E55C1CE1AF6F000AD2A9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61F4E5601CE1AF6F000AD2A9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61F4E55E1CE1AF6F000AD2A9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61F4E5611CE1B8D4000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMCommonTableViewCell.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5621CE1C40D000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMTeamMemberCardHeaderCell.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5631CE1C40D000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMTeamMemberCardHeaderCell.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5641CE1C40D000AD2A9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61F4E5631CE1C40D000AD2A9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61F4E5651CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMKitColorButtonCell.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5661CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMKitColorButtonCell.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5671CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>NIMKitSwitcherCell.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5681CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>NIMKitSwitcherCell.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>61F4E5691CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61F4E5661CE1DBC0000AD2A9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61F4E56A1CE1DBC0000AD2A9</key>
+		<dict>
+			<key>fileRef</key>
+			<string>61F4E5681CE1DBC0000AD2A9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
 		<key>61FAB9621B7836B400355B95</key>
 		<dict>
 			<key>children</key>
@@ -4566,7 +3979,42 @@
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
-		<key>69CC6D88838A080DC87D2248</key>
+		<key>8E817CA9BC1C0D5A3DAA63FA</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-NIMKit.release.xcconfig</string>
+			<key>path</key>
+			<string>../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>A59117E70A15777DEE0A8084</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>33E85DEB72471924CF82C32F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C3A93DBF644833A249A31598</key>
+		<dict>
+			<key>fileRef</key>
+			<string>33E85DEB72471924CF82C32F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>CC8FF4F4103EB783A2E97D3A</key>
 		<dict>
 			<key>buildActionMask</key>
 			<string>2147483647</string>
@@ -4589,72 +4037,6 @@
 </string>
 			<key>showEnvVarsInLog</key>
 			<string>0</string>
-		</dict>
-		<key>83A270042C2B0109EA31C8E0</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods-NIMKit.debug.xcconfig</string>
-			<key>path</key>
-			<string>../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.debug.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>CF0100AE93D09B892F94BB92</key>
-		<dict>
-			<key>fileRef</key>
-			<string>36D531214C5557C08A5F554C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D6C886BD631A3A8D9AA0FE0C</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Check Pods Manifest.lock</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
-if [[ $? != 0 ]] ; then
-    cat &lt;&lt; EOM
-error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
-EOM
-    exit 1
-fi
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>D70D42EB223F1B57A8C19B85</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>83A270042C2B0109EA31C8E0</string>
-				<string>04F2BF797E1758B932AD1B59</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Pods</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
 		</dict>
 		<key>E465D3AE1B84704C004F3A07</key>
 		<dict>
@@ -5057,6 +4439,15 @@ fi
 			<key>children</key>
 			<array>
 				<string>E4EB3B1C1C55EB6B00A47C41</string>
+				<string>61F4E5611CE1B8D4000AD2A9</string>
+				<string>61F4E55B1CE1AF6F000AD2A9</string>
+				<string>61F4E55C1CE1AF6F000AD2A9</string>
+				<string>61F4E55D1CE1AF6F000AD2A9</string>
+				<string>61F4E55E1CE1AF6F000AD2A9</string>
+				<string>61F4E5651CE1DBC0000AD2A9</string>
+				<string>61F4E5661CE1DBC0000AD2A9</string>
+				<string>61F4E5671CE1DBC0000AD2A9</string>
+				<string>61F4E5681CE1DBC0000AD2A9</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -5095,7 +4486,6 @@ fi
 		<dict>
 			<key>children</key>
 			<array>
-				<string>61AACEC61CD1FF5300EFF1FB</string>
 				<string>61D99FE11BAFFA760059D369</string>
 				<string>61D99FEA1BAFFA760059D369</string>
 				<string>E4EF06DF1B7DAFCA006669AC</string>

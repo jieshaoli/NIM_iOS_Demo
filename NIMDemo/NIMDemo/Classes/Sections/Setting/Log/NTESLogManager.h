@@ -14,6 +14,6 @@
 - (void)start;
 
 - (UIViewController *)demoLogViewController;
-
 - (UIViewController *)sdkLogViewController;
+- (UIViewController *)demoConfigViewController;
 @end

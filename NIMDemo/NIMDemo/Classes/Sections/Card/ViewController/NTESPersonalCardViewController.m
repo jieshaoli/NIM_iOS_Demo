@@ -7,8 +7,8 @@
 //
 
 #import "NTESPersonalCardViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "UIView+Toast.h"
 #import "SVProgressHUD.h"
 #import "NTESColorButtonCell.h"
@@ -22,7 +22,7 @@
 
 @interface NTESPersonalCardViewController ()<NIMUserManagerDelegate>
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -53,7 +53,7 @@
     [super viewDidLoad];
     [self setUpNav];
     __weak typeof(self) wself = self;
-    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+    if ([NIMKit sharedKit].hostUserInfos) {
         //说明托管了用户信息，那就直接加 userManager 的监听
         [[NIMSDK sharedSDK].userManager addDelegate:self];
     }else{
@@ -61,7 +61,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
     }
 
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
@@ -215,7 +215,7 @@
                             FooterTitle:@"",
                             },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 #pragma mark - Action

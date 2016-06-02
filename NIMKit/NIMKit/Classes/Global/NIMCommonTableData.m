@@ -1,18 +1,18 @@
 //
-//  NTESCommonTableData.m
+//  NIMCommonTableData.m
 //  NIM
 //
 //  Created by chris on 15/6/26.
 //  Copyright © 2015年 Netease. All rights reserved.
 //
 
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 
 #define DefaultUIRowHeight  50.f
 #define DefaultUIHeaderHeight  44.f
 #define DefaultUIFooterHeight  44.f
 
-@implementation NTESCommonTableSection
+@implementation NIMCommonTableSection
 
 - (instancetype) initWithDict:(NSDictionary *)dict{
     if ([dict[Disable] boolValue]) {
@@ -26,7 +26,7 @@
         _uiHeaderHeight = [dict[HeaderHeight] floatValue];
         _uiHeaderHeight = _uiHeaderHeight ? _uiHeaderHeight : DefaultUIHeaderHeight;
         _uiFooterHeight = _uiFooterHeight ? _uiFooterHeight : DefaultUIFooterHeight;
-        _rows = [NTESCommonTableRow rowsWithData:dict[RowContent]];
+        _rows = [NIMCommonTableRow rowsWithData:dict[RowContent]];
     }
     return self;
 }
@@ -35,7 +35,7 @@
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:data.count];
     for (NSDictionary *dict in data) {
         if ([dict isKindOfClass:[NSDictionary class]]) {
-            NTESCommonTableSection * section = [[NTESCommonTableSection alloc] initWithDict:dict];
+            NIMCommonTableSection * section = [[NIMCommonTableSection alloc] initWithDict:dict];
             if (section) {
                 [array addObject:section];
             }
@@ -49,7 +49,7 @@
 
 
 
-@implementation NTESCommonTableRow
+@implementation NIMCommonTableRow
 
 - (instancetype) initWithDict:(NSDictionary *)dict{
     if ([dict[Disable] boolValue]) {
@@ -74,7 +74,7 @@
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:data.count];
     for (NSDictionary *dict in data) {
         if ([dict isKindOfClass:[NSDictionary class]]) {
-            NTESCommonTableRow * row = [[NTESCommonTableRow alloc] initWithDict:dict];
+            NIMCommonTableRow * row = [[NIMCommonTableRow alloc] initWithDict:dict];
             if (row) {
                 [array addObject:row];
             }

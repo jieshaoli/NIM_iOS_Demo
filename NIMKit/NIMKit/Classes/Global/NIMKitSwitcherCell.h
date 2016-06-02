@@ -1,5 +1,5 @@
 //
-//  NTESSettingPushNotifySwitcherCell.h
+//  NIMKitSwitcherCell.h
 //  NIM
 //
 //  Created by chris on 15/6/26.
@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "NIMCommonTableViewCell.h"
 
-@interface NTESSettingSwitcherCell : UITableViewCell<NIMCommonTableViewCell>
+@interface NIMKitSwitcherCell : UITableViewCell<NIMCommonTableViewCell>
+
+@property(nonatomic,strong,readonly) UISwitch *switcher;
 
 @end

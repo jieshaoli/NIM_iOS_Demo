@@ -7,8 +7,8 @@
 //
 
 #import "NTESBirthSettingViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "NTESBirthPickerView.h"
 #import "UIView+NTES.h"
 #import "SVProgressHUD.h"
@@ -16,7 +16,7 @@
 
 @interface NTESBirthSettingViewController ()
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -32,9 +32,10 @@
     [self setUpNav];
     NSString *userId = [[NIMSDK sharedSDK].loginManager currentAccount];
     self.birth = [[NIMSDK sharedSDK].userManager userInfo:userId].userInfo.birth;
+    self.birth = self.birth? self.birth : @"";
     [self buildData];
     __weak typeof(self) wself = self;
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
@@ -72,7 +73,7 @@
                                   ],
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 - (void)refresh{

@@ -6,8 +6,8 @@
 //  Copyright © 2015年 Netease. All rights reserved.
 //
 
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
-@interface NTESSettingCheckCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESSettingCheckCell : UITableViewCell<NIMCommonTableViewCell>
 
 @end

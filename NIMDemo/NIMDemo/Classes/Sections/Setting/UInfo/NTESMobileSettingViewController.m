@@ -7,14 +7,14 @@
 //
 
 #import "NTESMobileSettingViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "SVProgressHUD.h"
 #import "UIView+Toast.h"
 
 @interface NTESMobileSettingViewController ()
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -29,7 +29,7 @@
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _inputLimit = 50;
+        _inputLimit = 13;
     }
     return self;
 }
@@ -39,9 +39,10 @@
     [self setUpNav];
     NSString *userId = [[NIMSDK sharedSDK].loginManager currentAccount];
     self.mobile = [[NIMSDK sharedSDK].userManager userInfo:userId].userInfo.mobile;
+    self.mobile = self.mobile?self.mobile : @"";
     __weak typeof(self) wself = self;
     [self buildData];
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     
@@ -108,7 +109,7 @@
                                   ],
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 #pragma mark - UITextFieldDelegate

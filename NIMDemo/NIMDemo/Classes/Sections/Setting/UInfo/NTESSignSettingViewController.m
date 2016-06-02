@@ -7,14 +7,14 @@
 //
 
 #import "NTESSignSettingViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "SVProgressHUD.h"
 #import "UIView+Toast.h"
 
 @interface NTESSignSettingViewController ()
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -41,8 +41,9 @@
     __weak typeof(self) wself = self;
     NSString *userId = [[NIMSDK sharedSDK].loginManager currentAccount];
     self.sign = [[NIMSDK sharedSDK].userManager userInfo:userId].userInfo.sign;
+    self.sign = self.sign? self.sign : @"";
     [self buildData];
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     
@@ -87,10 +88,12 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagSign) : self.sign} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view makeToast:@"签名设置成功"
+            UINavigationController *nav = wself.navigationController;
+            [nav popViewControllerAnimated:YES];
+            UIViewController *vc = nav.topViewController;
+            [vc.view makeToast:@"签名设置成功"
                          duration:2
                          position:CSToastPositionCenter];
-            [wself.navigationController popViewControllerAnimated:YES];
         }else{
             [wself.view makeToast:@"签名设置失败，请重试"
                          duration:2
@@ -112,7 +115,7 @@
                                   ],
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 

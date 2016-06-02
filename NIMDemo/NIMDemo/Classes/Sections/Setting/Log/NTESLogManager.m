@@ -64,4 +64,12 @@
     return vc;
 }
 
+- (UIViewController *)demoConfigViewController
+{
+    NSString *content = [NSString stringWithFormat:@"SDK Config:\n%@\nDemo Config:\n%@\n",[NIMSDKConfig sharedConfig],[NTESBundleSetting sharedConfig]];
+    NTESLogViewController *vc = [[NTESLogViewController alloc] initWithContent:content];
+    vc.title = @"Demo Config";
+    return vc;
+}
+
 @end

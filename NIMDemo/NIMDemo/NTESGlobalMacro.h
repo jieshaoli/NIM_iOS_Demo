@@ -54,4 +54,14 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 
+static inline void method_execute_frequency(id obj ,SEL selecter, NSTimeInterval timeInterval){
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [obj performSelector:selecter withObject:nil afterDelay:0];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            onceToken = 0;
+        });
+    });
+}
+
 #endif

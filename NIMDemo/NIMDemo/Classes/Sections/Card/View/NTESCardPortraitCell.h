@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
-@interface NTESCardPortraitCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESCardPortraitCell : UITableViewCell<NIMCommonTableViewCell>
 
 @end

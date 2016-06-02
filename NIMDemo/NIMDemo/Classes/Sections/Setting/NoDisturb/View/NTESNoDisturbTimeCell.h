@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
-@interface NTESNoDisturbTimeCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESNoDisturbTimeCell : UITableViewCell<NIMCommonTableViewCell>
 
 @end

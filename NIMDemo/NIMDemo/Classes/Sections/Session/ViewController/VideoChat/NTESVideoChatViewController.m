@@ -299,6 +299,7 @@
 - (void)onRemoteYUVReady:(NSData *)yuvData
                    width:(NSUInteger)width
                   height:(NSUInteger)height
+                    from:(NSString *)user
 {
     if (([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) && !self.oppositeCloseVideo) {
         

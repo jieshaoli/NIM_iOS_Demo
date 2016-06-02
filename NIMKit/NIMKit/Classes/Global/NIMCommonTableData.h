@@ -1,12 +1,12 @@
 //
-//  NTESCommonTableData.h
+//  NIMCommonTableData.h
 //  NIM
 //
 //  Created by chris on 15/6/26.
 //  Copyright © 2015年 Netease. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define SepLineLeft 15 //分割线距左边距离
 
@@ -32,7 +32,7 @@
 #define ShowAccessory @"accessory"    //cell显示>箭头
 #define ForbidSelect  @"forbidSelect" //cell不响应select事件
 
-@interface NTESCommonTableSection : NSObject
+@interface NIMCommonTableSection : NSObject
 
 @property (nonatomic,copy)   NSString *headerTitle;
 
@@ -53,7 +53,7 @@
 
 
 
-@interface NTESCommonTableRow : NSObject
+@interface NIMCommonTableRow : NSObject
 
 @property (nonatomic,strong) NSString *title;
 

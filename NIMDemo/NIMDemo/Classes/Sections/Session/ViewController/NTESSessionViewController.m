@@ -543,7 +543,7 @@ NIMContactSelectDelegate>
 
 
 - (void)onTapAvatar:(NSString *)userId{
-    NTESPersonalCardViewController *vc = [[NTESPersonalCardViewController alloc] initWithUserId:userId];
+    UIViewController *vc = [[NTESPersonalCardViewController alloc] initWithUserId:userId];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

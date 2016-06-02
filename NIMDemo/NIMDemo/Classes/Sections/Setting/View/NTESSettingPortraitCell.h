@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
-@interface NTESSettingPortraitCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESSettingPortraitCell : UITableViewCell<NIMCommonTableViewCell>
 
 @end

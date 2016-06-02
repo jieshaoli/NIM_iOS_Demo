@@ -36,6 +36,7 @@
     if (self) {
         _recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
         _recognizer.delegate = self;
+        _recognizer.delaysTouchesBegan = NO;
         [navigationController.view addGestureRecognizer:_recognizer];
         _animator = [[NTESNavigationAnimator alloc] initWithNavigationController:navigationController];
         _animator.delegate = self;

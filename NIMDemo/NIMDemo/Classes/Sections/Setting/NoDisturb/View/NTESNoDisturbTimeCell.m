@@ -7,12 +7,12 @@
 //
 
 #import "NTESNoDisturbTimeCell.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 #import "UIView+NTES.h"
 
 @interface NTESNoDisturbTimeCell()
 
-@property (nonatomic,strong) NTESCommonTableRow *data;
+@property (nonatomic,strong) NIMCommonTableRow *data;
 
 @end
 
@@ -23,7 +23,7 @@
     self.detailTextLabel.centerX = self.width * .5f;
 }
 
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView{
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView{
     self.textLabel.text = rowData.title;
     self.detailTextLabel.text = rowData.detailTitle;
     self.data = rowData;

@@ -8,11 +8,11 @@
 
 #import "NTESColorButtonCell.h"
 #import "UIView+NTES.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 
 @interface NTESColorButtonCell()
 
-@property (nonatomic,strong) NTESCommonTableRow *rowData;
+@property (nonatomic,strong) NIMCommonTableRow *rowData;
 
 @end
 
@@ -30,7 +30,7 @@
     return self;
 }
 
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView{
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView{
     self.rowData = rowData;
     [self.button setTitle:rowData.title forState:UIControlStateNormal];
     ColorButtonCellStyle style = [rowData.extraInfo integerValue];

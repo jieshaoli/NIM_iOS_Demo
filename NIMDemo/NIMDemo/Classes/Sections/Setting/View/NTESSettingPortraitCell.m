@@ -7,7 +7,7 @@
 //
 
 #import "NTESSettingPortraitCell.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 #import "UIView+NTES.h"
 #import "NTESSessionUtil.h"
 #import "NIMAvatarImageView.h"
@@ -41,7 +41,7 @@
     return self;
 }
 
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView{
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView{
     self.textLabel.text       = rowData.title;
     self.detailTextLabel.text = rowData.detailTitle;
     NSString *uid = rowData.extraInfo;

@@ -17,10 +17,15 @@
 #import "UIView+Toast.h"
 #import "NTESWhiteboardViewController.h"
 #import "NTESCustomSysNotificationSender.h"
+#import "NTESGlobalMacro.h"
+#import <AVFoundation/AVFoundation.h>
+#import "NTESLiveViewController.h"
 
 NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChanged";
 
-@interface NTESNotificationCenter () <NIMSystemNotificationManagerDelegate,NIMNetCallManagerDelegate,NIMRTSManagerDelegate>
+@interface NTESNotificationCenter () <NIMSystemNotificationManagerDelegate,NIMNetCallManagerDelegate,NIMRTSManagerDelegate,NIMChatManagerDelegate>
+
+@property (nonatomic,strong) AVAudioPlayer *player; //播放提示音
 
 @end
 
@@ -44,9 +49,13 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
 - (instancetype)init {
     self = [super init];
     if(self) {
+        NSURL *url = [[NSBundle mainBundle] URLForResource:@"message" withExtension:@"wav"];
+        _player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+
         [[NIMSDK sharedSDK].systemNotificationManager addDelegate:self];
         [[NIMSDK sharedSDK].netCallManager addDelegate:self];
         [[NIMSDK sharedSDK].rtsManager addDelegate:self];
+        [[NIMSDK sharedSDK].chatManager addDelegate:self];
     }
     return self;
 }
@@ -56,8 +65,33 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
     [[NIMSDK sharedSDK].systemNotificationManager removeDelegate:self];
     [[NIMSDK sharedSDK].netCallManager removeDelegate:self];
     [[NIMSDK sharedSDK].rtsManager removeDelegate:self];
+    [[NIMSDK sharedSDK].chatManager removeDelegate:self];
 }
 
+#pragma mark - NIMChatManagerDelegate
+- (void)onRecvMessages:(NSArray *)messages
+{
+    method_execute_frequency(self, @selector(playMessageAudioTip), 0.3);
+}
+
+- (void)playMessageAudioTip
+{
+    UINavigationController *nav = [NTESMainTabController instance].selectedViewController;
+    BOOL needPlay = YES;
+    for (UIViewController *vc in nav.viewControllers) {
+        if ([vc isKindOfClass:[NIMSessionViewController class]] ||  [vc isKindOfClass:[NTESLiveViewController class]])
+        {
+            needPlay = NO;
+            break;
+        }
+    }
+    if (needPlay) {
+        [self.player stop];
+        [self.player play];
+    }
+}
+
+#pragma mark - NIMSystemNotificationManagerDelegate
 - (void)onReceiveCustomSystemNotification:(NIMCustomSystemNotification *)notification{
     
     NSString *content = notification.content;
@@ -94,7 +128,7 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
     [tabVC.view endEditing:YES];
     UINavigationController *nav = tabVC.selectedViewController;
 
-    if ([nav.topViewController isKindOfClass:[NTESNetChatViewController class]]){
+    if ([self shouldResponseBusy]){
         [[NIMSDK sharedSDK].netCallManager control:callID type:NIMNetCallControlTypeBusyLine];
     }
     else {
@@ -135,25 +169,35 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
              message:(NSString *)info
 {
     NTESMainTabController *tabVC = [NTESMainTabController instance];
-    [tabVC.view endEditing:YES];
     
-    if (tabVC.presentedViewController && [tabVC.presentedViewController isKindOfClass:[NTESWhiteboardViewController class]]) {
-        [[NIMSDK sharedSDK].rtsManager responseRTS:sessionID accept:NO option:nil completion:nil];
-    }
-    else {
-        NTESWhiteboardViewController *vc = [[NTESWhiteboardViewController alloc] initWithSessionID:sessionID
-                                                                                            peerID:caller
-                                                                                             types:types
-                                                                                              info:info];
-        if (tabVC.presentedViewController) {
-            __weak NTESMainTabController *wtabVC = (NTESMainTabController *)tabVC;
-            [tabVC.presentedViewController dismissViewControllerAnimated:NO completion:^{
-                [wtabVC presentViewController:vc animated:NO completion:nil];
-            }];
-        }else{
-            [tabVC presentViewController:vc animated:NO completion:nil];
+    [tabVC.view endEditing:YES];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([self shouldResponseBusy]) {
+            [[NIMSDK sharedSDK].rtsManager responseRTS:sessionID accept:NO option:nil completion:nil];
         }
-    }
+        else {
+            NTESWhiteboardViewController *vc = [[NTESWhiteboardViewController alloc] initWithSessionID:sessionID
+                                                                                                peerID:caller
+                                                                                                 types:types
+                                                                                                  info:info];
+            if (tabVC.presentedViewController) {
+                __weak NTESMainTabController *wtabVC = (NTESMainTabController *)tabVC;
+                [tabVC.presentedViewController dismissViewControllerAnimated:NO completion:^{
+                    [wtabVC presentViewController:vc animated:NO completion:nil];
+                }];
+            }else{
+                [tabVC presentViewController:vc animated:NO completion:nil];
+            }
+        }
+    });
+}
+
+- (BOOL)shouldResponseBusy
+{
+    NTESMainTabController *tabVC = [NTESMainTabController instance];
+    UINavigationController *nav = tabVC.selectedViewController;
+    return [nav.topViewController isKindOfClass:[NTESNetChatViewController class]] || [tabVC.presentedViewController isKindOfClass:[NTESWhiteboardViewController class]];
 }
 
 

@@ -7,8 +7,8 @@
 //
 
 #import "NTESSettingViewController.h"
-#import "NTESCommonTableData.h"
-#import "NTESCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
 #import "SVProgressHUD.h"
 #import "UIView+Toast.h"
 #import "UIView+NTES.h"
@@ -31,7 +31,7 @@
 
 @property (nonatomic,strong) NSArray *data;
 @property (nonatomic,strong) NTESLogUploader *logUploader;
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @end
 
@@ -53,7 +53,7 @@
     self.versionLabel.text = [NSString stringWithFormat:@"版本号:%@  SDK版本:%@",versionStr,sdkVersion];
     [self buildData];
     __weak typeof(self) wself = self;
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     self.tableView.delegate   = self.delegator;
@@ -62,7 +62,7 @@
     extern NSString *NTESCustomNotificationCountChanged;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCustomNotifyChanged:) name:NTESCustomNotificationCountChanged object:nil];
     
-    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+    if ([NIMKit sharedKit].hostUserInfos) {
         //说明托管了用户信息，那就直接加 userManager 的监听
         [[NIMSDK sharedSDK].userManager addDelegate:self];
     }else{
@@ -167,7 +167,7 @@
                           FooterTitle:@"",
                           },
                     ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 - (void)refreshData{
@@ -193,13 +193,16 @@
 }
 
 - (void)onTouchShowLog:(id)sender{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"查看日志" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"查看SDK日志",@"查看Demo日志", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"查看日志" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"查看 DEMO 配置",@"查看 SDK 日志",@"查看 Demo 日志", nil];
     [actionSheet showInView:self.view completionHandler:^(NSInteger index) {
         switch (index) {
             case 0:
-                [self showSDKLog];
+                [self showDemoConfig];
                 break;
             case 1:
+                [self showSDKLog];
+                break;
+            case 2:
                 [self showDemoLog];
                 break;
             default:
@@ -311,6 +314,14 @@
 
 - (void)showDemoLog{
     UIViewController *logViewController = [[NTESLogManager sharedManager] demoLogViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:logViewController];
+    [self presentViewController:nav
+                       animated:YES
+                     completion:nil];
+}
+
+- (void)showDemoConfig {
+    UIViewController *logViewController = [[NTESLogManager sharedManager] demoConfigViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:logViewController];
     [self presentViewController:nav
                        animated:YES

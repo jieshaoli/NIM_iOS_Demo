@@ -7,7 +7,7 @@
 //
 
 #import "NTESSettingCheckCell.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 #import "UIView+NTES.h"
 
 @interface NTESSettingCheckCell()
@@ -36,7 +36,7 @@
     return self;
 }
 
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView{
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView{
     self.textLabel.text    = rowData.title;
     self.checkBox.selected = [rowData.extraInfo boolValue];
     [self.checkBox removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];

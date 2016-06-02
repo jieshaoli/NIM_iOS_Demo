@@ -10,4 +10,5 @@
 
 @interface NTESLogViewController : UIViewController
 - (instancetype)initWithFilepath:(NSString *)path;
+- (instancetype)initWithContent:(NSString *)content;
 @end

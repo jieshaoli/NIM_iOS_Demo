@@ -60,7 +60,7 @@ NIMUserManagerDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if ([NIMSDKConfig sharedConfig].hostUserInfos) {
+    if ([NIMKit sharedKit].hostUserInfos) {
         //托管了用户信息，那就直接加 userManager 的监听
         [[NIMSDK sharedSDK].userManager addDelegate:self];
     }else{

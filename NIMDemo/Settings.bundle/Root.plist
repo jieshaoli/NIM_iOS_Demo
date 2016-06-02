@@ -140,6 +140,16 @@
 			<key>KeyboardType</key>
 			<string>NumberPad</string>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>需要忽略的群通知 (示范用)</string>
+			<key>Key</key>
+			<string>ignore_team_types</string>
+			<key>KeyboardType</key>
+			<string>NumbersAndPunctuation</string>
+		</dict>
 	</array>
 </dict>
 </plist>

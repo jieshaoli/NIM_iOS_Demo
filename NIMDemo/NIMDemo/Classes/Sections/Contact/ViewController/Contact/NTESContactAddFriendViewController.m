@@ -7,15 +7,15 @@
 //
 
 #import "NTESContactAddFriendViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "UIView+Toast.h"
 #import "SVProgressHUD.h"
 #import "NTESPersonalCardViewController.h"
 
 @interface NTESContactAddFriendViewController ()
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -39,7 +39,7 @@
     self.navigationItem.title = @"添加好友";
     __weak typeof(self) wself = self;
     [self buildData];
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     
@@ -67,7 +67,7 @@
                           FooterTitle:@""
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 

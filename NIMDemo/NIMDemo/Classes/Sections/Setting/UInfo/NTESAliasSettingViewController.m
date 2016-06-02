@@ -7,14 +7,14 @@
 //
 
 #import "NTESAliasSettingViewController.h"
-#import "NTESCommonTableDelegate.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableDelegate.h"
+#import "NIMCommonTableData.h"
 #import "SVProgressHUD.h"
 #import "UIView+Toast.h"
 
 @interface NTESAliasSettingViewController()
 
-@property (nonatomic,strong) NTESCommonTableDelegate *delegator;
+@property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
 @property (nonatomic,copy  ) NSArray                 *data;
 
@@ -45,7 +45,7 @@
     __weak typeof(self) wself = self;
     self.alias = self.user.alias;
     [self buildData];
-    self.delegator = [[NTESCommonTableDelegate alloc] initWithTableData:^NSArray *{
+    self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
     
@@ -118,7 +118,7 @@
                                   ],
                           },
                       ];
-    self.data = [NTESCommonTableSection sectionsWithData:data];
+    self.data = [NIMCommonTableSection sectionsWithData:data];
 }
 
 

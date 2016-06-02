@@ -8,7 +8,7 @@
 
 #import "NTESTextSettingCell.h"
 #import "UIView+NTES.h"
-#import "NTESCommonTableData.h"
+#import "NIMCommonTableData.h"
 
 @implementation NTESTextSettingCell
 
@@ -25,7 +25,7 @@
 }
 
 
-- (void)refreshData:(NTESCommonTableRow *)rowData tableView:(UITableView *)tableView{
+- (void)refreshData:(NIMCommonTableRow *)rowData tableView:(UITableView *)tableView{
     _textField.delegate    = (id<UITextFieldDelegate>)tableView.viewController;
     _textField.text        = rowData.extraInfo;
     _textField.placeholder = rowData.title;

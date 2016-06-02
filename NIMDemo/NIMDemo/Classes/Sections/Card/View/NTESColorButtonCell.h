@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NTESCommonTableViewCell.h"
+#import "NIMCommonTableViewCell.h"
 
 typedef NS_ENUM(NSInteger, ColorButtonCellStyle){
     ColorButtonCellStyleRed,
@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, ColorButtonCellStyle){
 
 @class NTESColorButton;
 
-@interface NTESColorButtonCell : UITableViewCell<NTESCommonTableViewCell>
+@interface NTESColorButtonCell : UITableViewCell<NIMCommonTableViewCell>
 
 @property (nonatomic,strong) NTESColorButton *button;
 
