@@ -54,7 +54,10 @@
         if (message.session.sessionType == NIMSessionTypeChatroom
                  && message.messageType == NIMMessageTypeNotification)
         {
-            [self dealMessage:message];
+            NIMNotificationObject *object = message.messageObject;
+            if (![object.content isKindOfClass:[NIMUnsupportedNotificationContent class]]) {
+                [self dealMessage:message];
+            }
         }
     }
 }
