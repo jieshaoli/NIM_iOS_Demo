@@ -142,13 +142,14 @@
         case NIMMessageTypeText:
             self.textConfig.message = model.message;
             return self.textConfig;
+            
         case NIMMessageTypeCustom:{
             NIMCustomObject *object = model.message.messageObject;
             if (object.attachment) {
                 self.customConfig.message = model.message;
                 return self.customConfig;
             }
-            return nil;
+            break;
         }
         default:
             break;

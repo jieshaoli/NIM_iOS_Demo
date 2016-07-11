@@ -99,7 +99,8 @@ NSString *NTESNotificationLogout = @"NTESNotificationLogout";
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [[NIMSDK sharedSDK] updateApnsToken:deviceToken];   
+    [[NIMSDK sharedSDK] updateApnsToken:deviceToken];
+    DDLogInfo(@"didRegisterForRemoteNotificationsWithDeviceToken:  %@", deviceToken);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{

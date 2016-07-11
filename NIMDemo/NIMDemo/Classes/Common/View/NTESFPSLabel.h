@@ -10,4 +10,6 @@
 
 @interface NTESFPSLabel : UILabel
 
+- (void)invalidate;
+
 @end

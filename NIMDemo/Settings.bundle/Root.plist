@@ -104,6 +104,16 @@
 		</dict>
 		<dict>
 			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>需要忽略的群通知 (示范用)</string>
+			<key>Key</key>
+			<string>ignore_team_types</string>
+			<key>KeyboardType</key>
+			<string>NumbersAndPunctuation</string>
+		</dict>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>网络通话和白板参数设置</string>
@@ -142,13 +152,13 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
+			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>需要忽略的群通知 (示范用)</string>
+			<string>视频聊天自动旋转远端画面</string>
 			<key>Key</key>
-			<string>ignore_team_types</string>
-			<key>KeyboardType</key>
-			<string>NumbersAndPunctuation</string>
+			<string>videochat_auto_rotate_remote_video</string>
+			<key>DefaultValue</key>
+			<false/>
 		</dict>
 	</array>
 </dict>

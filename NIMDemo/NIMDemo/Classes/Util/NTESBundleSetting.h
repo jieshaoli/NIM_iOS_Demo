@@ -40,6 +40,8 @@
 
 - (NIMNetCallVideoQuality)preferredVideoQuality;    //期望的视频发送清晰度
 
-- (NSArray *)ignoreTeamNotificationTypes;            //需要忽略的群通知类型
+- (BOOL)videochatAutoRotateRemoteVideo;             //自动旋转视频聊天远端画面
+
+- (NSArray *)ignoreTeamNotificationTypes;           //需要忽略的群通知类型
 
 @end

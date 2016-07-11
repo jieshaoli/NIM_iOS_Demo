@@ -19,7 +19,7 @@
 @end
 
 
-@interface NTESDataManager()
+@interface NTESDataManager()<NIMUserManagerDelegate,NIMTeamManagerDelegate>
 
 @property (nonatomic,strong) NTESDataRequest *request;
 
@@ -43,8 +43,15 @@
         _defaultTeamAvatar = [UIImage imageNamed:@"avatar_team"];
         _request = [[NTESDataRequest alloc] init];
         _request.maxMergeCount = 20;
+        [[NIMSDK sharedSDK].userManager addDelegate:self];
+        [[NIMSDK sharedSDK].teamManager addDelegate:self];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NIMSDK sharedSDK].userManager removeDelegate:self];
 }
 
 - (NIMKitInfo *)infoByUser:(NSString *)userId
@@ -148,6 +155,53 @@
         
     }
     return text;
+}
+
+
+//将个人信息和群组信息变化通知给 NIMKit 。
+//如果您的应用不托管个人信息给云信，则需要您自行在上层监听个人信息变动，并将变动通知给 NIMKit。
+
+#pragma mark - NIMUserManagerDelegate
+
+- (void)onFriendChanged:(NIMUser *)user
+{
+    [[NIMKit sharedKit] notfiyUserInfoChanged:@[user.userId]];
+}
+
+- (void)onUserInfoChanged:(NIMUser *)user
+{
+    [[NIMKit sharedKit] notfiyUserInfoChanged:@[user.userId]];
+}
+
+- (void)onBlackListChanged{
+    [[NIMKit sharedKit] notifyUserBlackListChanged];
+}
+
+- (void)onMuteListChanged
+{
+    [[NIMKit sharedKit] notifyUserMuteListChanged];
+}
+
+
+#pragma mark - NIMTeamManagerDelegate
+- (void)onTeamAdded:(NIMTeam *)team
+{
+    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+}
+
+- (void)onTeamUpdated:(NIMTeam *)team
+{
+    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+}
+
+- (void)onTeamRemoved:(NIMTeam *)team
+{
+    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+}
+
+- (void)onTeamMemberChanged:(NIMTeam *)team
+{
+    [[NIMKit sharedKit] notfiyTeamMemebersChanged:@[team.teamId]];
 }
 
 #pragma mark - nickname

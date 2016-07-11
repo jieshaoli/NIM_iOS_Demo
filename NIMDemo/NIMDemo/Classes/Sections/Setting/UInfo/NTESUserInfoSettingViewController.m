@@ -23,7 +23,7 @@
 #import "NTESFileLocationHelper.h"
 #import "NIMWebImageManager.h"
 
-@interface NTESUserInfoSettingViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate,NIMUserManagerDelegate>
+@interface NTESUserInfoSettingViewController ()<UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
@@ -43,17 +43,11 @@
     }];
     self.tableView.delegate   = self.delegator;
     self.tableView.dataSource = self.delegator;
-    if ([NIMKit sharedKit].hostUserInfos) {
-        //说明托管了用户信息，那就直接加 userManager 的监听
-        [[NIMSDK sharedSDK].userManager addDelegate:self];
-    }else{
-        //没有托管用户信息，就直接加 NIMKit 的监听
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
-    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
 }
 
 - (void)dealloc{
-    [[NIMSDK sharedSDK].userManager removeDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -211,12 +205,6 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - NIMUserManagerDelegate
-- (void)onUserInfoChanged:(NIMUser *)user{
-    if ([user.userId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
-        [self refresh];
-    }
-}
 
 #pragma mark - onUserInfoHasUpdatedNotification
 - (void)onUserInfoHasUpdatedNotification:(NSNotification *)notification{

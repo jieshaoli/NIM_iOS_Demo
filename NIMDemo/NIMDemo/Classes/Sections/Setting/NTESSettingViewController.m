@@ -27,7 +27,7 @@
 #import "NTESUserUtil.h"
 #import "NTESLogUploader.h"
 
-@interface NTESSettingViewController ()<NIMUserManagerDelegate>
+@interface NTESSettingViewController ()
 
 @property (nonatomic,strong) NSArray *data;
 @property (nonatomic,strong) NTESLogUploader *logUploader;
@@ -61,14 +61,13 @@
     
     extern NSString *NTESCustomNotificationCountChanged;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCustomNotifyChanged:) name:NTESCustomNotificationCountChanged object:nil];
-    
-    if ([NIMKit sharedKit].hostUserInfos) {
-        //说明托管了用户信息，那就直接加 userManager 的监听
-        [[NIMSDK sharedSDK].userManager addDelegate:self];
-    }else{
-        //没有托管用户信息，就直接加 NIMKit 的监听
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [SVProgressHUD dismiss];
 }
 
 - (void)dealloc{
@@ -291,13 +290,6 @@
     NSArray *userInfos = userInfo[NIMKitInfoKey];
     if ([userInfos containsObject:[NIMSDK sharedSDK].loginManager.currentAccount]) {
         [self buildData];
-        [self.tableView reloadData];
-    }
-}
-
-#pragma mark - NIMUserManagerDelegate
-- (void)onUserInfoChanged:(NIMUser *)user{
-    if ([user.userId isEqualToString:[[NIMSDK sharedSDK].loginManager currentAccount]]) {
         [self.tableView reloadData];
     }
 }

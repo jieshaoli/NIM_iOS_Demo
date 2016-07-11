@@ -64,6 +64,9 @@
         
         NIMCustomSystemNotification *notification = [[NIMCustomSystemNotification alloc] initWithContent:content];
         notification.sendToOnlineUsersOnly = YES;
+        NIMCustomSystemNotificationSetting *setting = [[NIMCustomSystemNotificationSetting alloc] init];
+        setting.apnsEnabled  = NO;
+        notification.setting = setting;
         [[[NIMSDK sharedSDK] systemNotificationManager] sendCustomNotification:notification
                                                                      toSession:session
                                                                     completion:nil];

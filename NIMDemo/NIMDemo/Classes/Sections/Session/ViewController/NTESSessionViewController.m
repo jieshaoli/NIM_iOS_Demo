@@ -46,6 +46,8 @@
 #import "NTESSessionCardViewController.h"
 #import "NTESFPSLabel.h"
 #import "UIAlertView+NTESBlock.h"
+#import "NTESDataManager.h"
+#import "NTESWhiteboardAttachment.h"
 
 typedef enum : NSUInteger {
     NTESImagePickerModeImage,
@@ -66,7 +68,6 @@ NIMContactSelectDelegate>
 @property (nonatomic,strong)    UIImagePickerController *imagePicker;
 @property (nonatomic,assign)    NTESImagePickerMode      mode;
 @property (nonatomic,strong)    NTESTimerHolder         *titleTimer;
-@property (nonatomic,strong)    NSString *playingAudioPath; //正在播放的音频路径
 @property (nonatomic,strong)    UIView *currentSingleSnapView;
 @property (nonatomic,strong)    NTESFPSLabel *fpsLabel;
 @end
@@ -96,6 +97,7 @@ NIMContactSelectDelegate>
 - (void)dealloc
 {
     [[[NIMSDK sharedSDK] systemNotificationManager] removeDelegate:self];
+    [_fpsLabel invalidate];
 }
 
 - (void)viewDidLayoutSubviews{
@@ -412,6 +414,7 @@ NIMContactSelectDelegate>
             session.outputURL = [NSURL fileURLWithPath:outputPath];
             session.outputFileType = AVFileTypeMPEG4;   // 支持安卓某些机器的视频播放
             session.shouldOptimizeForNetworkUse = YES;
+            session.videoComposition = [self getVideoComposition:asset];  //修正某些播放器不识别视频Rotation的问题
             [session exportAsynchronouslyWithCompletionHandler:^(void)
              {
                  dispatch_async(dispatch_get_main_queue(), ^{
@@ -443,6 +446,68 @@ NIMContactSelectDelegate>
         }
     }
     [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
+-(AVMutableVideoComposition *) getVideoComposition:(AVAsset *)asset
+{
+    AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    AVMutableComposition *composition = [AVMutableComposition composition];
+    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+    CGSize videoSize = videoTrack.naturalSize;
+    BOOL isPortrait_ = [self isVideoPortrait:asset];
+    if(isPortrait_) {
+        videoSize = CGSizeMake(videoSize.height, videoSize.width);
+    }
+    composition.naturalSize     = videoSize;
+    videoComposition.renderSize = videoSize;
+
+    videoComposition.frameDuration = CMTimeMakeWithSeconds( 1 / videoTrack.nominalFrameRate, 600);
+    AVMutableCompositionTrack *compositionVideoTrack;
+    compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, asset.duration) ofTrack:videoTrack atTime:kCMTimeZero error:nil];
+    AVMutableVideoCompositionLayerInstruction *layerInst;
+    layerInst = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+    [layerInst setTransform:videoTrack.preferredTransform atTime:kCMTimeZero];
+    AVMutableVideoCompositionInstruction *inst = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    inst.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
+    inst.layerInstructions = [NSArray arrayWithObject:layerInst];
+    videoComposition.instructions = [NSArray arrayWithObject:inst];
+    return videoComposition;
+}
+
+
+-(BOOL) isVideoPortrait:(AVAsset *)asset
+{
+    BOOL isPortrait = NO;
+    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if([tracks    count] > 0) {
+        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
+        
+        CGAffineTransform t = videoTrack.preferredTransform;
+        // Portrait
+        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0)
+        {
+            isPortrait = YES;
+        }
+        // PortraitUpsideDown
+        if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0)  {
+            
+            isPortrait = YES;
+        }
+        // LandscapeRight
+        if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0)
+        {
+            isPortrait = NO;
+        }
+        // LandscapeLeft
+        if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0)
+        {
+            isPortrait = NO;
+        }
+    }
+    return isPortrait;
 }
 
 #pragma mark - 录音事件
@@ -606,17 +671,6 @@ NIMContactSelectDelegate>
 }
 
 
-#pragma mark - NIMMediaManagerDelgate
-- (void)playAudio:(NSString *)filePath didBeganWithError:(NSError *)error {
-    self.playingAudioPath = filePath;
-}
-
-- (void)playAudio:(NSString *)filePath didCompletedWithError:(NSError *)error
-{
-    self.playingAudioPath = nil;
-}
-
-
 #pragma mark - 导航按钮
 - (void)onTouchUpInfoBtn:(id)sender{
     NTESSessionCardViewController *vc = [[NTESSessionCardViewController alloc] initWithSession:self.session];
@@ -675,6 +729,10 @@ NIMContactSelectDelegate>
         [items addObjectsFromArray:defaultItems];
     }
     
+    if ([self canMessageBeForwarded:message]) {
+        [items addObject:[[UIMenuItem alloc] initWithTitle:@"转发" action:@selector(forwardMessage:)]];
+    }
+    
     if (message.messageType == NIMMessageTypeAudio) {
         [items addObject:[[UIMenuItem alloc] initWithTitle:@"转文字" action:@selector(audio2Text:)]];
     }
@@ -696,6 +754,68 @@ NIMContactSelectDelegate>
                      completion:nil];
 }
 
+
+- (void)forwardMessage:(id)sender
+{
+    NIMMessage *message = [self messageForMenu];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择会话类型" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"个人",@"群组", nil];
+    __weak typeof(self) weakSelf = self;
+    [sheet showInView:self.view completionHandler:^(NSInteger index) {
+        switch (index) {
+            case 0:{
+                NIMContactFriendSelectConfig *config = [[NIMContactFriendSelectConfig alloc] init];
+                config.needMutiSelected = NO;
+                NIMContactSelectViewController *vc = [[NIMContactSelectViewController alloc] initWithConfig:config];
+                vc.finshBlock = ^(NSArray *array){
+                    NSString *userId = array.firstObject;
+                    NIMSession *session = [NIMSession session:userId type:NIMSessionTypeP2P];
+                    [weakSelf forwardMessage:message toSession:session];
+                };
+                [vc show];
+            }
+                break;
+            case 1:{
+                NIMContactTeamSelectConfig *config = [[NIMContactTeamSelectConfig alloc] init];
+                NIMContactSelectViewController *vc = [[NIMContactSelectViewController alloc] initWithConfig:config];
+                vc.finshBlock = ^(NSArray *array){
+                    NSString *teamId = array.firstObject;
+                    NIMSession *session = [NIMSession session:teamId type:NIMSessionTypeTeam];
+                    [weakSelf forwardMessage:message toSession:session];
+                };
+                [vc show];
+            }
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)forwardMessage:(NIMMessage *)message toSession:(NIMSession *)session
+{
+    NSString *name;
+    if (session.sessionType == NIMSessionTypeP2P)
+    {
+        name = [[NTESDataManager sharedInstance] infoByUser:session.sessionId inSession:session].showName;
+    }
+    else
+    {
+        name = [[NTESDataManager sharedInstance] infoByTeam:session.sessionId].showName;
+    }
+    NSString *tip = [NSString stringWithFormat:@"确认转发给 %@ ?",name];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确认转发" message:tip delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    
+    __weak typeof(self) weakSelf = self;
+    [alert showAlertWithCompletionHandler:^(NSInteger index) {
+        if(index == 1){
+            [[NIMSDK sharedSDK].chatManager forwardMessage:message toSession:session error:nil];
+            [weakSelf.view makeToast:@"已发送" duration:2.0 position:CSToastPositionCenter];
+        }
+    }];
+}
+
 #pragma mark - 辅助方法
 - (BOOL)checkCondition
 {
@@ -711,6 +831,23 @@ NIMContactSelectDelegate>
         result = NO;
     }
     return result;
+}
+
+- (BOOL)canMessageBeForwarded:(NIMMessage *)message
+{
+    if (!message.isReceivedMsg && message.deliveryState == NIMMessageDeliveryStateFailed) {
+        return NO;
+    }
+    id<NIMMessageObject> messageobject = message.messageObject;
+    if ([messageobject isKindOfClass:[NIMCustomObject class]]
+        && ([[(NIMCustomObject *)messageobject attachment] isKindOfClass:[NTESSnapchatAttachment class]]
+        || [[(NIMCustomObject *)messageobject attachment] isKindOfClass:[NTESWhiteboardAttachment class]])) {
+        return NO;
+    }
+    if ([messageobject isKindOfClass:[NIMNotificationObject class]]) {
+        return NO;
+    }
+    return YES;
 }
 
 
@@ -784,7 +921,6 @@ NIMContactSelectDelegate>
         }
     }
 }
-
 
 - (BOOL)shouldAutorotate{
     return !self.currentSingleSnapView;

@@ -158,7 +158,7 @@ NTES_FORBID_INTERACTIVE_POP
         NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
         option.extendMessage = @"音视频请求扩展信息";
         option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
-        
+        option.autoRotateRemoteVideo = [[NTESBundleSetting sharedConfig] videochatAutoRotateRemoteVideo];
         option.apnsContent = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
         option.apnsSound = @"video_chat_tip_receiver.aac";
         option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
@@ -225,6 +225,7 @@ NTES_FORBID_INTERACTIVE_POP
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
     option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
     option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
+    option.autoRotateRemoteVideo = [[NTESBundleSetting sharedConfig] videochatAutoRotateRemoteVideo];
     option.serverRecordVideo = [[NTESBundleSetting sharedConfig] serverRecordVideo];
 
     __weak typeof(self) wself = self;

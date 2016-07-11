@@ -59,7 +59,7 @@
 }
 
 
-- (UIImageView *)avatarView
+- (NIMAvatarImageView *)avatarView
 {
     if (!_avatarView) {
         _avatarView = [[NIMAvatarImageView alloc] initWithFrame:CGRectMake(125, 52, 70, 70)];

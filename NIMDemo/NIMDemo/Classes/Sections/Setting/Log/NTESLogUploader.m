@@ -7,32 +7,46 @@
 //
 
 #import "NTESLogUploader.h"
-#import "ZipArchive.h"
+#import "SSZipArchive.h"
 
 @implementation NTESLogUploader
 - (void)upload:(NTESUploadLogBlock)completion
 {
     NSString *filepath = [self zipFilepath];
-    ZipArchive *archive = [[ZipArchive alloc] initWithFileManager:[NSFileManager defaultManager]];
-    [archive CreateZipFile2:filepath];
-    
-    
-    NSDictionary *files = [self allFiles];
-    for (NSString *key in files.allKeys)
+    SSZipArchive *archive = [[SSZipArchive alloc] initWithPath:filepath];
+    BOOL archived = NO;
+    if ([archive open])
     {
-        [archive addFileToZip:files[key]
-                      newname:key];
+        NSDictionary *files = [self allFiles];
+        for (NSString *key in files.allKeys)
+        {
+            [archive writeFileAtPath:files[key]
+                        withFileName:key
+                        withPassword:nil];
+        }
+        
+        if ([archive close])
+        {
+            archived = YES;
+            [[[NIMSDK sharedSDK] resourceManager] upload:filepath
+                                                progress:nil
+                                              completion:^(NSString *urlString, NSError *error) {
+                                                  if (completion) {
+                                                      completion(urlString,error);
+                                                  }
+                                              }];
+        }
     }
-    [archive CloseZipFile2];
     
+    if (!archived)
+    {
+        if (completion) {
+            completion(nil,[NSError errorWithDomain:@"ntes_demo" code:0 userInfo:nil]);
+        }
+    }
     
-    [[[NIMSDK sharedSDK] resourceManager] upload:filepath
-                                        progress:nil
-                                      completion:^(NSString *urlString, NSError *error) {
-                                          if (completion) {
-                                              completion(urlString,error);
-                                          }
-                                      }];
+
+
 }
 
 - (NSString *)zipFilepath

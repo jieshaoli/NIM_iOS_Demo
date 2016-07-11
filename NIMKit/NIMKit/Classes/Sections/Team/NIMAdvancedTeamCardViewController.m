@@ -147,7 +147,7 @@
 #define TableMemberCellReuseId  @"tableMemberCell"
 #define TableSwitchReuseId      @"tableSwitchCell"
 
-@interface NIMAdvancedTeamCardViewController ()<NIMAdvancedTeamMemberCellActionDelegate,NIMContactSelectDelegate,NIMTeamSwitchProtocol,NIMAdvancedTeamCardHeaderViewDelegate,UIActionSheetDelegate,UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate>{
+@interface NIMAdvancedTeamCardViewController ()<NIMAdvancedTeamMemberCellActionDelegate,NIMContactSelectDelegate,NIMTeamSwitchProtocol,NIMAdvancedTeamCardHeaderViewDelegate,NIMTeamManagerDelegate,UIActionSheetDelegate,UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
     
     UIAlertView *_updateTeamNameAlertView;
     UIAlertView *_updateTeamNickAlertView;
@@ -577,7 +577,6 @@
 }
 
 - (void)updateTeamAnnouncement{
-    BOOL isManager = self.myTeamInfo.type == NIMTeamMemberTypeManager || self.myTeamInfo.type == NIMTeamMemberTypeOwner;
     NIMTeamAnnouncementListViewController *vc = [[NIMTeamAnnouncementListViewController alloc] initWithNibName:nil bundle:nil];
     vc.team = self.team;
     vc.canCreateAnnouncement = [NIMKitUtil canEditTeamInfo:self.myTeamInfo];
@@ -1067,7 +1066,7 @@
                     if (!error) {
                         wself.team.avatarUrl = urlString;
                         [[NIMWebImageManager sharedManager] saveImageToCache:imageForAvatarUpload forURL:[NSURL URLWithString:urlString]];
-                        NIMAdvancedTeamCardHeaderView *headerView = wself.tableView.tableHeaderView;
+                        NIMAdvancedTeamCardHeaderView *headerView = (NIMAdvancedTeamCardHeaderView *)wself.tableView.tableHeaderView;
                         [headerView refresh];
                     }else{
                         [wself.view nimkit_makeToast:@"设置头像失败，请重试"

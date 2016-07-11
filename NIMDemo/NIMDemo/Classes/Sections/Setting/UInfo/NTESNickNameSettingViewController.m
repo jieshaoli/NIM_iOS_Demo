@@ -92,7 +92,7 @@
     [[NIMSDK sharedSDK].userManager updateMyUserInfo:@{@(NIMUserInfoUpdateTagNick) : self.nick} completion:^(NSError *error) {
         [SVProgressHUD dismiss];
         if (!error) {
-            [wself.view makeToast:@"昵称设置成功"
+            [wself.navigationController.view makeToast:@"昵称设置成功"
                          duration:2
                          position:CSToastPositionCenter];
             [wself.navigationController popViewControllerAnimated:YES];

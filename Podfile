@@ -1,7 +1,7 @@
 workspace 'NIM.xcworkspace'
 
-xcodeproj 'NIMDemo/NIM.xcodeproj'
-xcodeproj 'NIMKit/NIMKit.xcodeproj'
+project 'NIMDemo/NIM.xcodeproj'
+project 'NIMKit/NIMKit.xcodeproj'
 
 platform :ios, '7.0'
 
@@ -14,12 +14,13 @@ target 'NIM' do
         pod 'FMDB', '~> 2.5'
         pod 'Reachability', '~> 3.1.1'
         pod 'CocoaLumberjack', '~> 2.0.0-rc2'
-        pod 'NIMSDK', '~> 2.4.0'
+        pod 'NIMSDK', '~> 2.5.0'
         pod 'ZipArchive', '~> 1.4.0'
-        xcodeproj 'NIMDemo/NIM.xcodeproj'
+        pod 'SSZipArchive', '~> 1.2'
+        project 'NIMDemo/NIM.xcodeproj'
 end
 
 target 'NIMKit' do
-        pod 'NIMSDK', '~> 2.4.0'
-        xcodeproj 'NIMKit/NIMKit.xcodeproj'
+        pod 'NIMSDK', '~> 2.5.0'
+        project 'NIMKit/NIMKit.xcodeproj'
 end

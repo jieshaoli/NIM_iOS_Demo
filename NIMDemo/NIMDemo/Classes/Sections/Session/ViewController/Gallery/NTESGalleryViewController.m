@@ -40,7 +40,8 @@
     _galleryImageView.contentMode = UIViewContentModeScaleAspectFit;
     NSURL *url = [NSURL URLWithString:_currentItem.imageURL];
     [_galleryImageView sd_setImageWithURL:url
-                         placeholderImage:[UIImage imageWithContentsOfFile:_currentItem.thumbPath]];
+                         placeholderImage:[UIImage imageWithContentsOfFile:_currentItem.thumbPath]
+                                  options:SDWebImageRetryFailed];
     
     if ([_currentItem.name length])
     {

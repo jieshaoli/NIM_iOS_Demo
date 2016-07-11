@@ -32,7 +32,8 @@
     return self;
 }
 
-- (void)dealloc {
+- (void)invalidate
+{
     [_link invalidate];
 }
 

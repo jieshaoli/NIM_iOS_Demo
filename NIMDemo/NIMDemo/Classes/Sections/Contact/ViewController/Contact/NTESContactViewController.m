@@ -31,9 +31,7 @@
 NIMSystemNotificationManagerDelegate,
 NTESContactUtilCellDelegate,
 NIMContactDataCellDelegate,
-NIMLoginManagerDelegate,
-NIMUserManagerDelegate
-> {
+NIMLoginManagerDelegate> {
     UIRefreshControl *_refreshControl;
     NTESGroupedContacts *_contacts;
 }
@@ -55,18 +53,14 @@ NIMUserManagerDelegate
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[[NIMSDK sharedSDK] systemNotificationManager] removeDelegate:self];
     [[[NIMSDK sharedSDK] loginManager] removeDelegate:self];
-    [[[NIMSDK sharedSDK] userManager] removeDelegate:self];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if ([NIMKit sharedKit].hostUserInfos) {
-        //托管了用户信息，那就直接加 userManager 的监听
-        [[NIMSDK sharedSDK].userManager addDelegate:self];
-    }else{
-        //没有托管用户信息，就直接加 NIMKit 的监听
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
-    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserBlackListHasUpdatedNotification object:nil];
+
     self.tableView.delegate       = self;
     self.tableView.dataSource     = self;
     UIEdgeInsets separatorInset   = self.tableView.separatorInset;
@@ -77,7 +71,6 @@ NIMUserManagerDelegate
     [self prepareData];
     [[[NIMSDK sharedSDK] systemNotificationManager] addDelegate:self];
     [[[NIMSDK sharedSDK] loginManager] addDelegate:self];
-    [[[NIMSDK sharedSDK] userManager] addDelegate:self];
 }
 
 - (void)setUpNavItem{
@@ -357,22 +350,6 @@ NIMUserManagerDelegate
             [self.tableView reloadData];
         }
     }
-}
-
-- (void)onFriendChanged:(NIMUser *)user
-{
-    [self prepareData];
-    [self.tableView reloadData];
-}
-
-- (void)onBlackListChanged{
-    [self prepareData];
-    [self.tableView reloadData];
-}
-
-- (void)onUserInfoChanged:(NIMUser *)user{
-    [self prepareData];
-    [self.tableView reloadData];
 }
 
 #pragma mark - Notification

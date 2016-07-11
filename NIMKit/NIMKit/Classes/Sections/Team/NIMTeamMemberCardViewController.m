@@ -19,7 +19,7 @@
 #import "NIMKitColorButtonCell.h"
 #import "NIMKitSwitcherCell.h"
 
-@interface NIMTeamMemberCardViewController () <UITableViewDelegate, UITableViewDataSource,UIActionSheetDelegate>{
+@interface NIMTeamMemberCardViewController () <UIActionSheetDelegate>{
     UIAlertView *_kickAlertView;
     UIAlertView *_updateNickAlertView;
 }
@@ -70,7 +70,6 @@
 
 
 - (void)buildData{
-    NSString *uid = [[NIMSDK sharedSDK].loginManager currentAccount];
     NIMTeamMember *member = [[NIMSDK sharedSDK].teamManager teamMember:self.member.memberId inTeam:self.member.team.teamId];
     
     NSArray *data = @[

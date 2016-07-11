@@ -20,7 +20,7 @@
 #import "NTESUserInfoSettingViewController.h"
 #import "NTESAliasSettingViewController.h"
 
-@interface NTESPersonalCardViewController ()<NIMUserManagerDelegate>
+@interface NTESPersonalCardViewController ()
 
 @property (nonatomic,strong) NIMCommonTableDelegate *delegator;
 
@@ -45,22 +45,16 @@
 }
 
 - (void)dealloc{
-    [[NIMSDK sharedSDK].userManager removeDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpNav];
-    __weak typeof(self) wself = self;
-    if ([NIMKit sharedKit].hostUserInfos) {
-        //说明托管了用户信息，那就直接加 userManager 的监听
-        [[NIMSDK sharedSDK].userManager addDelegate:self];
-    }else{
-        //没有托管用户信息，就直接加 NIMKit 的监听
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
-    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUserInfoHasUpdatedNotification:) name:NIMKitUserInfoHasUpdatedNotification object:nil];
 
+    __weak typeof(self) wself = self;
     self.delegator = [[NIMCommonTableDelegate alloc] initWithTableData:^NSArray *{
         return wself.data;
     }];
@@ -325,19 +319,6 @@
     }];
 }
 
-
-#pragma mark - NIMUserManagerDelegate
-- (void)onUserInfoChanged:(NIMUser *)user{
-    if ([user.userId isEqualToString:self.userId]) {
-        [self refresh];
-    }
-}
-
-- (void)onFriendChanged:(NIMUser *)user{
-    if ([user.userId isEqualToString:self.userId]) {
-        [self refresh];
-    }
-}
 
 - (void)onUserInfoHasUpdatedNotification:(NSNotification *)notification{
     NSDictionary *userInfo = notification.userInfo;

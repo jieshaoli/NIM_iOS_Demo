@@ -87,6 +87,7 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
     }
     if (needPlay) {
         [self.player stop];
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error:nil];
         [self.player play];
     }
 }
