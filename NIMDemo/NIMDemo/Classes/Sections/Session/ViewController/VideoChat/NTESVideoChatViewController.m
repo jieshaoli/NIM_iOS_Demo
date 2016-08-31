@@ -15,6 +15,7 @@
 #import "NTESSessionUtil.h"
 #import "NTESVideoChatNetStatusView.h"
 #import "NTESGLView.h"
+#import "NTESBundleSetting.h"
 
 #define NTESUseGLView
 
@@ -56,7 +57,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.callInfo.callType = NIMNetCallTypeVideo;
-        _cameraType = NIMNetCallCameraFront;
+        _cameraType = [[NTESBundleSetting sharedConfig] startWithBackCamera] ? NIMNetCallCameraBack :NIMNetCallCameraFront;
     }
     return self;
 }
@@ -407,7 +408,6 @@
     [super onNTESTimerFired:holder];
     self.durationLabel.text = self.durationDesc;
 }
-
 
 #pragma mark - Misc
 - (void)switchToAudio{

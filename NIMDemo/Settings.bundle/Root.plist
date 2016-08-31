@@ -140,25 +140,135 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
+			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>视频聊天期望清晰度</string>
+			<string>禁用自动裁剪</string>
 			<key>Key</key>
-			<string>videochat_preferred_video_quality</string>
+			<string>videochat_disable_auto_cropping</string>
 			<key>DefaultValue</key>
-			<string>0</string>
-			<key>KeyboardType</key>
-			<string>NumberPad</string>
+			<false/>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>视频聊天自动旋转远端画面</string>
+			<string>自动旋转远端画面</string>
 			<key>Key</key>
 			<string>videochat_auto_rotate_remote_video</string>
 			<key>DefaultValue</key>
 			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>画面质量</string>
+			<key>Titles</key>
+			<array>
+				<string>默认</string>
+				<string>低</string>
+				<string>中</string>
+				<string>高</string>
+				<string>480P</string>
+				<string>720P</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+				<string>3</string>
+				<string>4</string>
+				<string>5</string>
+			</array>
+			<key>Key</key>
+			<string>videochat_preferred_video_quality</string>
+			<key>DefaultValue</key>
+			<string>0</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>后置摄像头</string>
+			<key>Key</key>
+			<string>videochat_start_with_back_camera</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>视频编码器</string>
+			<key>Titles</key>
+			<array>
+				<string>默认</string>
+				<string>软编码</string>
+				<string>硬编码</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+			</array>
+			<key>Key</key>
+			<string>videochat_preferred_video_encoder</string>
+			<key>DefaultValue</key>
+			<string>0</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>视频解码器</string>
+			<key>Titles</key>
+			<array>
+				<string>默认</string>
+				<string>软解码</string>
+				<string>硬解码</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+			</array>
+			<key>Key</key>
+			<string>videochat_preferred_video_decoder</string>
+			<key>DefaultValue</key>
+			<string>0</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>视频最大编码码率(kbps)</string>
+			<key>KeyboardType</key>
+			<string>NumberPad</string>
+			<key>Key</key>
+			<string>videochat_video_encode_max_kbps</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>本地录制码率(kbps)</string>
+			<key>KeyboardType</key>
+			<string>NumberPad</string>
+			<key>Key</key>
+			<string>videochat_local_record_video_kbps</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>自动结束AudioSession</string>
+			<key>Key</key>
+			<string>videochat_auto_disable_audiosession</string>
+			<key>DefaultValue</key>
+			<true/>
 		</dict>
 	</array>
 </dict>

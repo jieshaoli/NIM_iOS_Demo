@@ -10,6 +10,7 @@
 		031BB12C1AA449C500FE07C3 /* pinyin.bin in Resources */ = {isa = PBXBuildFile; fileRef = 031BB12B1AA449C500FE07C3 /* pinyin.bin */; };
 		03A4C9FF1AC2B79700E45E03 /* UIAlertView+NTESBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A4C9FB1AC2B79700E45E03 /* UIAlertView+NTESBlock.m */; };
 		03A4CA001AC2B79700E45E03 /* UIActionSheet+NTESBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A4C9FD1AC2B79700E45E03 /* UIActionSheet+NTESBlock.m */; };
+		3D8AB8AB79496A7BECDF7440 /* libPods-NIM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CA8375A0CAA85BD0F2F47C /* libPods-NIM.a */; };
 		610B1E021AFDDE04006454EA /* video_connect_chat_tip_sender.aac in Resources */ = {isa = PBXBuildFile; fileRef = 610B1DFB1AFDDE04006454EA /* video_connect_chat_tip_sender.aac */; };
 		610B1E041AFDDE04006454EA /* video_chat_tip_HangUp.aac in Resources */ = {isa = PBXBuildFile; fileRef = 610B1DFD1AFDDE04006454EA /* video_chat_tip_HangUp.aac */; };
 		610B1E051AFDDE04006454EA /* video_chat_tip_OnCall.aac in Resources */ = {isa = PBXBuildFile; fileRef = 610B1DFE1AFDDE04006454EA /* video_chat_tip_OnCall.aac */; };
@@ -65,7 +66,6 @@
 		6185D2991BAAFBAF0046F90F /* NTESSettingCheckCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6185D2981BAAFBAF0046F90F /* NTESSettingCheckCell.m */; };
 		6187FA181B81A82C00EFFB3A /* NIMKitResouce.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6187FA171B81A82C00EFFB3A /* NIMKitResouce.bundle */; };
 		619087091BABE5D400F3A0C7 /* NTESDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 619087081BABE5D400F3A0C7 /* NTESDevice.m */; };
-		619184891C45E4D000BB2FE9 /* libNIMKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 619184881C45E4D000BB2FE9 /* libNIMKit.a */; };
 		619586811C19717B00858434 /* NTESChatroomListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 619586801C19717B00858434 /* NTESChatroomListViewController.m */; };
 		6195CD201A8C4D3C00F3E239 /* NSString+NTES.m in Sources */ = {isa = PBXBuildFile; fileRef = 6195CD1F1A8C4D3C00F3E239 /* NSString+NTES.m */; };
 		61A1422F1AD7B02E00DCAD88 /* NSDictionary+NTESJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 61A1422E1AD7B02E00DCAD88 /* NSDictionary+NTESJson.m */; };
@@ -77,6 +77,7 @@
 		61C2CE521C489F0D00D76104 /* NTESChatroomManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 61C2CE511C489F0D00D76104 /* NTESChatroomManager.m */; };
 		61CF576F1A787DB000B43072 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61CF576E1A787DB000B43072 /* MobileCoreServices.framework */; };
 		61DA56FF1B53E33F00828B8A /* UIImage+NTES.m in Sources */ = {isa = PBXBuildFile; fileRef = 61DA56FE1B53E33F00828B8A /* UIImage+NTES.m */; };
+		61DB44C81D767C94001DD97B /* libNIMKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 61DB44C71D767C94001DD97B /* libNIMKit.a */; };
 		61E1311D1C1A6778009AFEF1 /* NTESChatroomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E1311C1C1A6778009AFEF1 /* NTESChatroomViewController.m */; };
 		61E470F61B7D963E00F4A1BF /* NTESColorButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E46FFD1B7D963E00F4A1BF /* NTESColorButtonCell.m */; };
 		61E471021B7D963E00F4A1BF /* NTESJionTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61E470131B7D963E00F4A1BF /* NTESJionTeamViewController.m */; };
@@ -188,7 +189,6 @@
 		61EEE7791C22AEB300022315 /* NTESLiveBroadcastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EEE7781C22AEB300022315 /* NTESLiveBroadcastView.m */; };
 		61FB27711C4E70AA0086E0EB /* NTESChatroomMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FB27701C4E70AA0086E0EB /* NTESChatroomMaker.m */; };
 		86B7F5B61AE88C040040A547 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86B7F5B51AE88C040040A547 /* CoreTelephony.framework */; };
-		A0395BA6733CF84A9E6DCA9B /* libPods-NIM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6693A47C33295C926250063B /* libPods-NIM.a */; };
 		AE2AA6851A7CD35C00CFF013 /* UIView+NTES.m in Sources */ = {isa = PBXBuildFile; fileRef = AE2AA6841A7CD35C00CFF013 /* UIView+NTES.m */; };
 		AE5882EB1A6F47E10070536A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5882EA1A6F47E10070536A /* main.m */; };
 		AE5882EE1A6F47E10070536A /* NTESAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5882ED1A6F47E10070536A /* NTESAppDelegate.m */; };
@@ -215,7 +215,7 @@
 		03A4C9FC1AC2B79700E45E03 /* UIActionSheet+NTESBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+NTESBlock.h"; sourceTree = "<group>"; };
 		03A4C9FD1AC2B79700E45E03 /* UIActionSheet+NTESBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+NTESBlock.m"; sourceTree = "<group>"; };
 		03A4C9FE1AC2B79700E45E03 /* UIAlertView+NTESBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+NTESBlock.h"; sourceTree = "<group>"; };
-		4BF47070DC7AFFD9724E1D40 /* Pods-NIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIM.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NIM/Pods-NIM.debug.xcconfig"; sourceTree = "<group>"; };
+		1DDB27A693CD486CD91E7A3E /* Pods-NIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIM.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NIM/Pods-NIM.debug.xcconfig"; sourceTree = "<group>"; };
 		610B1DFB1AFDDE04006454EA /* video_connect_chat_tip_sender.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = video_connect_chat_tip_sender.aac; sourceTree = "<group>"; };
 		610B1DFD1AFDDE04006454EA /* video_chat_tip_HangUp.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = video_chat_tip_HangUp.aac; sourceTree = "<group>"; };
 		610B1DFE1AFDDE04006454EA /* video_chat_tip_OnCall.aac */ = {isa = PBXFileReference; lastKnownFileType = file; path = video_chat_tip_OnCall.aac; sourceTree = "<group>"; };
@@ -315,7 +315,6 @@
 		6187FA171B81A82C00EFFB3A /* NIMKitResouce.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = NIMKitResouce.bundle; sourceTree = "<group>"; };
 		619087071BABE5D400F3A0C7 /* NTESDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESDevice.h; sourceTree = "<group>"; };
 		619087081BABE5D400F3A0C7 /* NTESDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESDevice.m; sourceTree = "<group>"; };
-		619184881C45E4D000BB2FE9 /* libNIMKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libNIMKit.a; path = "../../Library/Developer/Xcode/DerivedData/NIM-daygdisfzttuqvfcbtxsvonwyzrh/Build/Products/Debug-iphoneos/libNIMKit.a"; sourceTree = "<group>"; };
 		6195867F1C19717B00858434 /* NTESChatroomListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESChatroomListViewController.h; sourceTree = "<group>"; };
 		619586801C19717B00858434 /* NTESChatroomListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESChatroomListViewController.m; sourceTree = "<group>"; };
 		6195CD1E1A8C4D3C00F3E239 /* NSString+NTES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NTES.h"; sourceTree = "<group>"; };
@@ -338,6 +337,7 @@
 		61CF576E1A787DB000B43072 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		61DA56FD1B53E33F00828B8A /* UIImage+NTES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+NTES.h"; sourceTree = "<group>"; };
 		61DA56FE1B53E33F00828B8A /* UIImage+NTES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+NTES.m"; sourceTree = "<group>"; };
+		61DB44C71D767C94001DD97B /* libNIMKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libNIMKit.a; path = "../../../Library/Developer/Xcode/DerivedData/NIM-dsxsiwjekrmozkdfrxmjuhavvpou/Build/Products/Debug-iphonesimulator/libNIMKit.a"; sourceTree = "<group>"; };
 		61E1311B1C1A6778009AFEF1 /* NTESChatroomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESChatroomViewController.h; sourceTree = "<group>"; };
 		61E1311C1C1A6778009AFEF1 /* NTESChatroomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESChatroomViewController.m; sourceTree = "<group>"; };
 		61E46FFC1B7D963E00F4A1BF /* NTESColorButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESColorButtonCell.h; sourceTree = "<group>"; };
@@ -537,9 +537,8 @@
 		61EEE7781C22AEB300022315 /* NTESLiveBroadcastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESLiveBroadcastView.m; sourceTree = "<group>"; };
 		61FB276F1C4E70AA0086E0EB /* NTESChatroomMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTESChatroomMaker.h; sourceTree = "<group>"; };
 		61FB27701C4E70AA0086E0EB /* NTESChatroomMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTESChatroomMaker.m; sourceTree = "<group>"; };
-		6693A47C33295C926250063B /* libPods-NIM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NIM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E909C87500458FEEA5E5ADE /* Pods-NIM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIM.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NIM/Pods-NIM.release.xcconfig"; sourceTree = "<group>"; };
 		86B7F5B51AE88C040040A547 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		91B23D2B5549E323C1F62778 /* Pods-NIM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIM.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NIM/Pods-NIM.release.xcconfig"; sourceTree = "<group>"; };
 		AE2AA6831A7CD35C00CFF013 /* UIView+NTES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "UIView+NTES.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		AE2AA6841A7CD35C00CFF013 /* UIView+NTES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "UIView+NTES.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AE5882E51A6F47E10070536A /* NIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -572,6 +571,7 @@
 		E4E8D98F1BB131F20077AE60 /* nim_debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = nim_debug.xcconfig; sourceTree = "<group>"; };
 		E4E8D9901BB132040077AE60 /* nim_release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = nim_release.xcconfig; sourceTree = "<group>"; };
 		E4ED12DC1B6B07EA00316496 /* message.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = message.wav; sourceTree = "<group>"; };
+		E8CA8375A0CAA85BD0F2F47C /* libPods-NIM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NIM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -579,7 +579,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				619184891C45E4D000BB2FE9 /* libNIMKit.a in Frameworks */,
+				61DB44C81D767C94001DD97B /* libNIMKit.a in Frameworks */,
 				617C4FF71BE06D26009AD1B4 /* libstdc++.6.0.9.tbd in Frameworks */,
 				61530BEB1BABAD8200FE50CC /* libz.tbd in Frameworks */,
 				61530BE71BABAD3B00FE50CC /* libsqlite3.0.tbd in Frameworks */,
@@ -592,16 +592,26 @@
 				AEA87FE11A81CAD600ACC3BA /* AVFoundation.framework in Frameworks */,
 				61CF576F1A787DB000B43072 /* MobileCoreServices.framework in Frameworks */,
 				AE58995A1A6FA7AC0070536A /* SystemConfiguration.framework in Frameworks */,
-				A0395BA6733CF84A9E6DCA9B /* libPods-NIM.a in Frameworks */,
+				3D8AB8AB79496A7BECDF7440 /* libPods-NIM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50D1E3C001B6279FF85796B5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1DDB27A693CD486CD91E7A3E /* Pods-NIM.debug.xcconfig */,
+				6E909C87500458FEEA5E5ADE /* Pods-NIM.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5176189D0086B38FE643A26A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				61DB44C71D767C94001DD97B /* libNIMKit.a */,
 				BDA64F191CA38A3800BCF04D /* VideoToolbox.framework */,
 				61530BEA1BABAD8200FE50CC /* libz.tbd */,
 				61530BE81BABAD5900FE50CC /* libstdc++.6.0.9.tbd */,
@@ -610,7 +620,7 @@
 				E4168E2A1B6A364F00F3D35D /* CoreMedia.framework */,
 				E4168E281B6A364800F3D35D /* AudioToolbox.framework */,
 				86B7F5B51AE88C040040A547 /* CoreTelephony.framework */,
-				6693A47C33295C926250063B /* libPods-NIM.a */,
+				E8CA8375A0CAA85BD0F2F47C /* libPods-NIM.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1448,7 +1458,7 @@
 				AE5882E71A6F47E10070536A /* NIMDemo */,
 				AE5882E61A6F47E10070536A /* Products */,
 				5176189D0086B38FE643A26A /* Frameworks */,
-				C63C480B7803080F9C621BF1 /* Pods */,
+				50D1E3C001B6279FF85796B5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1493,15 +1503,6 @@
 				E4E8D9901BB132040077AE60 /* nim_release.xcconfig */,
 			);
 			path = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		C63C480B7803080F9C621BF1 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				4BF47070DC7AFFD9724E1D40 /* Pods-NIM.debug.xcconfig */,
-				91B23D2B5549E323C1F62778 /* Pods-NIM.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		E45E17771CA8CB6200C4ED69 /* Log */ = {
@@ -1936,7 +1937,7 @@
 		};
 		AE5883091A6F47E10070536A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4BF47070DC7AFFD9724E1D40 /* Pods-NIM.debug.xcconfig */;
+			baseConfigurationReference = 1DDB27A693CD486CD91E7A3E /* Pods-NIM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1944,6 +1945,7 @@
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "$(XCCONFIG_CODE_SIGNING)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/NIMDemo/NIMDemo-Prefix.pch";
@@ -1951,6 +1953,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders/**",
+					"$(SRCROOT)/../NIMAVChat/NIMAVChat/ExportHeaders/**",
 					"$(SRCROOT)/../NIMKit/NIMKit/**",
 				);
 				INFOPLIST_FILE = "NIMDemo/Supporting Files/Info.plist";
@@ -1971,7 +1974,7 @@
 		};
 		AE58830A1A6F47E10070536A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 91B23D2B5549E323C1F62778 /* Pods-NIM.release.xcconfig */;
+			baseConfigurationReference = 6E909C87500458FEEA5E5ADE /* Pods-NIM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1988,10 +1991,12 @@
 					"COCOAPODS=1",
 					NDEBUG,
 				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders/**",
+					"$(SRCROOT)/../NIMAVChat/NIMAVChat/ExportHeaders/**",
 					"$(SRCROOT)/../NIMKit/NIMKit/**",
 				);
 				INFOPLIST_FILE = "NIMDemo/Supporting Files/Info.plist";

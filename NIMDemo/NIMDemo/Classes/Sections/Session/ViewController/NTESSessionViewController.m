@@ -47,7 +47,7 @@
 #import "NTESFPSLabel.h"
 #import "UIAlertView+NTESBlock.h"
 #import "NTESDataManager.h"
-#import "NTESWhiteboardAttachment.h"
+#import "NTESSessionUtil.h"
 
 typedef enum : NSUInteger {
     NTESImagePickerModeImage,
@@ -71,6 +71,8 @@ NIMContactSelectDelegate>
 @property (nonatomic,strong)    UIView *currentSingleSnapView;
 @property (nonatomic,strong)    NTESFPSLabel *fpsLabel;
 @end
+
+
 
 @implementation NTESSessionViewController
 
@@ -414,7 +416,7 @@ NIMContactSelectDelegate>
             session.outputURL = [NSURL fileURLWithPath:outputPath];
             session.outputFileType = AVFileTypeMPEG4;   // 支持安卓某些机器的视频播放
             session.shouldOptimizeForNetworkUse = YES;
-            session.videoComposition = [self getVideoComposition:asset];  //修正某些播放器不识别视频Rotation的问题
+            session.videoComposition = [NTESSessionUtil getVideoComposition:asset];  //修正某些播放器不识别视频Rotation的问题
             [session exportAsynchronouslyWithCompletionHandler:^(void)
              {
                  dispatch_async(dispatch_get_main_queue(), ^{
@@ -448,68 +450,6 @@ NIMContactSelectDelegate>
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-
-
--(AVMutableVideoComposition *) getVideoComposition:(AVAsset *)asset
-{
-    AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-    AVMutableComposition *composition = [AVMutableComposition composition];
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    CGSize videoSize = videoTrack.naturalSize;
-    BOOL isPortrait_ = [self isVideoPortrait:asset];
-    if(isPortrait_) {
-        videoSize = CGSizeMake(videoSize.height, videoSize.width);
-    }
-    composition.naturalSize     = videoSize;
-    videoComposition.renderSize = videoSize;
-
-    videoComposition.frameDuration = CMTimeMakeWithSeconds( 1 / videoTrack.nominalFrameRate, 600);
-    AVMutableCompositionTrack *compositionVideoTrack;
-    compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, asset.duration) ofTrack:videoTrack atTime:kCMTimeZero error:nil];
-    AVMutableVideoCompositionLayerInstruction *layerInst;
-    layerInst = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-    [layerInst setTransform:videoTrack.preferredTransform atTime:kCMTimeZero];
-    AVMutableVideoCompositionInstruction *inst = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    inst.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
-    inst.layerInstructions = [NSArray arrayWithObject:layerInst];
-    videoComposition.instructions = [NSArray arrayWithObject:inst];
-    return videoComposition;
-}
-
-
--(BOOL) isVideoPortrait:(AVAsset *)asset
-{
-    BOOL isPortrait = NO;
-    NSArray *tracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-    if([tracks    count] > 0) {
-        AVAssetTrack *videoTrack = [tracks objectAtIndex:0];
-        
-        CGAffineTransform t = videoTrack.preferredTransform;
-        // Portrait
-        if(t.a == 0 && t.b == 1.0 && t.c == -1.0 && t.d == 0)
-        {
-            isPortrait = YES;
-        }
-        // PortraitUpsideDown
-        if(t.a == 0 && t.b == -1.0 && t.c == 1.0 && t.d == 0)  {
-            
-            isPortrait = YES;
-        }
-        // LandscapeRight
-        if(t.a == 1.0 && t.b == 0 && t.c == 0 && t.d == 1.0)
-        {
-            isPortrait = NO;
-        }
-        // LandscapeLeft
-        if(t.a == -1.0 && t.b == 0 && t.c == 0 && t.d == -1.0)
-        {
-            isPortrait = NO;
-        }
-    }
-    return isPortrait;
-}
-
 #pragma mark - 录音事件
 - (void)onRecordFailed:(NSError *)error
 {
@@ -518,8 +458,8 @@ NIMContactSelectDelegate>
 
 - (BOOL)recordFileCanBeSend:(NSString *)filepath
 {
-    NSURL    *movieURL = [NSURL fileURLWithPath:filepath];
-    AVURLAsset *urlAsset = [[AVURLAsset alloc]initWithURL:movieURL options:nil];
+    NSURL    *URL = [NSURL fileURLWithPath:filepath];
+    AVURLAsset *urlAsset = [[AVURLAsset alloc]initWithURL:URL options:nil];
     CMTime time = urlAsset.duration;
     CGFloat mediaLength = CMTimeGetSeconds(time);
     return mediaLength > 2;
@@ -529,8 +469,6 @@ NIMContactSelectDelegate>
 {
     [self.view makeToast:@"录音时间太短" duration:0.2f position:CSToastPositionCenter];
 }
-
-#pragma mark - 系统通知
 
 #pragma mark - Cell事件
 - (void)onTapCell:(NIMKitEvent *)event
@@ -729,8 +667,12 @@ NIMContactSelectDelegate>
         [items addObjectsFromArray:defaultItems];
     }
     
-    if ([self canMessageBeForwarded:message]) {
+    if ([NTESSessionUtil canMessageBeForwarded:message]) {
         [items addObject:[[UIMenuItem alloc] initWithTitle:@"转发" action:@selector(forwardMessage:)]];
+    }
+    
+    if ([NTESSessionUtil canMessageBeRevoked:message]) {
+        [items addObject:[[UIMenuItem alloc] initWithTitle:@"撤回" action:@selector(revokeMessage:)]];
     }
     
     if (message.messageType == NIMMessageTypeAudio) {
@@ -793,6 +735,36 @@ NIMContactSelectDelegate>
     }];
 }
 
+
+- (void)revokeMessage:(id)sender
+{
+    NIMMessage *message = [self messageForMenu];
+    __weak typeof(self) weakSelf = self;
+    [[NIMSDK sharedSDK].chatManager revokeMessage:message completion:^(NSError * _Nullable error) {
+        if (error) {
+            if (error.code == NIMRemoteErrorCodeDomainExpireOld) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"发送时间超过2分钟的消息，不能被撤回" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alert show];
+            }else{
+                DDLogError(@"revoke message eror code %zd",error.code);
+                [weakSelf.view makeToast:@"消息撤回失败，请重试" duration:2.0 position:CSToastPositionCenter];
+            }
+        }
+        else
+        {
+            NIMMessageModel *model = [self uiDeleteMessage:message];
+            NIMMessage *tip = [NTESSessionMsgConverter msgWithTip:[NTESSessionUtil tipOnMessageRevoked:message]];
+            tip.timestamp = model.messageTime;
+            [self uiAddMessages:@[tip]];
+            
+            tip.timestamp = message.timestamp;
+            // saveMessage 方法执行成功后会触发 onRecvMessages: 回调，但是这个回调上来的 NIMMessage 时间为服务器时间，和界面上的时间有一定出入，所以要提前先在界面上插入一个和被删消息的界面时间相符的 Tip, 当触发 onRecvMessages: 回调时，组件判断这条消息已经被插入过了，就会忽略掉。
+            [[NIMSDK sharedSDK].conversationManager saveMessage:tip forSession:message.session completion:nil];
+        }
+    }];
+}
+
+
 - (void)forwardMessage:(NIMMessage *)message toSession:(NIMSession *)session
 {
     NSString *name;
@@ -832,24 +804,6 @@ NIMContactSelectDelegate>
     }
     return result;
 }
-
-- (BOOL)canMessageBeForwarded:(NIMMessage *)message
-{
-    if (!message.isReceivedMsg && message.deliveryState == NIMMessageDeliveryStateFailed) {
-        return NO;
-    }
-    id<NIMMessageObject> messageobject = message.messageObject;
-    if ([messageobject isKindOfClass:[NIMCustomObject class]]
-        && ([[(NIMCustomObject *)messageobject attachment] isKindOfClass:[NTESSnapchatAttachment class]]
-        || [[(NIMCustomObject *)messageobject attachment] isKindOfClass:[NTESWhiteboardAttachment class]])) {
-        return NO;
-    }
-    if ([messageobject isKindOfClass:[NIMNotificationObject class]]) {
-        return NO;
-    }
-    return YES;
-}
-
 
 - (NSDictionary *)inputActions
 {

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NIMGlobalDefs.h"
+#import "NIMNetCallDefs.h"
 
 //部分API提供了额外的选项，如删除消息会有是否删除会话的选项,为了测试方便提供配置参数
 //上层开发只需要按照策划需求选择一种适合自己项目的选项即可，这个设置只是为了方便测试不同的case下API的正确性
@@ -34,14 +35,29 @@
 
 - (BOOL)usingAmr;                                   //使用amr作为录音
 
+- (NSArray *)ignoreTeamNotificationTypes;           //需要忽略的群通知类型
+
+#pragma mark - 网络通话和白板
 - (BOOL)serverRecordAudio;                          //服务器录制语音
 
 - (BOOL)serverRecordVideo;                          //服务器录制视频
 
-- (NIMNetCallVideoQuality)preferredVideoQuality;    //期望的视频发送清晰度
+- (BOOL)videochatDisableAutoCropping;                      //禁用自动裁剪画面
 
 - (BOOL)videochatAutoRotateRemoteVideo;             //自动旋转视频聊天远端画面
 
-- (NSArray *)ignoreTeamNotificationTypes;           //需要忽略的群通知类型
+- (NIMNetCallVideoQuality)preferredVideoQuality;    //期望的视频发送清晰度
+
+- (BOOL)startWithBackCamera;                        //使用后置摄像头开始视频通话
+
+- (NIMNetCallVideoCodec)perferredVideoEncoder;      //期望的视频编码器
+
+- (NIMNetCallVideoCodec)perferredVideoDecoder;      //期望的视频解码器
+
+- (NSUInteger)videoMaxEncodeKbps;                   //最大发送视频编码码率
+
+- (NSUInteger)localRecordVideoKbps;                 //本地录制视频码率
+
+- (BOOL)autoDeactivateAudioSession;                 //自动结束AudioSession
 
 @end

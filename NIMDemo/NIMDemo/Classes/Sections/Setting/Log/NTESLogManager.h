@@ -15,5 +15,6 @@
 
 - (UIViewController *)demoLogViewController;
 - (UIViewController *)sdkLogViewController;
+- (UIViewController *)sdkNetCallLogViewController;
 - (UIViewController *)demoConfigViewController;
 @end

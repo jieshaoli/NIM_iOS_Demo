@@ -14,20 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E4910BB31A6C9CC700B70B67"
-               BuildableName = "libNIMLib.a"
-               BlueprintName = "NIMLib"
-               ReferencedContainer = "container:../NIMLib/NIMLib.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE5882E41A6F47E10070536A"
                BuildableName = "NIM.app"
                BlueprintName = "NIM"

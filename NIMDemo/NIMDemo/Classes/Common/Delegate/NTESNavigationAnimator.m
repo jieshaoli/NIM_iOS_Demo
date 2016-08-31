@@ -72,7 +72,9 @@
     toViewController.view.left = width;
     
     [self callAnimationWillStart];
-    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+    CGFloat duration = [self transitionDuration:transitionContext];
+    
+    [UIView animateWithDuration:duration animations:^{
         fromViewController.view.right = width * 0.5;
         toViewController.view.right  = width;
     } completion:^(BOOL finished) {
@@ -115,7 +117,8 @@
     tabbar.right = width * 0.5;
     
     [self callAnimationWillStart];
-    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+    CGFloat duration = [self transitionDuration:transitionContext];
+    [UIView animateWithDuration:duration animations:^{
         fromViewController.view.left = width;
         toViewController.view.right  = width;
         tabbar.right = width;

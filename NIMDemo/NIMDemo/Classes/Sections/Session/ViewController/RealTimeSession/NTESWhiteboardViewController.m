@@ -197,11 +197,11 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (IBAction)onCloseButtonPressed:(id)sender {
     
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"退出后, 你将不再接收白板演示的消息内容" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"退出", nil];
-    __block typeof(self) wself = self;
+    __weak typeof(self) wself = self;
     [sheet showInView:self.view completionHandler:^(NSInteger index) {
         if (index != sheet.cancelButtonIndex) {
             [wself termimateRTS];
-            [wself dismiss];
+            [wself dismissAfter:2];
         }
     }];
 }
@@ -412,7 +412,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
     option.extendMessage = @"白板请求扩展信息";
     option.apnsContent = @"邀请你加入白板会话";
     option.apnsSound = @"video_chat_tip_receiver.aac";
-    option.disableRecord = ![[NTESBundleSetting sharedConfig] serverRecordAudio];
+    [self fillUserSetting:option];
     
     __weak typeof(self) wself = self;
     _sessionID = [[NIMSDK sharedSDK].rtsManager requestRTS:[NSArray arrayWithObject:_peerID]
@@ -438,7 +438,7 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (void)responseRTS:(BOOL)accepted
 {
     NIMRTSOption *option = [[NIMRTSOption alloc] init];    
-    option.disableRecord = ![[NTESBundleSetting sharedConfig] serverRecordAudio];
+    [self fillUserSetting:option];
 
     __weak typeof(self) wself = self;
     [[NIMSDK sharedSDK].rtsManager responseRTS:_sessionID
@@ -652,5 +652,12 @@ static const NSTimeInterval SendCmdIntervalSeconds = 0.06;
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     return UIInterfaceOrientationMaskPortrait;
 }
+
+- (void)fillUserSetting:(NIMRTSOption *)option
+{
+    option.disableRecord = ![[NTESBundleSetting sharedConfig] serverRecordAudio];
+    option.autoDeactivateAudioSession = [[NTESBundleSetting sharedConfig] autoDeactivateAudioSession];
+}
+
 
 @end

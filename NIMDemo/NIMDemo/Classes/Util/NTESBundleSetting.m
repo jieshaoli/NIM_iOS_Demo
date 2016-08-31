@@ -64,32 +64,6 @@
     return [[[NSUserDefaults standardUserDefaults] objectForKey:@"using_amr"] boolValue];
 }
 
-- (NIMNetCallVideoQuality)preferredVideoQuality
-{
-    NSInteger videoQualitySetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_quality"] integerValue];
-    if ((videoQualitySetting >= NIMNetCallVideoQualityDefault) &&
-        (videoQualitySetting <= NIMNetCallVideoQualityHigh)) {
-        return (NIMNetCallVideoQuality)videoQualitySetting;
-    }
-    return NIMNetCallVideoQualityDefault;
-}
-
-- (BOOL)serverRecordAudio
-{
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_audio"] boolValue];
-}
-
-- (BOOL)serverRecordVideo
-{
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_video"] boolValue];
-}
-
-- (BOOL)videochatAutoRotateRemoteVideo
-{
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_auto_rotate_remote_video"] boolValue];
-}
-
-
 - (NSArray *)ignoreTeamNotificationTypes
 {
     static NSArray *types = nil;
@@ -112,6 +86,88 @@
     return types;
 }
 
+
+- (BOOL)serverRecordAudio
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_audio"] boolValue];
+}
+
+- (BOOL)serverRecordVideo
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"server_record_video"] boolValue];
+}
+
+- (BOOL)videochatDisableAutoCropping
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_disable_auto_cropping"] boolValue];
+}
+
+- (BOOL)videochatAutoRotateRemoteVideo
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_auto_rotate_remote_video"] boolValue];
+}
+
+- (NIMNetCallVideoQuality)preferredVideoQuality
+{
+    NSInteger videoQualitySetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_quality"] integerValue];
+    if ((videoQualitySetting >= NIMNetCallVideoQualityDefault) &&
+        (videoQualitySetting <= NIMNetCallVideoQuality720pLevel)) {
+        return (NIMNetCallVideoQuality)videoQualitySetting;
+    }
+    return NIMNetCallVideoQualityDefault;
+}
+
+
+- (BOOL)startWithBackCamera
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_start_with_back_camera"] boolValue];
+}
+
+- (NIMNetCallVideoCodec)perferredVideoEncoder
+{
+    NSInteger videoEncoderSetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_encoder"] integerValue];
+
+    if ((videoEncoderSetting >= NIMNetCallVideoCodecDefault) &&
+        (videoEncoderSetting <= NIMNetCallVideoCodecHardware)) {
+        return (NIMNetCallVideoCodec)videoEncoderSetting;
+    }
+    return NIMNetCallVideoCodecDefault;
+}
+
+- (NIMNetCallVideoCodec)perferredVideoDecoder
+{
+    NSInteger videoDecoderSetting = [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_preferred_video_decoder"] integerValue];
+    
+    if ((videoDecoderSetting >= NIMNetCallVideoCodecDefault) &&
+        (videoDecoderSetting <= NIMNetCallVideoCodecHardware)) {
+        return (NIMNetCallVideoCodec)videoDecoderSetting;
+    }
+    return NIMNetCallVideoCodecDefault;
+
+}
+- (NSUInteger)videoMaxEncodeKbps
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_video_encode_max_kbps"] integerValue];
+}
+
+- (NSUInteger)localRecordVideoKbps
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_local_record_video_kbps"] integerValue];
+}
+
+- (BOOL)autoDeactivateAudioSession
+{
+    id setting = [[NSUserDefaults standardUserDefaults] objectForKey:@"videochat_auto_disable_audiosession"];
+    
+    if (setting) {
+        return [setting boolValue];
+    }
+    else {
+        return YES;
+    }
+}
+
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:
@@ -124,11 +180,18 @@
                 "show app %d\n" \
                 "disable_proxmity_monitor %d\n" \
                 "using amr %d\n" \
+                "ignore_team_types %@ \n" \
                 "server_record_audio %d\n" \
                 "server_record_video %d\n" \
-                "videochat_preferred_video_quality %zd\n" \
+                "videochat_disable_auto_cropping %d\n" \
                 "videochat_auto_rotate_remote_video %d \n" \
-                "ignore_team_types %@ \n" \
+                "videochat_preferred_video_quality %zd\n" \
+                "videochat_start_with_back_camera %zd\n" \
+                "videochat_preferred_video_encoder %zd\n" \
+                "videochat_preferred_video_decoder %zd\n" \
+                "videochat_video_encode_max_kbps %zd\n" \
+                "videochat_local_record_video_kbps %zd\n" \
+                "videochat_auto_disable_audiosession %zd\n" \
                 "\n\n\n",
                 [self removeSessionWheDeleteMessages],
                 [self localSearchOrderByTimeDesc],
@@ -138,11 +201,18 @@
                 [self showFps],
                 [self disableProximityMonitor],
                 [self usingAmr],
+                [self ignoreTeamNotificationTypes],
                 [self serverRecordAudio],
                 [self serverRecordVideo],
-                [self preferredVideoQuality],
+                [self videochatDisableAutoCropping],
                 [self videochatAutoRotateRemoteVideo],
-                [self ignoreTeamNotificationTypes]
+                [self preferredVideoQuality],
+                [self startWithBackCamera],
+                [self perferredVideoEncoder],
+                [self perferredVideoDecoder],
+                [self videoMaxEncodeKbps],
+                [self localRecordVideoKbps],
+                [self autoDeactivateAudioSession]
             ];
 }
 @end

@@ -19,7 +19,7 @@
 @end
 
 
-@interface NTESDataManager()<NIMUserManagerDelegate,NIMTeamManagerDelegate>
+@interface NTESDataManager()<NIMUserManagerDelegate,NIMTeamManagerDelegate,NIMLoginManagerDelegate>
 
 @property (nonatomic,strong) NTESDataRequest *request;
 
@@ -45,6 +45,7 @@
         _request.maxMergeCount = 20;
         [[NIMSDK sharedSDK].userManager addDelegate:self];
         [[NIMSDK sharedSDK].teamManager addDelegate:self];
+        [[NIMSDK sharedSDK].loginManager addDelegate:self];
     }
     return self;
 }
@@ -52,6 +53,8 @@
 - (void)dealloc
 {
     [[NIMSDK sharedSDK].userManager removeDelegate:self];
+    [[NIMSDK sharedSDK].teamManager removeDelegate:self];
+    [[NIMSDK sharedSDK].loginManager removeDelegate:self];
 }
 
 - (NIMKitInfo *)infoByUser:(NSString *)userId
@@ -186,22 +189,31 @@
 #pragma mark - NIMTeamManagerDelegate
 - (void)onTeamAdded:(NIMTeam *)team
 {
-    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+    [[NIMKit sharedKit] notifyTeamInfoChanged:@[team.teamId]];
 }
 
 - (void)onTeamUpdated:(NIMTeam *)team
 {
-    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+    [[NIMKit sharedKit] notifyTeamInfoChanged:@[team.teamId]];
 }
 
 - (void)onTeamRemoved:(NIMTeam *)team
 {
-    [[NIMKit sharedKit] notfiyTeamInfoChanged:@[team.teamId]];
+    [[NIMKit sharedKit] notifyTeamInfoChanged:@[team.teamId]];
 }
 
 - (void)onTeamMemberChanged:(NIMTeam *)team
 {
-    [[NIMKit sharedKit] notfiyTeamMemebersChanged:@[team.teamId]];
+    [[NIMKit sharedKit] notifyTeamMemebersChanged:@[team.teamId]];
+}
+
+#pragma mark - NIMLoginManagerDelegate
+- (void)onLogin:(NIMLoginStep)step
+{
+    if (step == NIMLoginStepSyncOK) {
+        [[NIMKit sharedKit] notifyTeamInfoChanged:nil];
+        [[NIMKit sharedKit] notifyTeamMemebersChanged:nil];
+    }
 }
 
 #pragma mark - nickname

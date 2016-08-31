@@ -159,6 +159,7 @@
     message.text               = tip;
     NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
     setting.apnsEnabled        = NO;
+    setting.shouldBeCounted    = NO;
     message.setting            = setting;
     return message;
 }

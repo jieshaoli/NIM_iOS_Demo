@@ -157,13 +157,9 @@ NTES_FORBID_INTERACTIVE_POP
         
         NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
         option.extendMessage = @"音视频请求扩展信息";
-        option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
-        option.autoRotateRemoteVideo = [[NTESBundleSetting sharedConfig] videochatAutoRotateRemoteVideo];
         option.apnsContent = [NSString stringWithFormat:@"%@请求", wself.callInfo.callType == NIMNetCallTypeAudio ? @"网络通话" : @"视频聊天"];
         option.apnsSound = @"video_chat_tip_receiver.aac";
-        option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
-        option.serverRecordVideo = [[NTESBundleSetting sharedConfig] serverRecordVideo];
-
+        [self fillUserSetting:option];
         [[NIMSDK sharedSDK].netCallManager start:callees type:wself.callInfo.callType option:option completion:^(NSError *error, UInt64 callID) {
             if (!error && wself) {
                 wself.callInfo.callID = callID;
@@ -223,11 +219,8 @@ NTES_FORBID_INTERACTIVE_POP
     _calleeResponsed = YES;
     
     NIMNetCallOption *option = [[NIMNetCallOption alloc] init];
-    option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
-    option.serverRecordAudio = [[NTESBundleSetting sharedConfig] serverRecordAudio];
-    option.autoRotateRemoteVideo = [[NTESBundleSetting sharedConfig] videochatAutoRotateRemoteVideo];
-    option.serverRecordVideo = [[NTESBundleSetting sharedConfig] serverRecordVideo];
-
+    [self fillUserSetting:option];
+    
     __weak typeof(self) wself = self;
 
     [[NIMSDK sharedSDK].netCallManager response:self.callInfo.callID accept:accept option:option completion:^(NSError *error, UInt64 callID) {
@@ -295,7 +288,7 @@ NTES_FORBID_INTERACTIVE_POP
     
     BOOL startAccepted;
     startAccepted = [[NIMSDK sharedSDK].netCallManager startLocalRecording:filePath
-                                                              videoBitrate:0];
+                                                              videoBitrate:(UInt32)[[NTESBundleSetting sharedConfig] localRecordVideoKbps] * 1000];
     return startAccepted;
 }
 
@@ -571,6 +564,20 @@ NTES_FORBID_INTERACTIVE_POP
             [self udpateLowSpaceWarning:(freeSpace < FreeDiskSpaceWarningThreshold)];
         }
     }
+}
+
+- (void)fillUserSetting:(NIMNetCallOption *)option
+{
+    option.preferredVideoQuality = [[NTESBundleSetting sharedConfig] preferredVideoQuality];
+    option.disableVideoCropping  = [[NTESBundleSetting sharedConfig] videochatDisableAutoCropping];
+    option.autoRotateRemoteVideo = [[NTESBundleSetting sharedConfig] videochatAutoRotateRemoteVideo];
+    option.serverRecordAudio     = [[NTESBundleSetting sharedConfig] serverRecordAudio];
+    option.serverRecordVideo     = [[NTESBundleSetting sharedConfig] serverRecordVideo];
+    option.preferredVideoEncoder = [[NTESBundleSetting sharedConfig] perferredVideoEncoder];
+    option.preferredVideoDecoder = [[NTESBundleSetting sharedConfig] perferredVideoDecoder];
+    option.videoMaxEncodeBitrate = [[NTESBundleSetting sharedConfig] videoMaxEncodeKbps] * 1000;
+    option.startWithBackCamera   = [[NTESBundleSetting sharedConfig] startWithBackCamera];
+    option.autoDeactivateAudioSession = [[NTESBundleSetting sharedConfig] autoDeactivateAudioSession];
 }
 
 #pragma mark - Ring

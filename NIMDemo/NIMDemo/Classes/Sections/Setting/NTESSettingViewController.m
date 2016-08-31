@@ -192,7 +192,7 @@
 }
 
 - (void)onTouchShowLog:(id)sender{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"查看日志" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"查看 DEMO 配置",@"查看 SDK 日志",@"查看 Demo 日志", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"查看日志" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"查看 DEMO 配置",@"查看 SDK 日志",@"查看网络通话日志",@"查看 Demo 日志", nil];
     [actionSheet showInView:self.view completionHandler:^(NSInteger index) {
         switch (index) {
             case 0:
@@ -202,6 +202,9 @@
                 [self showSDKLog];
                 break;
             case 2:
+                [self showSDKNetCallLog];
+                break;
+            case 3:
                 [self showDemoLog];
                 break;
             default:
@@ -298,6 +301,14 @@
 
 - (void)showSDKLog{
     UIViewController *vc = [[NTESLogManager sharedManager] sdkLogViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:nav
+                       animated:YES
+                     completion:nil];
+}
+
+- (void)showSDKNetCallLog{
+    UIViewController *vc = [[NTESLogManager sharedManager] sdkNetCallLogViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     [self presentViewController:nav
                        animated:YES

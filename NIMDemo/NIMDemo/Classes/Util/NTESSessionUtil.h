@@ -16,6 +16,8 @@
                                   minSize:(CGSize)imageMinSize
                                   maxSize:(CGSize)imageMaxSize;
 
++ (AVMutableVideoComposition *) getVideoComposition:(AVAsset *)asset;
+
 + (NSString *)showNick:(NSString*)uid inSession:(NIMSession*)session;
 
 
@@ -30,6 +32,12 @@
 + (NSDictionary *)dictByJsonData:(NSData *)data;
 
 + (NSDictionary *)dictByJsonString:(NSString *)jsonString;
+
++ (BOOL)canMessageBeForwarded:(NIMMessage *)message;
+
++ (BOOL)canMessageBeRevoked:(NIMMessage *)message;
+
++ (NSString *)tipOnMessageRevoked:(NIMMessage *)message;
 
 
 

@@ -49,23 +49,33 @@
 - (void)pan:(UIPanGestureRecognizer*)recognizer
 {
     UIView* view = recognizer.view;
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        CGPoint location = [recognizer locationInView:view];
-        if (location.x <  CGRectGetMidX(view.bounds) && self.navigationController.viewControllers.count > 1) { // left half
-            self.interaction = [UIPercentDrivenInteractiveTransition new];
-            [self.navigationController popViewControllerAnimated:YES];
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan:{
+            CGPoint location = [recognizer locationInView:view];
+            if (location.x <  CGRectGetMidX(view.bounds) && self.navigationController.viewControllers.count > 1) { // left half
+                self.interaction = [UIPercentDrivenInteractiveTransition new];
+                [self.navigationController popViewControllerAnimated:YES];
+            }
         }
-    } else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [recognizer translationInView:view];
-        CGFloat d = translation.x / view.width;
-        [self.interaction updateInteractiveTransition:d];
-    } else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if ([recognizer locationInView:view].x > view.width * .5f) {
-            [self.interaction finishInteractiveTransition];
-        } else {
-            [self.interaction cancelInteractiveTransition];
+            break;
+        case UIGestureRecognizerStateChanged:{
+            CGPoint translation = [recognizer translationInView:view];
+            CGFloat d = translation.x / view.width;
+            [self.interaction updateInteractiveTransition:d];
         }
-        self.interaction = nil;
+            break;
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:{
+            if ([recognizer locationInView:view].x > view.width * .5f) {
+                [self.interaction finishInteractiveTransition];
+            } else {
+                [self.interaction cancelInteractiveTransition];
+            }
+            self.interaction = nil;
+        }
+            break;
+        default:
+            break;
     }
 }
 

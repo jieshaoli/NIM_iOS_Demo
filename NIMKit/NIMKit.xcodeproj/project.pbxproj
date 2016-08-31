@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15F2A942AD88B5F7032161D9 /* libPods-NIMKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A742B16B564D27D8FEB1E9E /* libPods-NIMKit.a */; };
 		610D71A11D0E5A9C00FCE25A /* NIMKitNotificationFirer.m in Sources */ = {isa = PBXBuildFile; fileRef = 610D71A01D0E5A9C00FCE25A /* NIMKitNotificationFirer.m */; };
 		6110D8AF1C24001300805BA4 /* UITableView+NIMScrollToBottom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6110D8AE1C24001300805BA4 /* UITableView+NIMScrollToBottom.m */; };
 		611B65DA1BA8591700038641 /* NIMContactSelectTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 611B65D91BA8591700038641 /* NIMContactSelectTabView.m */; };
@@ -109,6 +108,7 @@
 		61F4E5641CE1C40D000AD2A9 /* NIMTeamMemberCardHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F4E5631CE1C40D000AD2A9 /* NIMTeamMemberCardHeaderCell.m */; };
 		61F4E5691CE1DBC0000AD2A9 /* NIMKitColorButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F4E5661CE1DBC0000AD2A9 /* NIMKitColorButtonCell.m */; };
 		61F4E56A1CE1DBC0000AD2A9 /* NIMKitSwitcherCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F4E5681CE1DBC0000AD2A9 /* NIMKitSwitcherCell.m */; };
+		D321AC6F98034B6E551E8536 /* libPods-NIMKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD0CE04F949DFDCC831A1C47 /* libPods-NIMKit.a */; };
 		E465D3B01B84704C004F3A07 /* NIMUIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E465D3AF1B84704C004F3A07 /* NIMUIConfig.m */; };
 		E479641E1CCDB95600A4534A /* NIMExtensionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E479641D1CCDB95600A4534A /* NIMExtensionHelper.m */; };
 		E4EA43471BA7E5E5003FC1BA /* NIMBaseSessionContentConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E4EA43461BA7E5E5003FC1BA /* NIMBaseSessionContentConfig.m */; };
@@ -136,7 +136,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0226C50C0234239D498197E2 /* Pods-NIMKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.release.xcconfig"; sourceTree = "<group>"; };
+		533A831C165129BBE49A2845 /* Pods-NIMKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.debug.xcconfig"; sourceTree = "<group>"; };
 		610D719F1D0E5A9C00FCE25A /* NIMKitNotificationFirer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMKitNotificationFirer.h; sourceTree = "<group>"; };
 		610D71A01D0E5A9C00FCE25A /* NIMKitNotificationFirer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMKitNotificationFirer.m; sourceTree = "<group>"; };
 		6110D8AD1C24001300805BA4 /* UITableView+NIMScrollToBottom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+NIMScrollToBottom.h"; sourceTree = "<group>"; };
@@ -303,8 +303,8 @@
 		61FAB97A1B7836B400355B95 /* NIMSessionUnknowContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMSessionUnknowContentView.m; sourceTree = "<group>"; };
 		61FAB97B1B7836B400355B95 /* NIMSessionVideoContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMSessionVideoContentView.h; sourceTree = "<group>"; };
 		61FAB97C1B7836B400355B95 /* NIMSessionVideoContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMSessionVideoContentView.m; sourceTree = "<group>"; };
-		8A742B16B564D27D8FEB1E9E /* libPods-NIMKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NIMKit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E19BFFACBE98041700C1F1A5 /* Pods-NIMKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.debug.xcconfig"; sourceTree = "<group>"; };
+		CD0CE04F949DFDCC831A1C47 /* libPods-NIMKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NIMKit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEE686948362A788D5EA5C7A /* Pods-NIMKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NIMKit.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit.release.xcconfig"; sourceTree = "<group>"; };
 		E465D3AE1B84704C004F3A07 /* NIMUIConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMUIConfig.h; sourceTree = "<group>"; };
 		E465D3AF1B84704C004F3A07 /* NIMUIConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIMUIConfig.m; sourceTree = "<group>"; };
 		E479641C1CCDB95600A4534A /* NIMExtensionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIMExtensionHelper.h; sourceTree = "<group>"; };
@@ -388,13 +388,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15F2A942AD88B5F7032161D9 /* libPods-NIMKit.a in Frameworks */,
+				D321AC6F98034B6E551E8536 /* libPods-NIMKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		385F649EE36133B2A0795C1E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CD0CE04F949DFDCC831A1C47 /* libPods-NIMKit.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6132C70E1BA7C47B00897DDB /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -410,8 +418,8 @@
 			children = (
 				61344C131B720CB2005A96AE /* NIMKit */,
 				61344C121B720CB2005A96AE /* Products */,
-				6AB169FCE0DA2A6987C81F96 /* Pods */,
-				8BEE5315593EC1D0645B247A /* Frameworks */,
+				6637268B439678739050AA83 /* Pods */,
+				385F649EE36133B2A0795C1E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -815,21 +823,13 @@
 			path = SessionContentView;
 			sourceTree = "<group>";
 		};
-		6AB169FCE0DA2A6987C81F96 /* Pods */ = {
+		6637268B439678739050AA83 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E19BFFACBE98041700C1F1A5 /* Pods-NIMKit.debug.xcconfig */,
-				0226C50C0234239D498197E2 /* Pods-NIMKit.release.xcconfig */,
+				533A831C165129BBE49A2845 /* Pods-NIMKit.debug.xcconfig */,
+				DEE686948362A788D5EA5C7A /* Pods-NIMKit.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		8BEE5315593EC1D0645B247A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8A742B16B564D27D8FEB1E9E /* libPods-NIMKit.a */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		E4EB3B1B1C55EB6B00A47C41 /* Global */ = {
@@ -941,11 +941,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6187F9301B818ED800EFFB3A /* Build configuration list for PBXNativeTarget "NIMKit" */;
 			buildPhases = (
-				F2918CC4E85E293A7993A6E8 /* [CP] Check Pods Manifest.lock */,
+				E344837FFD2B3ED6D5FA1204 /* [CP] Check Pods Manifest.lock */,
 				6187F91B1B818ED800EFFB3A /* Sources */,
 				6187F91C1B818ED800EFFB3A /* Frameworks */,
 				6187F91D1B818ED800EFFB3A /* CopyFiles */,
-				8F9F183FF994E37EA57CFBA6 /* [CP] Copy Pods Resources */,
+				AAE844E5ACDB1D80B8CDB674 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -988,7 +988,7 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8F9F183FF994E37EA57CFBA6 /* [CP] Copy Pods Resources */ = {
+		AAE844E5ACDB1D80B8CDB674 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1003,7 +1003,7 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-NIMKit/Pods-NIMKit-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F2918CC4E85E293A7993A6E8 /* [CP] Check Pods Manifest.lock */ = {
+		E344837FFD2B3ED6D5FA1204 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1183,10 +1183,30 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders",
+					"$(SRCROOT)/../NIMAVChat/NIMAVChat/ExportHeaders",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK/Libs",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat/Libs",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-l\"NIMLib\"",
+					"-l\"NIMAVChat\"",
+					"-l\"aacplus\"",
+					"-l\"crypto\"",
+					"-l\"event\"",
+					"-l\"ssl\"",
+					"-l\"nio\"",
+					"-l\"nts\"",
+					"-l\"nvs\"",
+					"-l\"openh264\"",
+					"-l\"opus\"",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1224,9 +1244,29 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders",
+					"$(SRCROOT)/../NIMAVChat/NIMAVChat/ExportHeaders",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK/Libs",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat/Libs",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-l\"NIMLib\"",
+					"-l\"NIMAVChat\"",
+					"-l\"aacplus\"",
+					"-l\"crypto\"",
+					"-l\"event\"",
+					"-l\"ssl\"",
+					"-l\"nio\"",
+					"-l\"nts\"",
+					"-l\"nvs\"",
+					"-l\"openh264\"",
+					"-l\"opus\"",
+				);
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1234,11 +1274,11 @@
 		};
 		6187F9311B818ED800EFFB3A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E19BFFACBE98041700C1F1A5 /* Pods-NIMKit.debug.xcconfig */;
+			baseConfigurationReference = 533A831C165129BBE49A2845 /* Pods-NIMKit.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1252,9 +1292,27 @@
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK/Libs",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat/Libs",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
+					"-l\"NIMLib\"",
+					"-l\"NIMAVChat\"",
+					"-l\"aacplus\"",
+					"-l\"crypto\"",
+					"-l\"event\"",
+					"-l\"ssl\"",
+					"-l\"nio\"",
+					"-l\"nts\"",
+					"-l\"nvs\"",
+					"-l\"openh264\"",
+					"-l\"opus\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1263,7 +1321,7 @@
 		};
 		6187F9321B818ED800EFFB3A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0226C50C0234239D498197E2 /* Pods-NIMKit.release.xcconfig */;
+			baseConfigurationReference = DEE686948362A788D5EA5C7A /* Pods-NIMKit.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
@@ -1275,9 +1333,27 @@
 					"$(SRCROOT)/../NIMLib/NIMLib/ExportHeaders/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMSDK/Libs",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat",
+					"$(PROJECT_DIR)/NIMKit/Vendors/NIMAVChat/Libs",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
+					"-l\"NIMLib\"",
+					"-l\"NIMAVChat\"",
+					"-l\"aacplus\"",
+					"-l\"crypto\"",
+					"-l\"event\"",
+					"-l\"ssl\"",
+					"-l\"nio\"",
+					"-l\"nts\"",
+					"-l\"nvs\"",
+					"-l\"openh264\"",
+					"-l\"opus\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

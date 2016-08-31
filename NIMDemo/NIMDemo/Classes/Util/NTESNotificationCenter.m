@@ -20,6 +20,8 @@
 #import "NTESGlobalMacro.h"
 #import <AVFoundation/AVFoundation.h>
 #import "NTESLiveViewController.h"
+#import "NTESSessionMsgConverter.h"
+#import "NTESSessionUtil.h"
 
 NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChanged";
 
@@ -71,7 +73,15 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
 #pragma mark - NIMChatManagerDelegate
 - (void)onRecvMessages:(NSArray *)messages
 {
-    method_execute_frequency(self, @selector(playMessageAudioTip), 0.3);
+    static BOOL isPlaying = NO;
+    if (isPlaying) {
+        return;
+    }
+    isPlaying = YES;
+    [self playMessageAudioTip];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        isPlaying = NO;
+    });
 }
 
 - (void)playMessageAudioTip
@@ -91,6 +101,32 @@ NSString *NTESCustomNotificationCountChanged = @"NTESCustomNotificationCountChan
         [self.player play];
     }
 }
+
+- (void)onMessageRevoked:(NIMMessage *)message
+{
+    NIMMessage *tip = [NTESSessionMsgConverter msgWithTip:[NTESSessionUtil tipOnMessageRevoked:message]];
+    NIMMessageSetting *setting = [[NIMMessageSetting alloc] init];
+    setting.shouldBeCounted = NO;
+    tip.setting = setting;
+    
+    NTESMainTabController *tabVC = [NTESMainTabController instance];
+    UINavigationController *nav = tabVC.selectedViewController;
+
+    for (NTESSessionViewController *vc in nav.viewControllers) {
+        if ([vc isKindOfClass:[NTESSessionViewController class]]
+            && [vc.session.sessionId isEqualToString:message.session.sessionId]) {
+            NIMMessageModel *model = [vc uiDeleteMessage:message];
+            tip.timestamp = model.messageTime;
+            [vc uiAddMessages:@[tip]];
+            break;
+        }
+    }
+    
+    tip.timestamp = message.timestamp;
+    // saveMessage 方法执行成功后会触发 onRecvMessages: 回调，但是这个回调上来的 NIMMessage 时间为服务器时间，和界面上的时间有一定出入，所以要提前先在界面上插入一个和被删消息的界面时间相符的 Tip, 当触发 onRecvMessages: 回调时，组件判断这条消息已经被插入过了，就会忽略掉。
+    [[NIMSDK sharedSDK].conversationManager saveMessage:tip forSession:message.session completion:nil];
+}
+
 
 #pragma mark - NIMSystemNotificationManagerDelegate
 - (void)onReceiveCustomSystemNotification:(NIMCustomSystemNotification *)notification{

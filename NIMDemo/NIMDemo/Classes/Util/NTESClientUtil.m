@@ -13,7 +13,8 @@
 + (NSString *)clientName:(NIMLoginClientType)clientType{
     switch (clientType) {
         case NIMLoginClientTypeAOS:
-        case NIMLoginClientTypeIOS:
+        case NIMLoginClientTypeiOS:
+        case NIMLoginClientTypeWP:
             return @"移动";
         case NIMLoginClientTypePC:
             return @"电脑";

@@ -77,11 +77,12 @@ typedef NS_ENUM(NSInteger,NTESMainTabType) {
     [self setUpStatusBar];
 }
 
--(void)viewWillLayoutSubviews
+- (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    //会话界面发送拍摄的视频，拍摄结束后点击发送后可能顶部会有红条，导致的界面错位。
     self.view.frame = [UIScreen mainScreen].bounds;
 }
-
 
 - (void)dealloc{
     [[NIMSDK sharedSDK].systemNotificationManager removeDelegate:self];

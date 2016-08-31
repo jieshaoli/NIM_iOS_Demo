@@ -64,6 +64,15 @@
     return vc;
 }
 
+- (UIViewController *)sdkNetCallLogViewController
+{
+    NSString *filepath = [[NIMSDK sharedSDK].netCallManager netCallLogFilepath];
+    NTESLogViewController *vc = [[NTESLogViewController alloc] initWithFilepath:filepath];
+    vc.title = @"NetCall Log";
+    return vc;
+}
+
+
 - (UIViewController *)demoConfigViewController
 {
     NSString *content = [NSString stringWithFormat:@"SDK Config:\n%@\nDemo Config:\n%@\n",[NIMSDKConfig sharedConfig],[NTESBundleSetting sharedConfig]];
